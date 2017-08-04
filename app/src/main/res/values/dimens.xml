@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="viewPager">100dp</dimen>
+    <dimen name="tabLayout">50dp</dimen>
+    <dimen name="buttonHeight">30dp</dimen>
+    <dimen name="profilePic">65dp</dimen>
+
+    <dimen name="fab_margin">20dp</dimen>
+
+    <!--Total Balance-->
+    <dimen name="totalBalance">100dp</dimen>
+    <dimen name="totalBalanceLeftMargin">20dp</dimen>
+    <dimen name="totalAvatarMargin">10dp</dimen>
+    <dimen name="totalTextWidth">200dp</dimen>
+
+    <!--Fonts-->
+    <dimen name="font_totalBalance">15sp</dimen>
+    <dimen name="font_totalSettledUp">16sp</dimen>
+</resources>

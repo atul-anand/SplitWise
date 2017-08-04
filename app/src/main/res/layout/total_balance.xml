@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/totalBalance"
+    android:layout_gravity="center">
+    <ImageView
+        android:id="@+id/totalProfilePic"
+        android:layout_width="@dimen/profilePic"
+        android:layout_height="@dimen/profilePic"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/totalAvatarMargin"
+        android:src="@drawable/avatar"/>
+    <LinearLayout
+        android:layout_width="@dimen/totalTextWidth"
+        android:layout_height="@dimen/totalBalance"
+        android:orientation="vertical"
+        android:layout_marginStart="@dimen/totalBalanceLeftMargin"
+        android:layout_gravity="center">
+        <TextView
+            android:id="@+id/totalBalance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/total"
+            android:layout_marginTop="@dimen/buttonHeight"
+            android:textSize="@dimen/font_totalBalance"/>
+        <TextView
+            android:id="@+id/totalStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/settled"
+            android:textSize="@dimen/font_totalSettledUp"/>
+    </LinearLayout>
+    <Button
+        android:id="@+id/total_menu"
+        android:layout_width="@dimen/buttonHeight"
+        android:layout_height="@dimen/buttonHeight"
+        android:layout_gravity="center" />
+
+</LinearLayout>

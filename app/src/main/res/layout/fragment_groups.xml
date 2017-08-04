@@ -1,0 +1,21 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.zemoso.atul.splitwise.fragments.Groups">
+
+    <LinearLayout
+        android:id="@+id/groups_balance"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/totalBalance"
+        android:background="@color/colorTotalBalance">
+    <include layout="@layout/total_balance"/>
+    </LinearLayout>
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/groups_balance"
+        android:id="@+id/recycler_groups" />
+
+
+</RelativeLayout>

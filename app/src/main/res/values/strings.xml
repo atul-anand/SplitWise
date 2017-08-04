@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">SplitWise</string>
+    <string name="app_heading">S P L I T W I S E</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="settleUp">SETTLE UP</string>
+    <string name="balances">BALANCES</string>
+
+    <string name="addFriends">+ ADD MORE FRIENDS</string>
+    <string name="addGroup">+ START A NEW GROUP</string>
+
+
+
+    <string name="owed">you are owed</string>
+    <string name="lent">you lent</string>
+    <string name="paid">you paid</string>
+
+    <string name="action_settings">Settings</string>
+
+    <string name="profilePic" />
+
+    <!--Total Balance-->
+    <string name="total">TOTAL BALANCE</string>
+    <string name="settled">You are all settled up</string>
+
+    <string name="menu_total_all">All Balances</string>
+    <string name="menu_total_owe">You owe</string>
+    <string name="menu_total_owed">You are owed</string>
+</resources>
