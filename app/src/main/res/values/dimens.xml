@@ -7,6 +7,10 @@
 
     <dimen name="fab_margin">20dp</dimen>
 
+    <!--Nav Bar-->
+    <dimen name="navBar_TextView_height">60dp</dimen>
+    <dimen name="navBar_width">300dp</dimen>
+
     <!--Total Balance-->
     <dimen name="totalBalance">100dp</dimen>
     <dimen name="totalBalanceLeftMargin">20dp</dimen>
