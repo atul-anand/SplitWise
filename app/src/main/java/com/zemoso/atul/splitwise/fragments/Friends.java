@@ -10,12 +10,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.zemoso.atul.splitwise.R;
-import com.zemoso.atul.splitwise.activities.MainActivity;
 
 
 /**
@@ -46,7 +43,7 @@ public class Friends extends Fragment {
             @Override
             public void onClick(View view) {
                 PopupMenu mPopupMenu = new PopupMenu(getContext(),button);
-                mPopupMenu.getMenuInflater().inflate(R.menu.total_bal_menu,mPopupMenu.getMenu());
+                mPopupMenu.getMenuInflater().inflate(R.menu.menu_total_balance,mPopupMenu.getMenu());
                 mPopupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {

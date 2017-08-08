@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/total"
-            android:layout_marginTop="@dimen/buttonHeight"
+            android:layout_marginTop="30dp"
             android:textSize="@dimen/font_totalBalance"/>
         <TextView
             android:id="@+id/totalStatus"

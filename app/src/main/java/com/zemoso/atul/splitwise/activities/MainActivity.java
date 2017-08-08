@@ -1,29 +1,24 @@
 package com.zemoso.atul.splitwise.activities;
 
-import android.app.SearchManager;
-import android.content.Intent;
 import android.content.res.Configuration;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.design.widget.TabLayout;
-import android.os.Bundle;
-import android.support.v7.widget.PopupMenu;
-import android.util.Log;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -37,8 +32,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
 
+    //region Variable Declaration
     private static final String TAG = MainActivity.class.getSimpleName();
 
     //region Sliding TabLayout (Fragment Components)
@@ -48,9 +45,8 @@ public class MainActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     //endregion
 
-
     private FloatingActionButton fab;
-
+    private Toolbar toolbar;
 
     //region Navigation Drawer
     private LayoutInflater mLayoutInflater;
@@ -64,12 +60,15 @@ public class MainActivity extends AppCompatActivity {
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
     //endregion
+    //endregion
 
+    //region Inherited Methods
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //region Sliding Layout
         mPagerAdapter = new HomePagerAdapter(getSupportFragmentManager(), fragmentList);
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
         mViewPager.setAdapter(mPagerAdapter);
@@ -78,7 +77,9 @@ public class MainActivity extends AppCompatActivity {
 
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
+        //endregion
 
+        //region Floating Action Button
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,61 +88,59 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+        //endregion
 
-        //Navigation Bar
-        mNavBarTitles = getResources().getStringArray(R.array.nav_bar);
-        mTitle = mDrawerTitle = getSupportActionBar().getTitle();
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-        mLayoutInflater = getLayoutInflater();
-        mDrawerLayout = (DrawerLayout) mLayoutInflater.inflate(R.layout.nav_bar_drawer,null);
-        mDrawerList = mDrawerLayout.findViewById(R.id.nav_bar_menu);
-
-        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
-
-        mArrayAdapter = new ArrayAdapter<String>(this, R.layout.nav_bar_list_item,mNavBarTitles);
-
-        mDrawerList.setAdapter(mArrayAdapter);
-
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+//
+//        //region Navigation Bar
+////        mNavBarTitles = getResources().getStringArray(R.array.nav_bar);
+//        mTitle = mDrawerTitle = getSupportActionBar().getTitle();
+//
+//        mLayoutInflater = getLayoutInflater();
+//        mDrawerLayout = (DrawerLayout) mLayoutInflater.inflate(R.layout.component_navigation,null);
+//        mDrawerList = mDrawerLayout.findViewById(R.id.nav_bar_menu);
+//
+//        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+//
+//        mArrayAdapter = new ArrayAdapter<String>(this, R.layout.nav_bar_list_item,mNavBarTitles);
+//
+//        mDrawerList.setAdapter(mArrayAdapter);
+//
         mDrawerToggle = new ActionBarDrawerToggle(
                 this,
                 mDrawerLayout,
-//                R.drawable.ic_drawer,
+                toolbar,
                 R.string.drawer_open,
-                R.string.drawer_close){
-            /** Called when a drawer has settled in a completely closed state. */
-            public void onDrawerClosed(View view) {
-                super.onDrawerClosed(view);
-                getSupportActionBar().setTitle(mTitle);
-                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-            }
-
-            /** Called when a drawer has settled in a completely open state. */
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-                getSupportActionBar().setTitle(mDrawerTitle);
-                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-            }
-
-        };
-
+                R.string.drawer_close);
+//        {
+//            /** Called when a drawer has settled in a completely closed state. */
+//            public void onDrawerClosed(View view) {
+//                super.onDrawerClosed(view);
+//                getSupportActionBar().setTitle(mTitle);
+//                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+//            }
+//
+//            /** Called when a drawer has settled in a completely open state. */
+//            public void onDrawerOpened(View drawerView) {
+//                super.onDrawerOpened(drawerView);
+//                getSupportActionBar().setTitle(mDrawerTitle);
+//                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+//            }
+//
+//        };
+//
         mDrawerLayout.setDrawerListener(mDrawerToggle);
+        mDrawerToggle.syncState();
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_drawer);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-    }
-    @Override
-    protected void onResume() {
-        super.onResume();
+//        //endregion
+
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -149,6 +148,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    //Action Bar menu items
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -174,63 +174,51 @@ public class MainActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
-//        int id = item.getItemId();
-//
-//        return id == R.id.action_settings || super.onOptionsItemSelected(item) || mDrawerToggle.onOptionsItemSelected(item);
-
     }
 
-    /* Called whenever we call invalidateOptionsMenu() */
+//    /* Called whenever we call invalidateOptionsMenu() */
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         // If the nav drawer is open, hide action items related to the content view
-        boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
-        menu.findItem(R.id.action_websearch).setVisible(!drawerOpen);
+//        boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
+//        menu.findItem(R.id.action_websearch).setVisible(!drawerOpen);
+//        menu.findItem(R.id.action_settings).setVisible(!drawerOpen);
         return super.onPrepareOptionsMenu(menu);
     }
 
-    @Override
-    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        mDrawerToggle.syncState();
-    }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        mDrawerToggle.onConfigurationChanged(newConfig);
+    public void onBackPressed() {
+        if(mDrawerLayout.isDrawerOpen(GravityCompat.START))
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+        else
+            super.onBackPressed();
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle component_navigation view item clicks here.
+        int id = item.getItemId();
+
+        switch (id){
+            case R.id.nav_home: Toast.makeText(this,"Home",Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.nav_setting: Toast.makeText(this,"Setting",Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.nav_rating: Toast.makeText(this,"Rating",Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.nav_contact: Toast.makeText(this,"Contact",Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.nav_logout: Toast.makeText(this,"Logout",Toast.LENGTH_SHORT).show();
+                break;
+        }
+
+        mDrawerLayout.closeDrawer(GravityCompat.START);
+        return true;
     }
     //endregion
 
-//    /* The click listener for ListView in the navigation drawer */
-//    private class DrawerItemClickListener implements ListView.OnItemClickListener {
-//        @Override
-//        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//            selectItem(position);
-//        }
-//    }
-//
-//    private void selectItem(int position) {
-////        // update the main content by replacing fragments
-////        Fragment fragment = new PlanetFragment();
-////        Bundle args = new Bundle();
-////        args.putInt(PlanetFragment.ARG_PLANET_NUMBER, position);
-////        fragment.setArguments(args);
-////
-////        FragmentManager fragmentManager = getFragmentManager();
-////        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-//
-//        // update selected item and title, then close the drawer
-//        mDrawerList.setItemChecked(position, true);
-////        setTitle(mPlanetTitles[position]);
-//        mDrawerLayout.closeDrawer(mDrawerList);
-//    }
-//
-////    @Override
-////    public void setTitle(CharSequence title) {
-////        mTitle = title;
-////        getActionBar().setTitle(mTitle);
-////    }
     //region Private Methods
 
     private void updateFragments(){

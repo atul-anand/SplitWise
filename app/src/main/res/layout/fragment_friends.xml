@@ -10,16 +10,21 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/totalBalance"
         android:background="@color/colorTotalBalance">
-        <include layout="@layout/total_balance"/>
-        </LinearLayout>
+        <include layout="@layout/component_total_balance"/>
+    </LinearLayout>
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@id/friends_balance"
         android:id="@+id/recycler_friends" />
 
-    <!--<Button-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="@dimen/buttonHeight"-->
-        <!--android:layout_below="@id/recycler_friends"/>-->
+    <Button
+        android:layout_marginLeft="@dimen/button_margin"
+        android:layout_marginRight="@dimen/button_margin"
+        android:layout_marginTop="@dimen/button_top_margin"
+        android:layout_width="match_parent"
+        android:padding="@dimen/button_padding"
+        android:layout_height="@dimen/buttonHeight"
+        android:layout_below="@id/recycler_friends"
+        android:text="@string/addFriends"/>
 </RelativeLayout>

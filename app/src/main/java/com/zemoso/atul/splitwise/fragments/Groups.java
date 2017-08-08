@@ -42,7 +42,7 @@ public class Groups extends Fragment {
             @Override
             public void onClick(View view) {
                 PopupMenu mPopupMenu = new PopupMenu(getContext(),button);
-                mPopupMenu.getMenuInflater().inflate(R.menu.total_bal_menu,mPopupMenu.getMenu());
+                mPopupMenu.getMenuInflater().inflate(R.menu.menu_total_balance,mPopupMenu.getMenu());
                 mPopupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {

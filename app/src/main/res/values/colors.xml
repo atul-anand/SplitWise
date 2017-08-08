@@ -2,10 +2,10 @@
 <resources>
     <color name="colorPrimary">#00D1A7</color>
     <color name="colorPrimaryDark">#00AE85</color>
-    <color name="colorAccent">#000000</color>
+    <color name="colorAccent">#556b2f</color>
 
     <color name="colorTotalBalance">#EDEDED</color>
-    
+
     <color name="colorButtonSettleUp">#F0512F</color>
     <color name="colorButtonBalances">#00AE85</color>
     <color name="colorButtonUndeleteExpense">#989898</color>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_home"
+        android:title="@string/nav_home"/>
+    <item
+        android:id="@+id/nav_setting"
+        android:title="@string/nav_setting"/>
+    <item
+        android:id="@+id/nav_rating"
+        android:title="@string/nav_rating"/>
+    <item
+        android:id="@+id/nav_contact"
+        android:title="@string/nav_contact"/>
+    <item
+        android:id="@+id/nav_logout"
+        android:title="@string/nav_logout"/>
+</menu>

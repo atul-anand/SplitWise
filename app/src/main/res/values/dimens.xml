@@ -1,21 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="viewPager">100dp</dimen>
+    <!--View Pager-->
     <dimen name="tabLayout">50dp</dimen>
-    <dimen name="buttonHeight">30dp</dimen>
+
     <dimen name="profilePic">65dp</dimen>
 
+    <dimen name="viewPager">100dp</dimen>
     <dimen name="fab_margin">20dp</dimen>
+
+    <!--Elevation-->
+    <dimen name="elevation_appbar">4dp</dimen>
+    <dimen name="elevation_navigation">16dp</dimen>
+    <dimen name="elevation_floating">6dp</dimen>
+
+    <!--Recycler View-->
+    <dimen name="buttonHeight">50dp</dimen>
 
     <!--Nav Bar-->
     <dimen name="navBar_TextView_height">60dp</dimen>
     <dimen name="navBar_width">300dp</dimen>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="nav_header_vertical_spacing">16dp</dimen>
+    <dimen name="nav_header_height">160dp</dimen>
+    <dimen name="navigation_text">15dp</dimen>
 
     <!--Total Balance-->
     <dimen name="totalBalance">100dp</dimen>
     <dimen name="totalBalanceLeftMargin">20dp</dimen>
     <dimen name="totalAvatarMargin">10dp</dimen>
     <dimen name="totalTextWidth">200dp</dimen>
+    <dimen name="button_padding">10dp</dimen>
+    <dimen name="button_margin">40dp</dimen>
+    <dimen name="button_top_margin">8dp</dimen>
 
     <!--Fonts-->
     <dimen name="font_totalBalance">15sp</dimen>

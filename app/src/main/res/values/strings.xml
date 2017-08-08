@@ -12,7 +12,6 @@
     <string name="addGroup">+ START A NEW GROUP</string>
 
 
-
     <string name="owed">you are owed</string>
     <string name="lent">you lent</string>
     <string name="paid">you paid</string>
@@ -30,7 +29,8 @@
     <string name="menu_total_owed">You are owed</string>
 
     <!--Nav Bar-->
-
+    <string name="username">Atul Anand</string>
+    <string name="email">atul.anand@zemosolabs.com</string>
     <string name="drawer_close">drawer_close</string>
     <string name="drawer_open">drawer_open</string>
 
@@ -40,11 +40,12 @@
     <string name="nav_contact">Contact Us</string>
     <string name="nav_logout">Log out</string>
     <string name="action_websearch">Search</string>
-    <string-array name="nav_bar">
-        <item>@string/nav_home</item>
-        <item>@string/nav_setting</item>
-        <item>@string/nav_rating</item>
-        <item>@string/nav_contact</item>
-        <item>@string/nav_logout</item>
-    </string-array>
+
+    <string name="navigation_copyright">
+        Made with :) in Providence, RI, USA\n
+        Copyright 2017 Splitwise , Inc.\n
+        P.S Bunnies!\n\n
+        v4.1.10/166
+    </string>
+
 </resources>
