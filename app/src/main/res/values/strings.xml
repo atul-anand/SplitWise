@@ -2,8 +2,10 @@
     <string name="app_name">SplitWise</string>
     <string name="app_heading">S P L I T W I S E</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!--Server Interaction-->
+    <string name="server_address">http://192.168.0.48:3000/</string>
+    <string name="server_friend">chats</string>
+    <string name="hello_blank_fragment">Activities will be added later.</string>
 
     <string name="settleUp">SETTLE UP</string>
     <string name="balances">BALANCES</string>
@@ -47,5 +49,11 @@
         P.S Bunnies!\n\n
         v4.1.10/166
     </string>
+    <string name="proceed">Proceed</string>
+    <string name="current_user_id">Enter User Id</string>
+
+    <!--Download Data-->
+    <string name="friendsUrl" />
+    <string name="groupsUrl" />
 
 </resources>

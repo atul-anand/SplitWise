@@ -8,12 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.zemoso.atul.splitwise.R;
+import com.zemoso.atul.splitwise.activities.MainActivity;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class Activities extends Fragment {
 
+    private static final String TAG = Activities.class.getSimpleName();
 
     public Activities() {
         // Required empty public constructor

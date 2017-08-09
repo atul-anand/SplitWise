@@ -2,7 +2,9 @@
 <resources>
     <color name="colorPrimary">#00D1A7</color>
     <color name="colorPrimaryDark">#00AE85</color>
-    <color name="colorAccent">#556b2f</color>
+    <color name="colorAccent">#F0512F</color>
+
+    <color name="colorWhite">#ffffff</color>
 
     <color name="colorTotalBalance">#EDEDED</color>
 
@@ -16,4 +18,6 @@
     <color name="colorCardHeading">@color/colorAccent</color>
     <color name="colorCardDescription">@color/colorPrimary</color>
     <color name="colorCardStatus">@color/colorPrimary</color>
+
+
 </resources>

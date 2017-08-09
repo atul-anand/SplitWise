@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/card_holder">
+        <ImageView
+            android:layout_width="@dimen/profilePic"
+            android:layout_height="@dimen/profilePic"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:id="@+id/card_avatar"
+            android:layout_centerVertical="true"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/card_heading"
+            android:textSize="@dimen/list_item_1"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/card_avatar"
+            android:layout_toStartOf="@+id/card_status"/>
+        <TextView
+            android:layout_width="@dimen/status_box_width"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:id="@+id/card_status"/>
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

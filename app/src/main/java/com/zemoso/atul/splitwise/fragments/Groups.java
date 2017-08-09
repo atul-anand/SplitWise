@@ -4,7 +4,10 @@ package com.zemoso.atul.splitwise.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,12 +16,34 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.zemoso.atul.splitwise.R;
+import com.zemoso.atul.splitwise.adapters.RecyclerViewAdapter;
+import com.zemoso.atul.splitwise.javaBeans.RecyclerViewHolder;
+import com.zemoso.atul.splitwise.modules.Group;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class Groups extends Fragment {
 
+    private static final String TAG = Groups.class.getSimpleName();
+
+    private Button mButton;
+    private PopupMenu mPopupMenu;
+    private Button mAddButton;
+
+    private RecyclerView mRecyclerView;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private RecyclerViewAdapter mRecyclerViewAdapter;
+    private List<RecyclerViewHolder> mItems;
 
     public Groups() {
         // Required empty public constructor
@@ -37,11 +62,46 @@ public class Groups extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        final Button button = (Button) view.findViewById(R.id.total_menu);
-        button.setOnClickListener(new View.OnClickListener() {
+        mButton = (Button) view.findViewById(R.id.total_menu);
+        mPopupMenu = new PopupMenu(getContext(),mButton);
+
+        mRecyclerView = view.findViewById(R.id.recycler_groups);
+        mLayoutManager = new LinearLayoutManager(getContext());
+        mItems = new ArrayList<>();
+        mRecyclerViewAdapter = new RecyclerViewAdapter(mItems,getContext());
+
+        mAddButton = view.findViewById(R.id.addGroups);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Realm realm = Realm.getDefaultInstance();
+        RealmResults<Group> mGroupData = realm.where(Group.class).findAll();
+        for(Group friend : mGroupData){
+            String data = friend.getJSON();
+            JSONObject jsonObject;
+            String mImageUrl="";
+            String mHeading="";
+            String mStatus="";
+            try {
+                jsonObject = new JSONObject(data);
+                mImageUrl = (String) jsonObject.get("url");
+                mHeading = (String) jsonObject.get("heading");
+                mStatus = (String) jsonObject.get("status");
+                mItems.add(new RecyclerViewHolder(mImageUrl,"",mHeading,mStatus));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mRecyclerView.setAdapter(mRecyclerViewAdapter);
+
+        mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PopupMenu mPopupMenu = new PopupMenu(getContext(),button);
                 mPopupMenu.getMenuInflater().inflate(R.menu.menu_total_balance,mPopupMenu.getMenu());
                 mPopupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
@@ -53,6 +113,13 @@ public class Groups extends Fragment {
                     }
                 });
                 mPopupMenu.show();
+            }
+        });
+
+        mAddButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getContext(),"Add Friends",Toast.LENGTH_SHORT).show();
             }
         });
     }

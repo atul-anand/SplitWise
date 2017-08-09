@@ -12,6 +12,7 @@
         android:background="@color/colorTotalBalance">
         <include layout="@layout/component_total_balance"/>
     </LinearLayout>
+
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -19,6 +20,7 @@
         android:id="@+id/recycler_friends" />
 
     <Button
+        android:id="@+id/addFriends"
         android:layout_marginLeft="@dimen/button_margin"
         android:layout_marginRight="@dimen/button_margin"
         android:layout_marginTop="@dimen/button_top_margin"

@@ -14,6 +14,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -65,6 +66,7 @@ public class MainActivity extends AppCompatActivity
     //region Inherited Methods
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG,"onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -132,7 +134,7 @@ public class MainActivity extends AppCompatActivity
 //
 //        };
 //
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        mDrawerLayout.addDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_drawer);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -144,6 +146,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        Log.d(TAG,"onCreateOptionsMenu");
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
@@ -151,7 +154,7 @@ public class MainActivity extends AppCompatActivity
     //Action Bar menu items
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
+        Log.d(TAG,"onOptionsItemSelected");
         if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
@@ -179,6 +182,7 @@ public class MainActivity extends AppCompatActivity
 //    /* Called whenever we call invalidateOptionsMenu() */
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
+        Log.d(TAG,"onPrepareOptionsMenu");
         // If the nav drawer is open, hide action items related to the content view
 //        boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
 //        menu.findItem(R.id.action_websearch).setVisible(!drawerOpen);
@@ -189,6 +193,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
+        Log.d(TAG,"onBackPressed");
         if(mDrawerLayout.isDrawerOpen(GravityCompat.START))
             mDrawerLayout.closeDrawer(GravityCompat.START);
         else
@@ -198,19 +203,20 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
+        Log.d(TAG,"onNavigationItemSelected");
         // Handle component_navigation view item clicks here.
         int id = item.getItemId();
 
         switch (id){
-            case R.id.nav_home: Toast.makeText(this,"Home",Toast.LENGTH_SHORT).show();
+            case R.id.nav_home: Toast.makeText(getApplicationContext(),"Home",Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.nav_setting: Toast.makeText(this,"Setting",Toast.LENGTH_SHORT).show();
+            case R.id.nav_setting: Toast.makeText(getApplicationContext(),"Setting",Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.nav_rating: Toast.makeText(this,"Rating",Toast.LENGTH_SHORT).show();
+            case R.id.nav_rating: Toast.makeText(getApplicationContext(),"Rating",Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.nav_contact: Toast.makeText(this,"Contact",Toast.LENGTH_SHORT).show();
+            case R.id.nav_contact: Toast.makeText(getApplicationContext(),"Contact",Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.nav_logout: Toast.makeText(this,"Logout",Toast.LENGTH_SHORT).show();
+            case R.id.nav_logout: Toast.makeText(getApplicationContext(),"Logout",Toast.LENGTH_SHORT).show();
                 break;
         }
 

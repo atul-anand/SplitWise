@@ -10,6 +10,9 @@ import io.realm.RealmConfiguration;
  */
 
 public class SplitWise extends Application {
+
+    private static final String TAG = SplitWise.class.getSimpleName();
+
     @Override
     public void onCreate() {
         super.onCreate();

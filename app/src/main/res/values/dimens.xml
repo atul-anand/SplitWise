@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <!--Splash -->
+    <dimen name="edit_text_width">200dp</dimen>
+    <dimen name="edit_text_font">20sp</dimen>
+
     <!--View Pager-->
     <dimen name="tabLayout">50dp</dimen>
 
@@ -15,7 +20,8 @@
 
     <!--Recycler View-->
     <dimen name="buttonHeight">50dp</dimen>
-
+    <dimen name="list_item_1">24sp</dimen>
+    <dimen name="status_box_width">50dp</dimen>
     <!--Nav Bar-->
     <dimen name="navBar_TextView_height">60dp</dimen>
     <dimen name="navBar_width">300dp</dimen>
