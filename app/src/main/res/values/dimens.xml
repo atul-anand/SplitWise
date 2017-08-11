@@ -22,6 +22,11 @@
     <dimen name="buttonHeight">50dp</dimen>
     <dimen name="list_item_1">24sp</dimen>
     <dimen name="status_box_width">50dp</dimen>
+
+    <dimen name="card_elevation">8dp</dimen>
+    <dimen name="card_height">80dp</dimen>
+    <dimen name="card_margin">5dp</dimen>
+
     <!--Nav Bar-->
     <dimen name="navBar_TextView_height">60dp</dimen>
     <dimen name="navBar_width">300dp</dimen>
@@ -43,4 +48,16 @@
     <!--Fonts-->
     <dimen name="font_totalBalance">15sp</dimen>
     <dimen name="font_totalSettledUp">16sp</dimen>
+    <dimen name="app_bar_height">180dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
+
+    <!--Profile-->
+    <dimen name="app_bar_height_profile">300dp</dimen>
+    <dimen name="profile_image">100dp</dimen>
+    <dimen name="font_profile_heading">15sp</dimen>
+    <dimen name="font_profile_email">11sp</dimen>
+    <dimen name="font_profile_status">14sp</dimen>
+
+    <dimen name="profile_button_width">150dp</dimen>
+    <dimen name="profile_button_height">40dp</dimen>
 </resources>

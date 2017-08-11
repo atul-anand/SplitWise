@@ -6,13 +6,15 @@ package com.zemoso.atul.splitwise.javaBeans;
 
 public class RecyclerViewHolder {
 
+    private int id;
     private String mAvatarUrl;
     private String mAvatarFilePath;
     private String mHeading;
     private String mStatus;
     private Boolean mImageDownloaded;
 
-    public RecyclerViewHolder(String mAvatarUrl, String mAvatarFilePath, String mHeading, String mStatus) {
+    public RecyclerViewHolder(int id, String mAvatarUrl, String mAvatarFilePath, String mHeading, String mStatus) {
+        this.id = id;
         this.mAvatarUrl = mAvatarUrl;
         this.mAvatarFilePath = mAvatarFilePath;
         this.mHeading = mHeading;
@@ -20,12 +22,21 @@ public class RecyclerViewHolder {
         this.mImageDownloaded = false;
     }
 
-    public RecyclerViewHolder(String mAvatarUrl, String mAvatarFilePath, String mHeading, String mStatus, Boolean mImageDownloaded) {
+    public RecyclerViewHolder(int id, String mAvatarUrl, String mAvatarFilePath, String mHeading, String mStatus, Boolean mImageDownloaded) {
+        this.id = id;
         this.mAvatarUrl = mAvatarUrl;
         this.mAvatarFilePath = mAvatarFilePath;
         this.mHeading = mHeading;
         this.mStatus = mStatus;
         this.mImageDownloaded = mImageDownloaded;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getmAvatarUrl() {

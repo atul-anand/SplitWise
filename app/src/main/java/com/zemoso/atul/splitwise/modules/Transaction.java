@@ -5,17 +5,17 @@ import io.realm.annotations.Ignore;
 import io.realm.annotations.PrimaryKey;
 
 /**
- * Created by zemoso on 8/8/17.
+ * Created by zemoso on 10/8/17.
  */
 
-public class Group extends RealmObject {
+public class Transaction extends RealmObject {
     @PrimaryKey
     private int id;
     @Ignore private int reqNo;
     private String imageFilePath;
     private String JSON;
 
-    public Group() {
+    public Transaction() {
     }
 
     public int getId() {

@@ -1,8 +1,6 @@
 package com.zemoso.atul.splitwise.activities;
 
-import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -25,7 +23,7 @@ import android.widget.Toast;
 
 import com.zemoso.atul.splitwise.R;
 import com.zemoso.atul.splitwise.adapters.HomePagerAdapter;
-import com.zemoso.atul.splitwise.fragments.Activities;
+import com.zemoso.atul.splitwise.fragments.Activity;
 import com.zemoso.atul.splitwise.fragments.Friends;
 import com.zemoso.atul.splitwise.fragments.Groups;
 
@@ -230,7 +228,7 @@ public class MainActivity extends AppCompatActivity
     private void updateFragments(){
         fragmentList.add(Friends.newInstance());
         fragmentList.add(Groups.newInstance());
-        fragmentList.add(Activities.newInstance());
+        fragmentList.add(Activity.newInstance());
         mPagerAdapter.notifyDataSetChanged();
     }
 

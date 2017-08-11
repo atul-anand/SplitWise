@@ -24,4 +24,5 @@
         android:text="@string/proceed"
         android:background="@color/colorButtonSettleUp"
         android:textColor="@color/colorWhite"/>
+
 </FrameLayout>

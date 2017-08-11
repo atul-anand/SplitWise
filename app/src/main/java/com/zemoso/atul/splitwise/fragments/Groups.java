@@ -8,6 +8,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -81,19 +82,23 @@ public class Groups extends Fragment {
         for(Group friend : mGroupData){
             String data = friend.getJSON();
             JSONObject jsonObject;
+            int mId = -1;
             String mImageUrl="";
             String mHeading="";
             String mStatus="";
             try {
                 jsonObject = new JSONObject(data);
-                mImageUrl = (String) jsonObject.get("url");
-                mHeading = (String) jsonObject.get("heading");
-                mStatus = (String) jsonObject.get("status");
-                mItems.add(new RecyclerViewHolder(mImageUrl,"",mHeading,mStatus));
+                mId = (int) jsonObject.get("userID");
+//                mImageUrl = (String) jsonObject.get("imageUrl");
+                mImageUrl = getResources().getString(R.string.image_url);
+                mHeading = (String) jsonObject.get("name");
+                mStatus = (String) jsonObject.get("debt");
+                mItems.add(new RecyclerViewHolder(mId,mImageUrl,"",mHeading,mStatus));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
+        Log.d(TAG, String.valueOf(mItems.size()));
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());

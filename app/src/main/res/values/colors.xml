@@ -18,6 +18,7 @@
     <color name="colorCardHeading">@color/colorAccent</color>
     <color name="colorCardDescription">@color/colorPrimary</color>
     <color name="colorCardStatus">@color/colorPrimary</color>
+    <!--<color name="colorCardBackground"></color>-->
 
 
 </resources>

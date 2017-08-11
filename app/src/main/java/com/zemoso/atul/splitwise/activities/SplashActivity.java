@@ -41,12 +41,12 @@ public class SplashActivity extends AppCompatActivity{
                 try {
                     mUserId = Long.parseLong(String.valueOf(mEditText.getText()));
                 } catch (Exception e) {
-                    mUserId = Long.valueOf(0);
+                    mUserId = 0L;
                 }
                 mFriendsUrl = getResources().getString(R.string.server_address)
-                        +getResources().getString(R.string.server_friend);
+                        +getResources().getString(R.string.server_users);
                 mGroupsUrl = getResources().getString(R.string.server_address)
-                        +getResources().getString(R.string.server_friend);
+                        +getResources().getString(R.string.server_users);
                 Log.d(TAG,mFriendsUrl);
                 Log.d(TAG,mGroupsUrl);
                 mIntent = new Intent(getApplicationContext(), LaunchDownloads.class);

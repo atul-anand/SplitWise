@@ -20,6 +20,7 @@ public class SplitWise extends Application {
         RealmConfiguration configuration = new RealmConfiguration.Builder()
                 .deleteRealmIfMigrationNeeded()
                 .build();
+        Realm.deleteRealm(configuration);
         Realm.setDefaultConfiguration(configuration);
     }
 }

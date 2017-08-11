@@ -10,10 +10,10 @@
     tools:openDrawer="start"
     android:id="@+id/drawer_layout">
 
-    <!--TODO: Views not interacting-->
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:id="@+id/main_layout">
         <android.support.design.widget.AppBarLayout
             android:id="@+id/appbar"
             android:layout_width="match_parent"
@@ -25,6 +25,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
+                app:layout_scrollFlags="scroll|snap"
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
 
             <android.support.design.widget.TabLayout
@@ -43,40 +44,11 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 
-        <!--<android.support.design.widget.CoordinatorLayout-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="bottom|end">-->
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/fab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|end"
-                android:layout_margin="@dimen/fab_margin"
-
-                app:srcCompat="@android:drawable/ic_input_add" />
-        <!--</android.support.design.widget.CoordinatorLayout>-->
+        <include layout="@layout/component_floating_button"/>
 
     </android.support.design.widget.CoordinatorLayout>
 
-    <android.support.design.widget.NavigationView
-        android:id="@+id/nav_view"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:fitsSystemWindows="true"
-        app:headerLayout="@layout/component_navigation_header"
-        app:menu="@menu/menu_navigation" >
+    <include layout="@layout/component_navigation_drawer"/>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_gravity="bottom"
-            android:paddingBottom="@dimen/buttonHeight"
-            android:paddingStart="@dimen/navigation_text"
-            android:paddingEnd="@dimen/navigation_text"
-            android:textColor="@color/colorAccent"
-            android:layout_height="wrap_content"
-            android:text="@string/navigation_copyright"/>
-    </android.support.design.widget.NavigationView>
 
 </android.support.v4.widget.DrawerLayout>

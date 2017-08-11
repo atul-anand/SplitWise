@@ -1,6 +1,8 @@
 package com.zemoso.atul.splitwise.adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -13,7 +15,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.zemoso.atul.splitwise.R;
-import com.zemoso.atul.splitwise.activities.MainActivity;
+import com.zemoso.atul.splitwise.activities.FriendProfile;
 import com.zemoso.atul.splitwise.javaBeans.RecyclerViewHolder;
 
 import java.util.List;
@@ -44,7 +46,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     @Override
-    public void onBindViewHolder(RecyclerViewViewHolder holder, int position) {
+    public void onBindViewHolder(final RecyclerViewViewHolder holder, int position) {
         Log.d(TAG,"onBindViewHolder");
         final RecyclerViewHolder mCardData = mItems.get(position);
         if(mCardData.isImageDownloaded())
@@ -57,12 +59,19 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     .into(holder.mAvatar);
 //            TODO: Set File Path
         }
+
+
         holder.mHeading.setText(mCardData.getmHeading());
         holder.mStatus.setText(mCardData.getmStatus());
         holder.mCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(mContext,mCardData.getmHeading(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext,mCardData.getId() + " " + mCardData.getmHeading(),Toast.LENGTH_SHORT).show();
+                Intent mIntent = new Intent(mContext, FriendProfile.class);
+                Bundle mBundle = new Bundle();
+                mBundle.putInt("id",mCardData.getId());
+                mIntent.putExtras(mBundle);
+                mContext.startActivity(mIntent);
             }
         });
     }

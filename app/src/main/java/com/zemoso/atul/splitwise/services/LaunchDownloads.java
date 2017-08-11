@@ -10,7 +10,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
-import com.zemoso.atul.splitwise.modules.Friend;
+import com.zemoso.atul.splitwise.modules.User;
 import com.zemoso.atul.splitwise.modules.Group;
 
 import org.json.JSONArray;
@@ -25,14 +25,14 @@ public class LaunchDownloads extends IntentService {
     private static final String TAG = LaunchDownloads.class.getSimpleName();
 
     private RequestQueue mRequestQueue;
-    private JsonArrayRequest mFriendJsonArrayRequest;
+    private JsonArrayRequest mTransactionFindAll;
     private JsonArrayRequest mGroupJsonArrayRequest;
     private JSONObject mJsonObject;
     private String mFriendsUrl;
     private String mGroupsUrl;
     private Long mUserId;
     private Bundle mBundle;
-    private Friend mFriend;
+    private User mUser;
     private Group mGroup;
 
     public LaunchDownloads() {
@@ -45,23 +45,27 @@ public class LaunchDownloads extends IntentService {
         mUserId = mBundle.getLong("mUserId");
         mFriendsUrl = mBundle.getString("mFriendsUrl");
         mGroupsUrl = mBundle.getString("mGroupsUrl");
-//        TODO: Set GET Url Params
-//        mFriendsUrl = mFriendsUrl + "/" + mUserId;
+        Log.d(TAG,mFriendsUrl);
+        mFriendsUrl = mFriendsUrl + "?id=" + mUserId;
 //        mGroupsUrl = mGroupsUrl + "/" + mUserId;
         mRequestQueue = Volley.newRequestQueue(getApplicationContext());
-        mFriendJsonArrayRequest = new JsonArrayRequest(
+        mTransactionFindAll = new JsonArrayRequest(
                 mFriendsUrl, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 Realm realm = Realm.getDefaultInstance();
+                Log.d(TAG, String.valueOf(response.length()));
                 realm.beginTransaction();
                 for(int i=0;i< response.length();i++){
                     try {
                         mJsonObject = response.getJSONObject(i);
-                        mFriend = new Friend();
-                        mFriend.setId((Integer) mJsonObject.get("id"));
-                        mFriend.setJSON(mJsonObject.toString());
-                        realm.insertOrUpdate(mFriend);
+                        Log.d(TAG, String.valueOf(mJsonObject));
+                        mUser = new User();
+                        mUser.setId(Integer.parseInt(String.valueOf(mJsonObject.get("transID"))));
+                        mUser.setImageFilePath("");
+                        mUser.setJSON(mJsonObject.toString());
+                        Log.d(TAG,"User"+ mUser.getJSON());
+                        realm.insertOrUpdate(mUser);
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -73,40 +77,56 @@ public class LaunchDownloads extends IntentService {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d(TAG,error.getMessage());
+                Log.d(TAG,error.toString());
             }
         }
         );
-        mRequestQueue.add(mFriendJsonArrayRequest);
-        mGroupJsonArrayRequest = new JsonArrayRequest(
-                mGroupsUrl, new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray response) {
-                Realm realm = Realm.getDefaultInstance();
-                realm.beginTransaction();
-                for(int i=0;i< response.length();i++){
-                    try {
-                        mJsonObject = response.getJSONObject(i);
-                        mGroup = new Group();
-                        mGroup.setId((Integer) mJsonObject.get("id"));
-                        mGroup.setJSON(mJsonObject.toString());
-                        realm.insertOrUpdate(mGroup);
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-                realm.commitTransaction();
-                realm.close();
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d(TAG,error.getMessage());
-            }
-        }
-        );
-        mRequestQueue.add(mGroupJsonArrayRequest);
+//        mGroupJsonArrayRequest = new JsonArrayRequest(
+//                mGroupsUrl, new Response.Listener<JSONArray>() {
+//            @Override
+//            public void onResponse(JSONArray response) {
+//                Realm realm = Realm.getDefaultInstance();
+//                realm.beginTransaction();
+//                for(int i=0;i< response.length();i++){
+//                    try {
+//                        mJsonObject = response.getJSONObject(i);
+//                        Log.d(TAG, String.valueOf(mJsonObject));
+//                        mGroup = new Group();
+//                        mGroup.setId(Integer.parseInt(String.valueOf(mJsonObject.get("transId"))));
+//                        mGroup.setJSON(String.valueOf(mJsonObject));
+//                        Log.d(TAG,"Group"+mGroup.getJSON());
+//                        realm.insertOrUpdate(mGroup);
+//
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//                realm.commitTransaction();
+//                realm.close();
+//            }
+//        }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                Log.d(TAG,error.toString());
+//            }
+//        }
+//        );
+
+//        Timer timer = new Timer();
+//        TimerTask timerTask = new TimerTask() {
+//            @Override
+//            public void run() {
+                mRequestQueue.add(mTransactionFindAll);
+//        Log.d(TAG,"mRequestQueue");
+////                mRequestQueue.add(mGroupJsonArrayRequest);
+//                Log.d(TAG,"Timer");
+//            }
+//        };
+//        timer.schedule(timerTask,0,1000);
+
+
+
     }
 
 }

@@ -8,6 +8,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,10 +17,9 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.zemoso.atul.splitwise.R;
-import com.zemoso.atul.splitwise.activities.MainActivity;
 import com.zemoso.atul.splitwise.adapters.RecyclerViewAdapter;
 import com.zemoso.atul.splitwise.javaBeans.RecyclerViewHolder;
-import com.zemoso.atul.splitwise.modules.Friend;
+import com.zemoso.atul.splitwise.modules.User;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -81,24 +81,29 @@ public class Friends extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         Realm realm = Realm.getDefaultInstance();
-        RealmResults<Friend> mFriendData = realm.where(Friend.class).findAll();
-        for(Friend friend : mFriendData){
-            String data = friend.getJSON();
+        RealmResults<User> mUserData = realm.where(User.class).findAll();
+        for(User user : mUserData){
+            String data = user.getJSON();
+            Log.d(TAG,data);
             JSONObject jsonObject;
+            int mId = -1;
             String mImageUrl="";
             String mHeading="";
             String mStatus="";
             try {
                 jsonObject = new JSONObject(data);
-                mImageUrl = (String) jsonObject.get("url");
-                mHeading = (String) jsonObject.get("heading");
-                mStatus = (String) jsonObject.get("status");
-                mItems.add(new RecyclerViewHolder(mImageUrl,"",mHeading,mStatus));
+
+                mId = (int) jsonObject.get("transID");
+//                mImageUrl = (String) jsonObject.get("imageUrl");
+                mImageUrl = getResources().getString(R.string.image_url);
+                mHeading = (String) jsonObject.get("description");
+                mStatus = String.valueOf(jsonObject.get("amount"));
+                mItems.add(new RecyclerViewHolder(mId,mImageUrl,"",mHeading,mStatus));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
-
+        Log.d(TAG, String.valueOf(mItems.size()));
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
