@@ -1,5 +1,6 @@
 package com.zemoso.atul.splitwise.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,6 +13,8 @@ import android.widget.Toast;
 
 import com.zemoso.atul.splitwise.R;
 import com.zemoso.atul.splitwise.services.LaunchDownloads;
+import com.zemoso.atul.splitwise.singletons.VolleyRequests;
+import com.zemoso.atul.splitwise.utils.SplitWise;
 
 public class SplashActivity extends AppCompatActivity{
 
@@ -24,6 +27,8 @@ public class SplashActivity extends AppCompatActivity{
     private String mGroupsUrl;
     private Intent mIntent;
     private Bundle mBundle;
+    private Context mContext;
+    private VolleyRequests requests;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +38,21 @@ public class SplashActivity extends AppCompatActivity{
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         Log.d(TAG,"Started");
+
+        mContext = getApplication();
+        requests = VolleyRequests.getInstance(mContext);
+        requests.userFindAll();
+        requests.userFindById(1);
+        requests.groupFindAll();
+        requests.groupFindById(2);
+        requests.groupFindByUserId(1);
+        requests.transactionFindAll();
+        requests.transactionFindById(1);
+        requests.transactionFindByUserId(1);
+        requests.transactionFindByGroupId(2);
+        requests.transactionFindGroupByUserId(1);
+        requests.transactionFindNonGroupByUserId(1);
+
         mEditText = (EditText) findViewById(R.id.editText);
         mButton = (Button) findViewById(R.id.button);
         mButton.setOnClickListener(new View.OnClickListener() {
@@ -43,19 +63,7 @@ public class SplashActivity extends AppCompatActivity{
                 } catch (Exception e) {
                     mUserId = 0L;
                 }
-                mFriendsUrl = getResources().getString(R.string.server_address)
-                        +getResources().getString(R.string.server_users);
-                mGroupsUrl = getResources().getString(R.string.server_address)
-                        +getResources().getString(R.string.server_users);
-                Log.d(TAG,mFriendsUrl);
-                Log.d(TAG,mGroupsUrl);
-                mIntent = new Intent(getApplicationContext(), LaunchDownloads.class);
-                mBundle = new Bundle();
-                mBundle.putLong("mUserId",mUserId);
-                mBundle.putString("mFriendsUrl",mFriendsUrl);
-                mBundle.putString("mGroupsUrl",mGroupsUrl);
-                mIntent.putExtras(mBundle);
-                startService(mIntent);
+                ((SplitWise)mContext).setUserId(mUserId);
                 Toast.makeText(getApplicationContext(),"Application Starting for user #"+mUserId,Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
             }

@@ -12,6 +12,15 @@ import io.realm.RealmConfiguration;
 public class SplitWise extends Application {
 
     private static final String TAG = SplitWise.class.getSimpleName();
+    private long userId;
+
+    public long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
 
     @Override
     public void onCreate() {

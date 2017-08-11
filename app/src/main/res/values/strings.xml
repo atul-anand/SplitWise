@@ -43,10 +43,8 @@
     <string name="url_transaction_update">transaction/update</string>
 
 
-    <string name="url_save">save</string>
 
-
-    <string name="hello_blank_fragment">Activities will be added later.</string>
+    <string name="blank_activity">Activities will be added later.</string>
 
     <string name="settleUp">SETTLE UP</string>
     <string name="balances">BALANCES</string>
