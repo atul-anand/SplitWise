@@ -40,18 +40,18 @@ public class SplashActivity extends AppCompatActivity{
         Log.d(TAG,"Started");
 
         mContext = getApplication();
-        requests = VolleyRequests.getInstance(mContext);
-        requests.userFindAll();
-        requests.userFindById(1);
-        requests.groupFindAll();
-        requests.groupFindById(2);
-        requests.groupFindByUserId(1);
-        requests.transactionFindAll();
-        requests.transactionFindById(1);
-        requests.transactionFindByUserId(1);
-        requests.transactionFindByGroupId(2);
-        requests.transactionFindGroupByUserId(1);
-        requests.transactionFindNonGroupByUserId(1);
+//        requests = VolleyRequests.getInstance(mContext);
+//        requests.userFindAll();
+//        requests.userFindById(1);
+//        requests.groupFindAll();
+//        requests.groupFindById(2);
+//        requests.groupFindByUserId(1);
+//        requests.transactionFindAll();
+//        requests.transactionFindById(1);
+//        requests.transactionFindByUserId(1);
+//        requests.transactionFindByGroupId(2);
+//        requests.transactionFindGroupByUserId(1);
+//        requests.transactionFindNonGroupByUserId(1);
 
         mEditText = (EditText) findViewById(R.id.editText);
         mButton = (Button) findViewById(R.id.button);

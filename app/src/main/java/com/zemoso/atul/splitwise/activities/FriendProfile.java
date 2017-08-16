@@ -45,7 +45,7 @@ public class FriendProfile extends AppCompatActivity {
         Bundle mBundle = getIntent().getExtras();
         int id = mBundle.getInt("id");
         Realm realm = Realm.getDefaultInstance();
-        User mUser = realm.where(User.class).equalTo("id", id).findFirst();
+        User mUser = realm.where(User.class).equalTo("userId", id).findFirst();
 
         ImageView mImageView = (ImageView) findViewById(R.id.profile_image);
         TextView mHeading = (TextView) findViewById(R.id.profile_heading);

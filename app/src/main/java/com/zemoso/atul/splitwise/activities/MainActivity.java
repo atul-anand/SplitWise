@@ -1,9 +1,9 @@
 package com.zemoso.atul.splitwise.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
@@ -84,62 +84,36 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+                startActivity(new Intent(getApplicationContext(),AddBill.class));
             }
         });
         //endregion
 
+        //region Action Bar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        //endregion
 
+        //region Navigation Drawer
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-//
-//        //region Navigation Bar
-////        mNavBarTitles = getResources().getStringArray(R.array.nav_bar);
-//        mTitle = mDrawerTitle = getSupportActionBar().getTitle();
-//
-//        mLayoutInflater = getLayoutInflater();
-//        mDrawerLayout = (DrawerLayout) mLayoutInflater.inflate(R.layout.component_navigation,null);
-//        mDrawerList = mDrawerLayout.findViewById(R.id.nav_bar_menu);
-//
-//        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
-//
-//        mArrayAdapter = new ArrayAdapter<String>(this, R.layout.nav_bar_list_item,mNavBarTitles);
-//
-//        mDrawerList.setAdapter(mArrayAdapter);
-//
         mDrawerToggle = new ActionBarDrawerToggle(
                 this,
                 mDrawerLayout,
                 toolbar,
                 R.string.drawer_open,
                 R.string.drawer_close);
-//        {
-//            /** Called when a drawer has settled in a completely closed state. */
-//            public void onDrawerClosed(View view) {
-//                super.onDrawerClosed(view);
-//                getSupportActionBar().setTitle(mTitle);
-//                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-//            }
-//
-//            /** Called when a drawer has settled in a completely open state. */
-//            public void onDrawerOpened(View drawerView) {
-//                super.onDrawerOpened(drawerView);
-//                getSupportActionBar().setTitle(mDrawerTitle);
-//                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-//            }
-//
-//        };
-//
+
         mDrawerLayout.addDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_drawer);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-//        //endregion
+        //endregion
 
     }
+
 
 
     @Override
@@ -154,7 +128,7 @@ public class MainActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         Log.d(TAG,"onOptionsItemSelected");
         if (mDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
+            return onNavigationItemSelected(item);
         }
         // Handle action buttons
         switch(item.getItemId()) {
@@ -198,6 +172,7 @@ public class MainActivity extends AppCompatActivity
             super.onBackPressed();
     }
 
+    //Navigation Drawer menu items
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {

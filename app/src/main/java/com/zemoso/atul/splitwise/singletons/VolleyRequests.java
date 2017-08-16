@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -19,6 +20,8 @@ import com.zemoso.atul.splitwise.modules.User;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Map;
 
 import io.realm.Realm;
 
@@ -381,6 +384,7 @@ public class VolleyRequests {
                 break;
         }
         final String mUrl = mHostName + tag;
+        Log.d(TAG,mUrl);
         JsonObjectRequest request = postJsonObject(mUrl,jsonObject,tag);
         addToRequestQueue(request, String.valueOf(reqNo));
     }

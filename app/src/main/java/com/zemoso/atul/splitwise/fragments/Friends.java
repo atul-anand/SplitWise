@@ -1,9 +1,15 @@
 package com.zemoso.atul.splitwise.fragments;
 
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
@@ -17,6 +23,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.zemoso.atul.splitwise.R;
+import com.zemoso.atul.splitwise.activities.AddFriend;
 import com.zemoso.atul.splitwise.adapters.RecyclerViewAdapter;
 import com.zemoso.atul.splitwise.javaBeans.RecyclerViewHolder;
 import com.zemoso.atul.splitwise.modules.User;
@@ -26,6 +33,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -129,11 +137,29 @@ public class Friends extends Fragment {
         mAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getContext(),"Add Groups",Toast.LENGTH_SHORT).show();
+                if(ContextCompat.checkSelfPermission(getContext(),Manifest.permission.WRITE_CONTACTS)!= PackageManager.PERMISSION_GRANTED)
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS}, 0);
+//                startActivity(new Intent(getContext(), AddFriend.class));
+                getActivity().getSupportFragmentManager().beginTransaction().add(new AddUser(),"Add User").commit();
+
             }
         });
-
     }
 
-
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode==0){
+            int i;
+            for(i=0;i<permissions.length;i++) {
+                if (Objects.equals(permissions[i], Manifest.permission.WRITE_CONTACTS))
+                    break;
+            }
+            Log.d(TAG,"Permissions");
+            if(grantResults[i]==PackageManager.PERMISSION_GRANTED)
+                startActivity(new Intent(getContext(), AddFriend.class));
+            else
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS}, 0);
+        }
+    }
 }

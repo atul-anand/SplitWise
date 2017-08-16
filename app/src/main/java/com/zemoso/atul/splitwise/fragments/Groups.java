@@ -1,6 +1,7 @@
 package com.zemoso.atul.splitwise.fragments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -124,7 +125,7 @@ public class Groups extends Fragment {
         mAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getContext(),"Add Friends",Toast.LENGTH_SHORT).show();
+                getActivity().getSupportFragmentManager().beginTransaction().add(new AddGroup(),"Add Group").commit();
             }
         });
     }

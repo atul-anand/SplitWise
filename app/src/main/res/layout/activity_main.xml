@@ -10,6 +10,8 @@
     tools:openDrawer="start"
     android:id="@+id/drawer_layout">
 
+    <include layout="@layout/component_navigation_drawer"/>
+
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -48,7 +50,7 @@
 
     </android.support.design.widget.CoordinatorLayout>
 
-    <include layout="@layout/component_navigation_drawer"/>
+
 
 
 </android.support.v4.widget.DrawerLayout>

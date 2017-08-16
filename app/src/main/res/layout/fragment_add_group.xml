@@ -1,0 +1,20 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.zemoso.atul.splitwise.fragments.AddGroup">
+
+    <EditText
+        android:id="@+id/add_group_name"
+        android:layout_width="@dimen/user_edit_width"
+        android:layout_height="@dimen/user_edit_height"
+        android:layout_gravity="center_horizontal"/>
+    <Button
+        android:id="@+id/add_group_create"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/buttonHeight"
+        android:text="@string/add_group_create"
+        android:layout_gravity="center_horizontal"/>
+
+</LinearLayout>

@@ -5,7 +5,7 @@
     <string name="image_url">"http://www.careerbased.com/themes/comb/img/avatar/default-avatar-male_10.png"</string>
 
     <!--Server Interaction-->
-    <string name="url_address">http://192.168.1.111:8080/</string>
+    <string name="url_address">http://192.168.86.204:8080/</string>
 
     <!--Ids-->
     <string name="url_user_id">userId</string>
@@ -42,6 +42,18 @@
     <string name="url_group_update">group/update</string>
     <string name="url_transaction_update">transaction/update</string>
 
+    <!--Add Bill-->
+    <string name="bill_title">Add bill</string>
+    <string name="bill_save">SAVE</string>
+    <string name="bill_description">Enter a description</string>
+    <string name="bill_value">0.00</string>
+
+    <!--Bill Category-->
+    <string name="bill_category_title">Choose a category</string>
+
+    <!--Friend-->
+    <string name="friend_title">Add friend</string>
+    <string name="friend_hint">Enter name, email or phone #</string>
 
 
     <string name="blank_activity">Activities will be added later.</string>
@@ -184,5 +196,23 @@
         "For example, position the FAB to one side of stream of a cards so the FAB won’t interfere "
         "when a user tries to pick up one of cards.\n\n"
     </string>
+    <string name="action_save">SAVE</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!--Add User-->
+    <string name="add_user_name">Name?</string>
+    <string name="add_user_email">Email?</string>
+    <string name="add_user_phone">Phone number?</string>
+    <string name="add_user_age">Age?</string>
+    <string name="add_user_submit">SUBMIT</string>
+
+    <!--Add Friend-->
+    <string name="add_friend_id">Friend\'s id?</string>
+
+    <!--Add Group-->
+    <string name="add_group_name">New Group Name?</string>
+    <string name="add_group_create">Create Group</string>
 
 </resources>
