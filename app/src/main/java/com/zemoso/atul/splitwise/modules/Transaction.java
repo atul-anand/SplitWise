@@ -10,7 +10,7 @@ import io.realm.annotations.PrimaryKey;
 
 public class Transaction extends RealmObject {
     @PrimaryKey
-    private int id;
+    private long id;
     @Ignore private int reqNo;
     private String imageFilePath;
     private String JSON;
@@ -18,11 +18,11 @@ public class Transaction extends RealmObject {
     public Transaction() {
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

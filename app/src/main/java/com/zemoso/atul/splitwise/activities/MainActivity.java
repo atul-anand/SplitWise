@@ -1,6 +1,7 @@
 package com.zemoso.atul.splitwise.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -13,22 +14,26 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.zemoso.atul.splitwise.R;
 import com.zemoso.atul.splitwise.adapters.HomePagerAdapter;
-import com.zemoso.atul.splitwise.fragments.Activity;
 import com.zemoso.atul.splitwise.fragments.Friends;
 import com.zemoso.atul.splitwise.fragments.Groups;
+import com.zemoso.atul.splitwise.fragments.Transactions;
+import com.zemoso.atul.splitwise.modules.User;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.realm.Realm;
 
 
 public class MainActivity extends AppCompatActivity
@@ -48,17 +53,23 @@ public class MainActivity extends AppCompatActivity
     private Toolbar toolbar;
 
     //region Navigation Drawer
-    private LayoutInflater mLayoutInflater;
     private DrawerLayout mDrawerLayout;
-    private ListView mDrawerList;
+    private NavigationView mNavigationView;
 
-    private ArrayAdapter mArrayAdapter;
-    private String[] mNavBarTitles;
+    private TextView mUserName;
+    private TextView mEmail;
 
     private ActionBarDrawerToggle mDrawerToggle;
-    private CharSequence mDrawerTitle;
-    private CharSequence mTitle;
+
     //endregion
+
+    private SharedPreferences preferences;
+    private Long mUserId;
+    private User mUser;
+    private String mUsername;
+    private String mEmailId;
+    private JSONObject jsonObject;
+
     //endregion
 
     //region Inherited Methods
@@ -98,6 +109,8 @@ public class MainActivity extends AppCompatActivity
 
         //region Navigation Drawer
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mNavigationView = (NavigationView) findViewById(R.id.nav_view);
+        mNavigationView.setNavigationItemSelectedListener(this);
         mDrawerToggle = new ActionBarDrawerToggle(
                 this,
                 mDrawerLayout,
@@ -107,6 +120,23 @@ public class MainActivity extends AppCompatActivity
 
         mDrawerLayout.addDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
+
+        mUserName = (TextView) findViewById(R.id.nav_user_name);
+        mEmail = (TextView) findViewById(R.id.nav_user_email);
+        preferences = getSharedPreferences("Settings", 0);
+        mUserId = preferences.getLong("UserId", 0);
+        Realm realm = Realm.getDefaultInstance();
+        mUser = realm.where(User.class).equalTo("id", mUserId).findFirst();
+        try {
+            jsonObject = new JSONObject(mUser.getJSON());
+            mUsername = (String) jsonObject.get("name");
+            mEmailId = (String) jsonObject.get("emailId");
+            mUserName.setText(mUsername);
+            mEmail.setText(mEmailId);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_drawer);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -144,7 +174,7 @@ public class MainActivity extends AppCompatActivity
 //                }
                 return true;
             case R.id.action_settings:
-                Toast.makeText(this,"Action Settings",Toast.LENGTH_SHORT).show();
+//                startActivity(new Intent(this,SettingsActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -203,7 +233,7 @@ public class MainActivity extends AppCompatActivity
     private void updateFragments(){
         fragmentList.add(Friends.newInstance());
         fragmentList.add(Groups.newInstance());
-        fragmentList.add(Activity.newInstance());
+        fragmentList.add(Transactions.newInstance());
         mPagerAdapter.notifyDataSetChanged();
     }
 

@@ -17,7 +17,6 @@ import com.zemoso.atul.splitwise.modules.User;
 import com.zemoso.atul.splitwise.singletons.VolleyRequests;
 import com.zemoso.atul.splitwise.utils.SplitWise;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -66,11 +65,13 @@ public class AddGroup extends DialogFragment {
             @Override
             public void onClick(View view) {
                 Map newGroup = new HashMap();
-                newGroup.put("groupName",mGroupName.getText());
+                String name = String.valueOf(mGroupName.getText());
+                newGroup.put("groupName", name);
                 newGroup.put("createdBy",mUserName);
                 JSONObject jsonObject = new JSONObject(newGroup);
                 Log.d(TAG, String.valueOf(jsonObject));
                 VolleyRequests.getInstance(getContext()).save(jsonObject,2);
+                AddGroup.this.dismiss();
             }
         });
     }

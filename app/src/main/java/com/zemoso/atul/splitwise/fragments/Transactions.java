@@ -18,9 +18,9 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.zemoso.atul.splitwise.R;
-import com.zemoso.atul.splitwise.adapters.GroupRecyclerViewAdapter;
+import com.zemoso.atul.splitwise.adapters.TransactionRecyclerViewAdapter;
 import com.zemoso.atul.splitwise.javaBeans.RecyclerViewHolder;
-import com.zemoso.atul.splitwise.modules.Group;
+import com.zemoso.atul.splitwise.modules.Transaction;
 import com.zemoso.atul.splitwise.singletons.VolleyRequests;
 
 import org.json.JSONException;
@@ -35,48 +35,48 @@ import io.realm.RealmResults;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class Groups extends Fragment {
+public class Transactions extends Fragment {
 
-    private static final String TAG = Groups.class.getSimpleName();
+    private static final String TAG = Transactions.class.getSimpleName();
 
     private Button mButton;
     private PopupMenu mPopupMenu;
-    private Button mAddButton;
 
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
-    private GroupRecyclerViewAdapter mGroupRecyclerViewAdapter;
+    private TransactionRecyclerViewAdapter mTransactionRecyclerViewAdapter;
     private List<RecyclerViewHolder> mItems;
 
     private SharedPreferences preferences;
     private Long mUserId;
 
-    public Groups() {
+    public Transactions() {
         // Required empty public constructor
     }
-    public static Groups newInstance(){
-        return new Groups();
+
+    public static Transactions newInstance() {
+        return new Transactions();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_groups, container, false);
+        return inflater.inflate(R.layout.fragment_transaction, container, false);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mButton = view.findViewById(R.id.total_menu);
-        mPopupMenu = new PopupMenu(getContext(),mButton);
 
-        mRecyclerView = view.findViewById(R.id.recycler_groups);
+        mButton = view.findViewById(R.id.total_menu);
+        mPopupMenu = new PopupMenu(getContext(), mButton);
+
+        mRecyclerView = view.findViewById(R.id.recycler_transaction);
         mLayoutManager = new LinearLayoutManager(getContext());
         mItems = new ArrayList<>();
-        mGroupRecyclerViewAdapter = new GroupRecyclerViewAdapter(mItems, getContext());
+        mTransactionRecyclerViewAdapter = new TransactionRecyclerViewAdapter(mItems, getContext());
 
-        mAddButton = view.findViewById(R.id.addGroups);
 
         mUserId = preferences.getLong("UserId", 0);
     }
@@ -85,23 +85,23 @@ public class Groups extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        VolleyRequests.getInstance(getContext()).groupFindByUserId(mUserId);
-        addGroups();
+        VolleyRequests.getInstance(getContext()).transactionFindByUserId(mUserId);
+        addTransactions();
         Log.d(TAG, String.valueOf(mItems.size()));
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mRecyclerView.setAdapter(mGroupRecyclerViewAdapter);
+        mRecyclerView.setAdapter(mTransactionRecyclerViewAdapter);
 
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mPopupMenu.getMenuInflater().inflate(R.menu.menu_total_balance,mPopupMenu.getMenu());
+                mPopupMenu.getMenuInflater().inflate(R.menu.menu_total_balance, mPopupMenu.getMenu());
                 mPopupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         Toast.makeText(getContext(),
-                                "You clicked"+item.getTitle(),
+                                "You clicked" + item.getTitle(),
                                 Toast.LENGTH_SHORT).show();
                         return true;
                     }
@@ -110,22 +110,14 @@ public class Groups extends Fragment {
             }
         });
 
-        mAddButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getActivity().getSupportFragmentManager().beginTransaction().add(new AddGroup(),"Add Group").commit();
-                VolleyRequests.getInstance(getContext()).groupFindByUserId(mUserId);
-                addGroups();
-                mGroupRecyclerViewAdapter.notifyDataSetChanged();
-            }
-        });
+
     }
 
-    private void addGroups() {
+    private void addTransactions() {
         Realm realm = Realm.getDefaultInstance();
-        RealmResults<Group> mGroupData = realm.where(Group.class).findAll();
-        for (Group group : mGroupData) {
-            String data = group.getJSON();
+        RealmResults<Transaction> mTransactionData = realm.where(Transaction.class).findAll();
+        for (Transaction transaction : mTransactionData) {
+            String data = transaction.getJSON();
             Log.d(TAG, data);
             JSONObject jsonObject;
             int mId = -1;
@@ -134,15 +126,17 @@ public class Groups extends Fragment {
             String mStatus = "";
             try {
                 jsonObject = new JSONObject(data);
-                mId = (int) jsonObject.get("groupID");
+
+                mId = (int) jsonObject.get("transID");
 //                mImageUrl = (String) jsonObject.get("imageUrl");
                 mImageUrl = getResources().getString(R.string.image_url);
-                mHeading = (String) jsonObject.get("groupName");
-                mStatus = (String) jsonObject.get("createdBy");
+                mHeading = (String) jsonObject.get("description");
+                mStatus = String.valueOf(jsonObject.get("amount"));
                 mItems.add(new RecyclerViewHolder(mId, mImageUrl, "", mHeading, mStatus));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
     }
+
 }

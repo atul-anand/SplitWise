@@ -1,8 +1,7 @@
 package com.zemoso.atul.splitwise.activities;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,10 +11,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.google.gson.JsonObject;
 import com.zemoso.atul.splitwise.R;
 import com.zemoso.atul.splitwise.fragments.BillCategory;
-import com.zemoso.atul.splitwise.singletons.VolleyRequests;
 
 import org.json.JSONObject;
 
@@ -79,7 +76,7 @@ public class AddBill extends AppCompatActivity {
                 newTrans.put("borrower","");
                 JSONObject transaction = new JSONObject(newTrans);
 //                VolleyRequests.getInstance(getApplicationContext()).save(transaction,3);
-                Toast.makeText(this,"Transaction Added",Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Transactions Added", Toast.LENGTH_SHORT).show();
                 mDescription.setText("");
                 mValue.setText("");
                 return true;

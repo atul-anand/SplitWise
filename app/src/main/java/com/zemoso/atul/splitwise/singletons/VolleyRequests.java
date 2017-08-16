@@ -1,10 +1,10 @@
 package com.zemoso.atul.splitwise.singletons;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -21,8 +21,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Map;
-
 import io.realm.Realm;
 
 
@@ -36,18 +34,24 @@ public class VolleyRequests {
     private static final int TRANSACTION = 3;
 
     private static int reqNo;
-    private String image;
     private static VolleyRequests mInstance;
+    private String image;
     private RequestQueue mRequestQueue;
     private Context mContext;
     private String mHostName;
+
+    private SharedPreferences preferences;
     //endregion
 
     //region Constructors
     private VolleyRequests(Context mContext){
         this.mContext = mContext;
         mRequestQueue = getRequestQueue();
-        mHostName = mContext.getResources().getString(R.string.url_address);
+//        mHostName = mContext.getResources().getString(R.string.url_address);
+        preferences = mContext.getSharedPreferences("Settings", 0);
+        mHostName = preferences.getString("Hostname", "");
+        Log.d(TAG, mHostName);
+//        mHostName = mContext.getSharedPreferences();
         VolleyRequests.reqNo = 0;
         image = mContext.getResources().getString(R.string.url_image);
     }
@@ -86,7 +90,7 @@ public class VolleyRequests {
 
     //region Public Methods
 
-    //region Transaction
+    //region Transactions
     public void transactionFindAll(){
         final String tag = mContext.getResources().getString(R.string.url_transaction_findAll);
         final String resId = mContext.getResources().getString(R.string.url_transaction_id);
@@ -101,7 +105,7 @@ public class VolleyRequests {
         final String resId = mContext.getResources().getString(R.string.url_transaction_id);
         final String mUrl = mHostName + tag + "?"+ param +"=" + id;
         JsonObjectRequest request = transactionJsonObject(mUrl,resId,tag);
-        addToRequestQueue(request, String.valueOf(reqNo));;
+        addToRequestQueue(request, String.valueOf(reqNo));
     }
 
     public void transactionFindByUserId(long id){
@@ -156,7 +160,7 @@ public class VolleyRequests {
         final String resId = mContext.getResources().getString(R.string.url_group_id);
         final String mUrl = mHostName + tag + "?"+ param +"=" + id;
         JsonObjectRequest request = groupJsonObject(mUrl,resId,tag);
-        addToRequestQueue(request, String.valueOf(reqNo));;
+        addToRequestQueue(request, String.valueOf(reqNo));
     }
 
     public void groupFindByUserId(long id){
@@ -185,7 +189,7 @@ public class VolleyRequests {
         final String resId = mContext.getResources().getString(R.string.url_user_id);
         final String mUrl = mHostName + tag + "?"+ param +"=" + id;
         JsonObjectRequest request = groupJsonObject(mUrl,resId,tag);
-        addToRequestQueue(request, String.valueOf(reqNo));;
+        addToRequestQueue(request, String.valueOf(reqNo));
     }
     //endregion
 
@@ -193,7 +197,7 @@ public class VolleyRequests {
 
     //region Private Requests
 
-    //region Transaction
+    //region Transactions
     private JsonArrayRequest transactionJsonArray(String mUrl, final String resId, final String tag) {
         return new JsonArrayRequest(mUrl,
                 new Response.Listener<JSONArray>() {
@@ -205,10 +209,14 @@ public class VolleyRequests {
                                 Transaction transaction = new Transaction();
                                 transaction.setId((Integer) jsonObject.get(resId));
                                 transaction.setReqNo(reqNo);
-                                transaction.setImageFilePath((String) jsonObject.get(image));
+//                                transaction.setImageFilePath((String) jsonObject.get(image));
+                                transaction.setImageFilePath("");
                                 transaction.setJSON(String.valueOf(response));
                                 Realm realm = Realm.getDefaultInstance();
+                                realm.beginTransaction();
                                 realm.insertOrUpdate(transaction);
+                                realm.commitTransaction();
+                                realm.close();
                                 Log.d(TAG, String.valueOf(jsonObject));
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -218,7 +226,7 @@ public class VolleyRequests {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d(tag,error.getMessage());
+                Log.e(tag, error.toString());
             }
         });
     }
@@ -232,10 +240,14 @@ public class VolleyRequests {
                             Transaction transaction = new Transaction();
                             transaction.setId((Integer) response.get(resId));
                             transaction.setReqNo(reqNo);
-                            transaction.setImageFilePath((String) response.get(image));
+//                            transaction.setImageFilePath((String) response.get(image));
+                            transaction.setImageFilePath("");
                             transaction.setJSON(String.valueOf(response));
                             Realm realm = Realm.getDefaultInstance();
+                            realm.beginTransaction();
                             realm.insertOrUpdate(transaction);
+                            realm.commitTransaction();
+                            realm.close();
                             reqNo++;
                             Log.d(TAG, String.valueOf(response));
                         } catch (JSONException e) {
@@ -245,7 +257,7 @@ public class VolleyRequests {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d(tag,error.getMessage());
+                Log.e(tag, error.toString());
             }
         });
     }
@@ -263,10 +275,14 @@ public class VolleyRequests {
                                 Group group = new Group();
                                 group.setId((Integer) jsonObject.get(resId));
                                 group.setReqNo(reqNo);
-                                group.setImageFilePath((String) jsonObject.get(image));
+//                                group.setImageFilePath((String) jsonObject.get(image));
+                                group.setImageFilePath("");
                                 group.setJSON(String.valueOf(response));
                                 Realm realm = Realm.getDefaultInstance();
+                                realm.beginTransaction();
                                 realm.insertOrUpdate(group);
+                                realm.commitTransaction();
+                                realm.close();
                                 Log.d(TAG, String.valueOf(jsonObject));
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -276,7 +292,7 @@ public class VolleyRequests {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d(tag,error.getMessage());
+                Log.e(tag, error.toString());
             }
         });
     }
@@ -290,10 +306,14 @@ public class VolleyRequests {
                             Group group = new Group();
                             group.setId((Integer) response.get(resId));
                             group.setReqNo(reqNo);
-                            group.setImageFilePath((String) response.get(image));
+//                            group.setImageFilePath((String) response.get(image));
+                            group.setImageFilePath("");
                             group.setJSON(String.valueOf(response));
                             Realm realm = Realm.getDefaultInstance();
+                            realm.beginTransaction();
                             realm.insertOrUpdate(group);
+                            realm.commitTransaction();
+                            realm.close();
                             reqNo++;
                             Log.d(TAG, String.valueOf(response));
                         } catch (JSONException e) {
@@ -303,7 +323,7 @@ public class VolleyRequests {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d(tag,error.getMessage());
+                Log.e(tag, error.toString());
             }
         });
     }
@@ -321,10 +341,14 @@ public class VolleyRequests {
                                 User user = new User();
                                 user.setId((Integer) jsonObject.get(resId));
                                 user.setReqNo(reqNo);
-                                user.setImageFilePath((String) jsonObject.get(image));
+//                                user.setImageFilePath((String) jsonObject.get(image));
+                                user.setImageFilePath("");
                                 user.setJSON(String.valueOf(response));
                                 Realm realm = Realm.getDefaultInstance();
+                                realm.beginTransaction();
                                 realm.insertOrUpdate(user);
+                                realm.commitTransaction();
+                                realm.close();
                                 Log.d(TAG, String.valueOf(jsonObject));
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -334,7 +358,7 @@ public class VolleyRequests {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d(tag,error.getMessage());
+                Log.e(tag, error.toString());
             }
         });
     }
@@ -348,10 +372,14 @@ public class VolleyRequests {
                             User user = new User();
                             user.setId((Integer) response.get(resId));
                             user.setReqNo(reqNo);
-                            user.setImageFilePath((String) response.get(image));
+//                            user.setImageFilePath((String) response.get(image));
+                            user.setImageFilePath("");
                             user.setJSON(String.valueOf(response));
                             Realm realm = Realm.getDefaultInstance();
+                            realm.beginTransaction();
                             realm.insertOrUpdate(user);
+                            realm.commitTransaction();
+                            realm.close();
                             reqNo++;
                             Log.d(TAG, String.valueOf(response));
                         } catch (JSONException e) {
@@ -361,7 +389,7 @@ public class VolleyRequests {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d(tag,error.getMessage());
+                Log.e(tag, error.toString());
             }
         });
     }
@@ -399,7 +427,7 @@ public class VolleyRequests {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d(tag,error.getMessage());
+                Log.e(tag, error.toString());
             }
         });
     }
@@ -433,7 +461,7 @@ public class VolleyRequests {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d(tag,error.getMessage());
+                Log.e(tag, error.toString());
             }
         });
     }

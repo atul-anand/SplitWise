@@ -1,19 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:backgroundTint="@color/colorPrimary"
     tools:context="com.zemoso.atul.splitwise.activities.SplashActivity">
-    <EditText
+    <!--<EditText-->
+    <!--android:id="@+id/editText"-->
+    <!--android:layout_width="@dimen/edit_text_width"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="center"-->
+    <!--android:layout_marginBottom="25dp"-->
+    <!--android:hint="@string/current_user_id"-->
+    <!--android:textAlignment="center"/>-->
+    <Spinner
         android:id="@+id/editText"
         android:layout_width="@dimen/edit_text_width"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginBottom="25dp"
-        android:hint="@string/current_user_id"
+        android:prompt="@string/select_user"
         android:textAlignment="center"/>
     <Button
         android:id="@+id/button"
@@ -21,8 +27,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="25dp"
-        android:text="@string/proceed"
         android:background="@color/colorButtonSettleUp"
+        android:text="@string/proceed"
         android:textColor="@color/colorWhite"/>
 
 </FrameLayout>

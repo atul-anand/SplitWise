@@ -10,7 +10,7 @@ import io.realm.annotations.PrimaryKey;
 
 public class Group extends RealmObject {
     @PrimaryKey
-    private int id;
+    private long id;
     @Ignore private int reqNo;
     private String imageFilePath;
     private String JSON;
@@ -18,11 +18,11 @@ public class Group extends RealmObject {
     public Group() {
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

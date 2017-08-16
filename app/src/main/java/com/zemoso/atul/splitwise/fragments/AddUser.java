@@ -36,7 +36,7 @@ public class AddUser extends DialogFragment {
     String mUserName;
     String mEmailId;
     String mPhoneNumber;
-    String mAges;
+    int mAges;
 
 
     public AddUser() {
@@ -70,11 +70,11 @@ public class AddUser extends DialogFragment {
                 mUserName = String.valueOf(mUser.getText());
                 mEmailId = String.valueOf(mEmail.getText());
                 mPhoneNumber = String.valueOf(mPhone.getText());
-                mAges = String.valueOf(mAge.getText());
+                mAges = Integer.parseInt(String.valueOf(mAge.getText()));
                 Log.d(TAG,mUserName);
                 Log.d(TAG,mEmailId);
                 Log.d(TAG,mPhoneNumber);
-                Log.d(TAG,mAges);
+                Log.d(TAG, String.valueOf(mAges));
                 Map newUser = new HashMap();
                 newUser.put("name",mUserName);
                 newUser.put("emailId",mEmailId);

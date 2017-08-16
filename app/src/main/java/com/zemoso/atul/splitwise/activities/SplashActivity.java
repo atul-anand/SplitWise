@@ -2,33 +2,40 @@ package com.zemoso.atul.splitwise.activities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.zemoso.atul.splitwise.R;
-import com.zemoso.atul.splitwise.services.LaunchDownloads;
+import com.zemoso.atul.splitwise.modules.User;
 import com.zemoso.atul.splitwise.singletons.VolleyRequests;
-import com.zemoso.atul.splitwise.utils.SplitWise;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import io.realm.Realm;
 
 public class SplashActivity extends AppCompatActivity{
 
     private static final String TAG = SplashActivity.class.getSimpleName();
 
-    private EditText mEditText;
+    private Spinner mSpinner;
     private Button mButton;
     private Long mUserId;
-    private String mFriendsUrl;
-    private String mGroupsUrl;
-    private Intent mIntent;
-    private Bundle mBundle;
     private Context mContext;
     private VolleyRequests requests;
+
+    private SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +47,13 @@ public class SplashActivity extends AppCompatActivity{
         Log.d(TAG,"Started");
 
         mContext = getApplication();
-//        requests = VolleyRequests.getInstance(mContext);
+
+        editor = getSharedPreferences("Settings", Context.MODE_PRIVATE).edit();
+        editor.putString("Hostname", getResources().getString(R.string.url_address));
+        editor.apply();
+        requests = VolleyRequests.getInstance(mContext);
+
+
 //        requests.userFindAll();
 //        requests.userFindById(1);
 //        requests.groupFindAll();
@@ -53,21 +66,44 @@ public class SplashActivity extends AppCompatActivity{
 //        requests.transactionFindGroupByUserId(1);
 //        requests.transactionFindNonGroupByUserId(1);
 
-        mEditText = (EditText) findViewById(R.id.editText);
+
+        mSpinner = (Spinner) findViewById(R.id.editText);
+        requests.userFindAll();
+
+        List<String> userName = new ArrayList<>();
+        Realm realm = Realm.getDefaultInstance();
+        List<User> users = realm.where(User.class).findAll();
+        for (User user : users) {
+            try {
+                JSONObject jsonObject = new JSONObject(user.getJSON());
+                userName.add((String) jsonObject.get("name"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, userName);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSpinner.setAdapter(arrayAdapter);
+        mSpinner.setSelection(0);
         mButton = (Button) findViewById(R.id.button);
+        final List<User> finalUsers = users;
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
-                    mUserId = Long.parseLong(String.valueOf(mEditText.getText()));
-                } catch (Exception e) {
-                    mUserId = 0L;
-                }
-                ((SplitWise)mContext).setUserId(mUserId);
+
+                int pos = mSpinner.getSelectedItemPosition();
+                mUserId = finalUsers.get(pos).getId();
+
+                editor.putLong("UserId", mUserId);
+
+                editor.apply();
                 Toast.makeText(getApplicationContext(),"Application Starting for user #"+mUserId,Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
             }
         });
+
     }
 
     @Override
@@ -75,6 +111,6 @@ public class SplashActivity extends AppCompatActivity{
         Log.d(TAG,"onResume");
         super.onResume();
 
-//        finish();
     }
+
 }

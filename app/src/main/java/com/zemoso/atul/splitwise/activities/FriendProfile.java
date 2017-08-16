@@ -1,5 +1,6 @@
 package com.zemoso.atul.splitwise.activities;
 
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -38,9 +39,8 @@ public class FriendProfile extends AppCompatActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
         CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
 
-        collapsingToolbarLayout.setExpandedTitleTextAppearance(R.style.TransparentText);
-        collapsingToolbarLayout.setCollapsedTitleTextColor(Color.rgb(0, 0, 0));
-//        collapsingToolbarLayout
+        collapsingToolbarLayout.setExpandedTitleTextColor(ColorStateList.valueOf(Color.rgb(0, 0, 0)));
+//        collapsingToolbarLayout.setCollapsedTitleTextColor(Color.rgb(0, 0, 0));
 
         Bundle mBundle = getIntent().getExtras();
         int id = mBundle.getInt("id");
@@ -59,9 +59,9 @@ public class FriendProfile extends AppCompatActivity {
             Glide.with(this)
                     .load(mJSONObject.get("imageUrl"))
                     .into(mImageView);
-            mHeading.setText((CharSequence) mJSONObject.get("mop"));
-            mEmail.setText((CharSequence) mJSONObject.get("imageUrl"));
-            mStatus.setText((CharSequence) mJSONObject.get("description"));
+            mHeading.setText((CharSequence) mJSONObject.get("name"));
+            mEmail.setText((CharSequence) mJSONObject.get("emailId"));
+            mStatus.setText((CharSequence) mJSONObject.get("debt"));
             mButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

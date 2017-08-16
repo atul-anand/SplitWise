@@ -3,22 +3,13 @@ package com.zemoso.atul.splitwise.services;
 import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.zemoso.atul.splitwise.modules.Group;
 import com.zemoso.atul.splitwise.modules.Transaction;
 import com.zemoso.atul.splitwise.modules.User;
-import com.zemoso.atul.splitwise.modules.Group;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import io.realm.Realm;
-import io.realm.RealmObject;
 
 
 public class JSONObjectDownload extends IntentService {
@@ -45,7 +36,7 @@ public class JSONObjectDownload extends IntentService {
             mObject = new User();
         if(mType.equals("Group"))
             mObject = new Group();
-        if(mType.equals("Transaction"))
+        if (mType.equals("Transactions"))
             mObject = new Transaction();
         mRequestQueue = Volley.newRequestQueue(getApplicationContext());
 //        mJSONObjectRequest = new JsonObjectRequest(
