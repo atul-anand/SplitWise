@@ -17,9 +17,6 @@ import com.zemoso.atul.splitwise.R;
 import com.zemoso.atul.splitwise.modules.User;
 import com.zemoso.atul.splitwise.singletons.VolleyRequests;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,15 +70,8 @@ public class SplashActivity extends AppCompatActivity{
         List<String> userName = new ArrayList<>();
         Realm realm = Realm.getDefaultInstance();
         List<User> users = realm.where(User.class).findAll();
-        for (User user : users) {
-            try {
-                JSONObject jsonObject = new JSONObject(user.getJSON());
-                userName.add((String) jsonObject.get("name"));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
+        for (User user : users)
+            userName.add(user.getName());
 
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, userName);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -94,7 +84,7 @@ public class SplashActivity extends AppCompatActivity{
             public void onClick(View view) {
 
                 int pos = mSpinner.getSelectedItemPosition();
-                mUserId = finalUsers.get(pos).getId();
+                mUserId = finalUsers.get(pos).getUserId();
 
                 editor.putLong("UserId", mUserId);
 

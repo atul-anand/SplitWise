@@ -23,9 +23,6 @@ import com.zemoso.atul.splitwise.javaBeans.RecyclerViewHolder;
 import com.zemoso.atul.splitwise.modules.Group;
 import com.zemoso.atul.splitwise.singletons.VolleyRequests;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -125,24 +122,11 @@ public class Groups extends Fragment {
         Realm realm = Realm.getDefaultInstance();
         RealmResults<Group> mGroupData = realm.where(Group.class).findAll();
         for (Group group : mGroupData) {
-            String data = group.getJSON();
-            Log.d(TAG, data);
-            JSONObject jsonObject;
-            int mId = -1;
-            String mImageUrl = "";
-            String mHeading = "";
-            String mStatus = "";
-            try {
-                jsonObject = new JSONObject(data);
-                mId = (int) jsonObject.get("groupID");
-//                mImageUrl = (String) jsonObject.get("imageUrl");
-                mImageUrl = getResources().getString(R.string.image_url);
-                mHeading = (String) jsonObject.get("groupName");
-                mStatus = (String) jsonObject.get("createdBy");
-                mItems.add(new RecyclerViewHolder(mId, mImageUrl, "", mHeading, mStatus));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            long mId = group.getGroupId();
+            String mImageUrl = group.getImageFilePath();
+            String mHeading = group.getGroupName();
+            String mStatus = group.getCreatedBy();
+            mItems.add(new RecyclerViewHolder(mId, mImageUrl, "", mHeading, mStatus));
         }
     }
 }

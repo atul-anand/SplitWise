@@ -27,7 +27,6 @@ import com.zemoso.atul.splitwise.fragments.Groups;
 import com.zemoso.atul.splitwise.fragments.Transactions;
 import com.zemoso.atul.splitwise.modules.User;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -126,16 +125,12 @@ public class MainActivity extends AppCompatActivity
         preferences = getSharedPreferences("Settings", 0);
         mUserId = preferences.getLong("UserId", 0);
         Realm realm = Realm.getDefaultInstance();
-        mUser = realm.where(User.class).equalTo("id", mUserId).findFirst();
-        try {
-            jsonObject = new JSONObject(mUser.getJSON());
-            mUsername = (String) jsonObject.get("name");
-            mEmailId = (String) jsonObject.get("emailId");
-            mUserName.setText(mUsername);
-            mEmail.setText(mEmailId);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        mUser = realm.where(User.class).equalTo("userId", mUserId).findFirst();
+
+        mUsername = mUser.getName();
+        mEmailId = mUser.getEmailId();
+        mUserName.setText(mUsername);
+        mEmail.setText(mEmailId);
 
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_drawer);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

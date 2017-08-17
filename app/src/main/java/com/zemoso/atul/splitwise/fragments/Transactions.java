@@ -23,9 +23,6 @@ import com.zemoso.atul.splitwise.javaBeans.RecyclerViewHolder;
 import com.zemoso.atul.splitwise.modules.Transaction;
 import com.zemoso.atul.splitwise.singletons.VolleyRequests;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -117,25 +114,11 @@ public class Transactions extends Fragment {
         Realm realm = Realm.getDefaultInstance();
         RealmResults<Transaction> mTransactionData = realm.where(Transaction.class).findAll();
         for (Transaction transaction : mTransactionData) {
-            String data = transaction.getJSON();
-            Log.d(TAG, data);
-            JSONObject jsonObject;
-            int mId = -1;
-            String mImageUrl = "";
-            String mHeading = "";
-            String mStatus = "";
-            try {
-                jsonObject = new JSONObject(data);
-
-                mId = (int) jsonObject.get("transID");
-//                mImageUrl = (String) jsonObject.get("imageUrl");
-                mImageUrl = getResources().getString(R.string.image_url);
-                mHeading = (String) jsonObject.get("description");
-                mStatus = String.valueOf(jsonObject.get("amount"));
-                mItems.add(new RecyclerViewHolder(mId, mImageUrl, "", mHeading, mStatus));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            long mId = transaction.getTransId();
+            String mImageUrl = transaction.getImageFilePath();
+            String mHeading = transaction.getDescription();
+            String mStatus = String.valueOf(transaction.getAmount());
+            mItems.add(new RecyclerViewHolder(mId, mImageUrl, "", mHeading, mStatus));
         }
     }
 

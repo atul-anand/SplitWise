@@ -1,5 +1,9 @@
 package com.zemoso.atul.splitwise.modules;
 
+import org.json.JSONObject;
+
+import java.util.Date;
+
 import io.realm.RealmObject;
 import io.realm.annotations.Ignore;
 import io.realm.annotations.PrimaryKey;
@@ -10,28 +14,64 @@ import io.realm.annotations.PrimaryKey;
 
 public class Group extends RealmObject {
     @PrimaryKey
-    private long id;
-    @Ignore private int reqNo;
+    private long groupId;
+    private String groupName;
+    private Date dateOfCreation;
+    private int totalMembers;
+    private String createdBy;
+    @Ignore
     private String imageFilePath;
-    private String JSON;
 
     public Group() {
     }
 
-    public long getId() {
-        return id;
+    public Group(JSONObject jsonObject) {
+        this.groupId = jsonObject.optLong("groupId");
+        this.groupName = jsonObject.optString("groupName");
+        this.dateOfCreation = new Date(jsonObject.optString("dateOfCreation"));
+        this.totalMembers = jsonObject.optInt("totalMembers");
+        this.createdBy = jsonObject.optString("createdBy");
+        this.imageFilePath = jsonObject.optString("imageFilePath");
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public long getGroupId() {
+        return groupId;
     }
 
-    public int getReqNo() {
-        return reqNo;
+    public void setGroupId(long groupId) {
+        this.groupId = groupId;
     }
 
-    public void setReqNo(int reqNo) {
-        this.reqNo = reqNo;
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
+    public Date getDateOfCreation() {
+        return dateOfCreation;
+    }
+
+    public void setDateOfCreation(Date dateOfCreation) {
+        this.dateOfCreation = dateOfCreation;
+    }
+
+    public int getTotalMembers() {
+        return totalMembers;
+    }
+
+    public void setTotalMembers(int totalMembers) {
+        this.totalMembers = totalMembers;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
     }
 
     public String getImageFilePath() {
@@ -40,13 +80,5 @@ public class Group extends RealmObject {
 
     public void setImageFilePath(String imageFilePath) {
         this.imageFilePath = imageFilePath;
-    }
-
-    public String getJSON() {
-        return JSON;
-    }
-
-    public void setJSON(String JSON) {
-        this.JSON = JSON;
     }
 }

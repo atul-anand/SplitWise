@@ -206,12 +206,7 @@ public class VolleyRequests {
                         for(int i=0;i<response.length();i++)
                             try {
                                 JSONObject jsonObject = response.getJSONObject(i);
-                                Transaction transaction = new Transaction();
-                                transaction.setId((Integer) jsonObject.get(resId));
-                                transaction.setReqNo(reqNo);
-//                                transaction.setImageFilePath((String) jsonObject.get(image));
-                                transaction.setImageFilePath("");
-                                transaction.setJSON(String.valueOf(response));
+                                Transaction transaction = new Transaction(jsonObject);
                                 Realm realm = Realm.getDefaultInstance();
                                 realm.beginTransaction();
                                 realm.insertOrUpdate(transaction);
@@ -236,23 +231,14 @@ public class VolleyRequests {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        try {
-                            Transaction transaction = new Transaction();
-                            transaction.setId((Integer) response.get(resId));
-                            transaction.setReqNo(reqNo);
-//                            transaction.setImageFilePath((String) response.get(image));
-                            transaction.setImageFilePath("");
-                            transaction.setJSON(String.valueOf(response));
-                            Realm realm = Realm.getDefaultInstance();
-                            realm.beginTransaction();
-                            realm.insertOrUpdate(transaction);
-                            realm.commitTransaction();
-                            realm.close();
-                            reqNo++;
-                            Log.d(TAG, String.valueOf(response));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                        Transaction transaction = new Transaction(response);
+                        Realm realm = Realm.getDefaultInstance();
+                        realm.beginTransaction();
+                        realm.insertOrUpdate(transaction);
+                        realm.commitTransaction();
+                        realm.close();
+                        reqNo++;
+                        Log.d(TAG, String.valueOf(response));
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -272,12 +258,7 @@ public class VolleyRequests {
                         for(int i=0;i<response.length();i++)
                             try {
                                 JSONObject jsonObject = response.getJSONObject(i);
-                                Group group = new Group();
-                                group.setId((Integer) jsonObject.get(resId));
-                                group.setReqNo(reqNo);
-//                                group.setImageFilePath((String) jsonObject.get(image));
-                                group.setImageFilePath("");
-                                group.setJSON(String.valueOf(response));
+                                Group group = new Group(jsonObject);
                                 Realm realm = Realm.getDefaultInstance();
                                 realm.beginTransaction();
                                 realm.insertOrUpdate(group);
@@ -302,23 +283,14 @@ public class VolleyRequests {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        try {
-                            Group group = new Group();
-                            group.setId((Integer) response.get(resId));
-                            group.setReqNo(reqNo);
-//                            group.setImageFilePath((String) response.get(image));
-                            group.setImageFilePath("");
-                            group.setJSON(String.valueOf(response));
-                            Realm realm = Realm.getDefaultInstance();
-                            realm.beginTransaction();
-                            realm.insertOrUpdate(group);
-                            realm.commitTransaction();
-                            realm.close();
-                            reqNo++;
-                            Log.d(TAG, String.valueOf(response));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                        Group group = new Group(response);
+                        Realm realm = Realm.getDefaultInstance();
+                        realm.beginTransaction();
+                        realm.insertOrUpdate(group);
+                        realm.commitTransaction();
+                        realm.close();
+                        reqNo++;
+                        Log.d(TAG, String.valueOf(response));
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -338,12 +310,7 @@ public class VolleyRequests {
                         for(int i=0;i<response.length();i++)
                             try {
                                 JSONObject jsonObject = response.getJSONObject(i);
-                                User user = new User();
-                                user.setId((Integer) jsonObject.get(resId));
-                                user.setReqNo(reqNo);
-//                                user.setImageFilePath((String) jsonObject.get(image));
-                                user.setImageFilePath("");
-                                user.setJSON(String.valueOf(response));
+                                User user = new User(jsonObject);
                                 Realm realm = Realm.getDefaultInstance();
                                 realm.beginTransaction();
                                 realm.insertOrUpdate(user);
@@ -368,23 +335,14 @@ public class VolleyRequests {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        try {
-                            User user = new User();
-                            user.setId((Integer) response.get(resId));
-                            user.setReqNo(reqNo);
-//                            user.setImageFilePath((String) response.get(image));
-                            user.setImageFilePath("");
-                            user.setJSON(String.valueOf(response));
-                            Realm realm = Realm.getDefaultInstance();
-                            realm.beginTransaction();
-                            realm.insertOrUpdate(user);
-                            realm.commitTransaction();
-                            realm.close();
-                            reqNo++;
-                            Log.d(TAG, String.valueOf(response));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                        User user = new User(response);
+                        Realm realm = Realm.getDefaultInstance();
+                        realm.beginTransaction();
+                        realm.insertOrUpdate(user);
+                        realm.commitTransaction();
+                        realm.close();
+                        reqNo++;
+                        Log.d(TAG, String.valueOf(response));
                     }
                 }, new Response.ErrorListener() {
             @Override

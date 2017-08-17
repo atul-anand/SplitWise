@@ -19,9 +19,6 @@ import com.bumptech.glide.Glide;
 import com.zemoso.atul.splitwise.R;
 import com.zemoso.atul.splitwise.modules.User;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import io.realm.Realm;
 
 public class FriendProfile extends AppCompatActivity {
@@ -52,27 +49,23 @@ public class FriendProfile extends AppCompatActivity {
         TextView mEmail = (TextView) findViewById(R.id.profile_email);
         TextView mStatus = (TextView) findViewById(R.id.profile_status);
         Button mButton = (Button) findViewById(R.id.profile_settleUp);
-        try {
-            JSONObject mJSONObject = new JSONObject(mUser.getJSON());
-            getSupportActionBar().setTitle((CharSequence) mJSONObject.get("heading"));
 
-            Glide.with(this)
-                    .load(mJSONObject.get("imageUrl"))
-                    .into(mImageView);
-            mHeading.setText((CharSequence) mJSONObject.get("name"));
-            mEmail.setText((CharSequence) mJSONObject.get("emailId"));
-            mStatus.setText((CharSequence) mJSONObject.get("debt"));
-            mButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Toast.makeText(getApplicationContext(), "Settled", Toast.LENGTH_SHORT).show();
+        getSupportActionBar().setTitle(mUser.getName());
 
-                }
-            });
+        Glide.with(this)
+                .load(mUser.getImageFilePath())
+                .into(mImageView);
+        mHeading.setText(mUser.getName());
+        mEmail.setText(mUser.getEmailId());
+        mStatus.setText(String.valueOf(mUser.getDebt()));
+        mButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getApplicationContext(), "Settled", Toast.LENGTH_SHORT).show();
 
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+            }
+        });
+
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);

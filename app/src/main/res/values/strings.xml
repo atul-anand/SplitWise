@@ -9,7 +9,7 @@
     <string name="select_user">Select a user</string>
 
     <!--Server Interaction-->
-    <string name="url_address">http://192.168.1.107:8080/</string>
+    <string name="url_address">http://192.168.86.204:8080/</string>
 
     <!--Ids-->
     <string name="url_user_id">userId</string>

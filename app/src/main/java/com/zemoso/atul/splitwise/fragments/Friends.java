@@ -23,9 +23,6 @@ import com.zemoso.atul.splitwise.javaBeans.RecyclerViewHolder;
 import com.zemoso.atul.splitwise.modules.User;
 import com.zemoso.atul.splitwise.singletons.VolleyRequests;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -131,26 +128,13 @@ public class Friends extends Fragment {
         Realm realm = Realm.getDefaultInstance();
         RealmResults<User> mUserData = realm.where(User.class).findAll();
         for (User user : mUserData) {
-            String data = user.getJSON();
-            Log.d(TAG, data);
-            JSONObject jsonObject;
-            int mId = -1;
-            String mImageUrl = "";
-            String mHeading = "";
-            String mStatus = "";
-            try {
-                jsonObject = new JSONObject(data);
-                mId = (int) jsonObject.get("userID");
-                if (mId == mUserId)
-                    continue;
-//                mImageUrl = (String) jsonObject.get("imageUrl");
-                mImageUrl = getResources().getString(R.string.image_url);
-                mHeading = (String) jsonObject.get("name");
-                mStatus = String.valueOf(jsonObject.get("age"));
-                mItems.add(new RecyclerViewHolder(mId, mImageUrl, "", mHeading, mStatus));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            if (user.getUserId() == mUserId)
+                continue;
+            long mId = user.getUserId();
+            String mImageUrl = user.getImageFilePath();
+            String mHeading = user.getName();
+            String mStatus = String.valueOf(user.getDebt());
+            mItems.add(new RecyclerViewHolder(mId, mImageUrl, "", mHeading, mStatus));
         }
     }
 }

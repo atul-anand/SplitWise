@@ -10,11 +10,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
-import com.zemoso.atul.splitwise.modules.User;
 import com.zemoso.atul.splitwise.modules.Group;
+import com.zemoso.atul.splitwise.modules.User;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import io.realm.Realm;
@@ -56,21 +55,21 @@ public class LaunchDownloads extends IntentService {
                 Realm realm = Realm.getDefaultInstance();
                 Log.d(TAG, String.valueOf(response.length()));
                 realm.beginTransaction();
-                for(int i=0;i< response.length();i++){
-                    try {
-                        mJsonObject = response.getJSONObject(i);
-                        Log.d(TAG, String.valueOf(mJsonObject));
-                        mUser = new User();
-                        mUser.setId(Integer.parseInt(String.valueOf(mJsonObject.get("transID"))));
-                        mUser.setImageFilePath("");
-                        mUser.setJSON(mJsonObject.toString());
-                        Log.d(TAG,"User"+ mUser.getJSON());
-                        realm.insertOrUpdate(mUser);
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
+//                for(int i=0;i< response.length();i++){
+//                    try {
+//                        mJsonObject = response.getJSONObject(i);
+//                        Log.d(TAG, String.valueOf(mJsonObject));
+//                        mUser = new User();
+//                        mUser.setId(Integer.parseInt(String.valueOf(mJsonObject.get("transID"))));
+//                        mUser.setImageFilePath("");
+//                        mUser.setJSON(mJsonObject.toString());
+//                        Log.d(TAG,"User"+ mUser.getJSON());
+//                        realm.insertOrUpdate(mUser);
+//
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
                 realm.commitTransaction();
                 realm.close();
             }
