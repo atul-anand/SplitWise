@@ -20,19 +20,21 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.zemoso.atul.splitwise.R;
 import com.zemoso.atul.splitwise.adapters.HomePagerAdapter;
 import com.zemoso.atul.splitwise.fragments.Friends;
 import com.zemoso.atul.splitwise.fragments.Groups;
 import com.zemoso.atul.splitwise.fragments.Transactions;
-import com.zemoso.atul.splitwise.modules.User;
+import com.zemoso.atul.splitwise.models.User;
+import com.zemoso.atul.splitwise.singletons.VolleyRequests;
 
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import io.realm.Realm;
 
 
 public class MainActivity extends AppCompatActivity
@@ -123,14 +125,12 @@ public class MainActivity extends AppCompatActivity
         mUserName = (TextView) findViewById(R.id.nav_user_name);
         mEmail = (TextView) findViewById(R.id.nav_user_email);
         preferences = getSharedPreferences("Settings", 0);
-        mUserId = preferences.getLong("UserId", 0);
-        Realm realm = Realm.getDefaultInstance();
-        mUser = realm.where(User.class).equalTo("userId", mUserId).findFirst();
+        mUserId = preferences.getLong("userId", 0);
 
-        mUsername = mUser.getName();
-        mEmailId = mUser.getEmailId();
-        mUserName.setText(mUsername);
-        mEmail.setText(mEmailId);
+        userById(mUserId);
+
+        Log.d(TAG, String.valueOf(mUserId));
+
 
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_drawer);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -232,6 +232,33 @@ public class MainActivity extends AppCompatActivity
         mPagerAdapter.notifyDataSetChanged();
     }
 
+    private void userById(long userId) {
+        String extension = getResources().getString(R.string.url_user_findById);
+        String param = getResources().getString(R.string.url_user_id);
+        String mUrl = getSharedPreferences("Settings", 0).getString("Hostname", "") + extension + "?" + param + "=" + userId;
+        Log.d(TAG, mUrl);
+        Response.Listener<JSONObject> listener = new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                mUser = new User(response);
+                Log.d(TAG, mUser.toString());
+                mUsername = mUser.getName();
+                mEmailId = mUser.getEmailId();
+                mUserName.setText(mUsername);
+                mEmail.setText(mEmailId);
+            }
+        };
+        Response.ErrorListener errorListener = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(TAG, error.toString());
+
+            }
+        };
+        JsonObjectRequest userJsonObject = new JsonObjectRequest(mUrl, null, listener, errorListener);
+        VolleyRequests.getInstance(getApplicationContext()).addToRequestQueue(userJsonObject);
+
+    }
     //endregion
 
 }

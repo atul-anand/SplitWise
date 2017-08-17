@@ -3,12 +3,13 @@
     <string name="app_heading">S P L I T W I S E</string>
 
     <string name="image_url">"http://www.careerbased.com/themes/comb/img/avatar/default-avatar-male_10.png"</string>
-    \
+
 
     <!--Splash-->
     <string name="select_user">Select a user</string>
 
     <!--Server Interaction-->
+    <string name="url_hostname">Hostname</string>
     <string name="url_address">http://192.168.86.204:8080/</string>
 
     <!--Ids-->
@@ -22,6 +23,7 @@
     <!--User-->
     <string name="url_user_findAll">user/findAll</string>
     <string name="url_user_findById">user/findById</string>
+    <string name="url_user_string">user/username</string>
 
     <!--Group-->
     <string name="url_group_findAll">group/findAll</string>
@@ -294,9 +296,6 @@
     <string name="pref_ringtone_silent">Silent</string>
 
     <string name="pref_title_vibrate">Vibrate</string>
-
-
-    <string name="url_hostname">Hostname</string>
 
 
 </resources>

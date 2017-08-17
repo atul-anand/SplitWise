@@ -1,4 +1,4 @@
-package com.zemoso.atul.splitwise.modules;
+package com.zemoso.atul.splitwise.models;
 
 import org.json.JSONObject;
 
@@ -89,5 +89,17 @@ public class User extends RealmObject {
 
     public void setImageFilePath(String imageFilePath) {
         this.imageFilePath = imageFilePath;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId=" + userId +
+                ", name='" + name + '\'' +
+                ", emailId='" + emailId + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", age=" + age +
+                ", debt=" + debt +
+                '}';
     }
 }

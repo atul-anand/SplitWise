@@ -13,9 +13,9 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.zemoso.atul.splitwise.R;
-import com.zemoso.atul.splitwise.modules.Group;
-import com.zemoso.atul.splitwise.modules.Transaction;
-import com.zemoso.atul.splitwise.modules.User;
+import com.zemoso.atul.splitwise.models.Group;
+import com.zemoso.atul.splitwise.models.Transaction;
+import com.zemoso.atul.splitwise.models.User;
 
 import org.json.JSONArray;
 import org.json.JSONException;

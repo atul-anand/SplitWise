@@ -10,8 +10,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
-import com.zemoso.atul.splitwise.modules.Group;
-import com.zemoso.atul.splitwise.modules.User;
+import com.zemoso.atul.splitwise.models.Group;
+import com.zemoso.atul.splitwise.models.User;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

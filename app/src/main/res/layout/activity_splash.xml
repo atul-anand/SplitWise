@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:backgroundTint="@color/colorPrimary"
-    tools:context="com.zemoso.atul.splitwise.activities.SplashActivity">
+    tools:context="com.zemoso.atul.splitwise.activities.LoginActivity">
     <!--<EditText-->
     <!--android:id="@+id/editText"-->
     <!--android:layout_width="@dimen/edit_text_width"-->
@@ -13,14 +13,23 @@
     <!--android:layout_marginBottom="25dp"-->
     <!--android:hint="@string/current_user_id"-->
     <!--android:textAlignment="center"/>-->
-    <Spinner
+    <AutoCompleteTextView
         android:id="@+id/editText"
         android:layout_width="@dimen/edit_text_width"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginBottom="25dp"
-        android:prompt="@string/select_user"
+        android:hint="@string/add_user_name"
+        android:inputType="text"
         android:textAlignment="center"/>
+    <!--<Spinner-->
+    <!--android:id="@+id/spinner"-->
+    <!--android:layout_width="@dimen/edit_text_width"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="center"-->
+    <!--android:layout_marginBottom="25dp"-->
+    <!--android:prompt="@string/select_user"-->
+    <!--android:textAlignment="center"/>-->
     <Button
         android:id="@+id/button"
         android:layout_width="wrap_content"
@@ -31,4 +40,17 @@
         android:text="@string/proceed"
         android:textColor="@color/colorWhite"/>
 
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:background="@color/colorWhite"
+        android:elevation="@dimen/progress_bar_elevation"
+        android:indeterminate="true"
+        android:paddingBottom="@dimen/progress_bar_vertical_padding"
+        android:paddingEnd="@dimen/progress_bar_horizontal_padding"
+        android:paddingStart="@dimen/progress_bar_horizontal_padding"
+        android:paddingTop="@dimen/progress_bar_vertical_padding" />
 </FrameLayout>

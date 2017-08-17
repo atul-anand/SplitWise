@@ -17,17 +17,21 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.zemoso.atul.splitwise.R;
 import com.zemoso.atul.splitwise.adapters.TransactionRecyclerViewAdapter;
 import com.zemoso.atul.splitwise.javaBeans.RecyclerViewHolder;
-import com.zemoso.atul.splitwise.modules.Transaction;
+import com.zemoso.atul.splitwise.models.Transaction;
 import com.zemoso.atul.splitwise.singletons.VolleyRequests;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import io.realm.Realm;
-import io.realm.RealmResults;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -43,6 +47,7 @@ public class Transactions extends Fragment {
     private RecyclerView.LayoutManager mLayoutManager;
     private TransactionRecyclerViewAdapter mTransactionRecyclerViewAdapter;
     private List<RecyclerViewHolder> mItems;
+    private List<Transaction> mTransactions;
 
     private SharedPreferences preferences;
     private Long mUserId;
@@ -72,18 +77,18 @@ public class Transactions extends Fragment {
         mRecyclerView = view.findViewById(R.id.recycler_transaction);
         mLayoutManager = new LinearLayoutManager(getContext());
         mItems = new ArrayList<>();
+        mTransactions = new ArrayList<>();
         mTransactionRecyclerViewAdapter = new TransactionRecyclerViewAdapter(mItems, getContext());
 
-
-        mUserId = preferences.getLong("UserId", 0);
+        preferences = getActivity().getSharedPreferences("Settings", 0);
+        mUserId = preferences.getLong("userId", 0);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        VolleyRequests.getInstance(getContext()).transactionFindByUserId(mUserId);
-        addTransactions();
+        transactionFindByUserId(mUserId);
         Log.d(TAG, String.valueOf(mItems.size()));
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -111,15 +116,48 @@ public class Transactions extends Fragment {
     }
 
     private void addTransactions() {
-        Realm realm = Realm.getDefaultInstance();
-        RealmResults<Transaction> mTransactionData = realm.where(Transaction.class).findAll();
-        for (Transaction transaction : mTransactionData) {
+        for (Transaction transaction : mTransactions) {
             long mId = transaction.getTransId();
             String mImageUrl = transaction.getImageFilePath();
             String mHeading = transaction.getDescription();
             String mStatus = String.valueOf(transaction.getAmount());
             mItems.add(new RecyclerViewHolder(mId, mImageUrl, "", mHeading, mStatus));
         }
+    }
+
+    private void transactionFindByUserId(long userId) {
+        String extension = getResources().getString(R.string.url_transaction_findByUserId);
+        String param = getResources().getString(R.string.url_user_id);
+        String mUrl = getActivity().getSharedPreferences("Settings", 0).getString("Hostname", "") + extension
+                + "?" + param + "=" + userId;
+        Log.d(TAG, mUrl);
+        Response.Listener<JSONArray> listener = new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                for (int i = 0; i < response.length(); i++)
+                    try {
+                        JSONObject jsonObject = response.getJSONObject(i);
+                        Transaction transaction = new Transaction(jsonObject);
+                        mTransactions.add(transaction);
+                        Log.d(TAG, String.valueOf(jsonObject));
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                addTransactions();
+                mTransactionRecyclerViewAdapter.notifyDataSetChanged();
+            }
+        };
+        Response.ErrorListener errorListener = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(TAG, error.toString());
+
+            }
+        };
+        JsonArrayRequest userJsonObject = new JsonArrayRequest(mUrl, listener, errorListener);
+        VolleyRequests.getInstance(getContext()).addToRequestQueue(userJsonObject);
+
     }
 
 }

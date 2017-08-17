@@ -32,7 +32,7 @@
     <EditTextPreference
         android:defaultValue="@string/url_address"
         android:inputType="textUri"
-        android:key="example_text"
+        android:key="@string/url_hostname"
         android:maxLines="1"
         android:selectAllOnFocus="true"
         android:singleLine="true"

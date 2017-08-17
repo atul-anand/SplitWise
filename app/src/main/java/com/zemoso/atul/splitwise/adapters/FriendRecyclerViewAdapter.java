@@ -69,9 +69,9 @@ public class FriendRecyclerViewAdapter extends RecyclerView.Adapter<FriendRecycl
                 Toast.makeText(mContext,mCardData.getId() + " " + mCardData.getmHeading(),Toast.LENGTH_SHORT).show();
                 Intent mIntent = new Intent(mContext, FriendProfile.class);
                 Bundle mBundle = new Bundle();
-                mBundle.putLong("id", mCardData.getId());
+                mBundle.putLong("userId", mCardData.getId());
                 mIntent.putExtras(mBundle);
-                mContext.startActivity(mIntent);
+//                mContext.startActivity(mIntent);
             }
         });
     }

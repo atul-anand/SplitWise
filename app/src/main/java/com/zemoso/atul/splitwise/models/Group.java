@@ -1,4 +1,4 @@
-package com.zemoso.atul.splitwise.modules;
+package com.zemoso.atul.splitwise.models;
 
 import org.json.JSONObject;
 
@@ -80,5 +80,16 @@ public class Group extends RealmObject {
 
     public void setImageFilePath(String imageFilePath) {
         this.imageFilePath = imageFilePath;
+    }
+
+    @Override
+    public String toString() {
+        return "Group{" +
+                "groupId=" + groupId +
+                ", groupName='" + groupName + '\'' +
+                ", dateOfCreation=" + dateOfCreation +
+                ", totalMembers=" + totalMembers +
+                ", createdBy='" + createdBy + '\'' +
+                '}';
     }
 }

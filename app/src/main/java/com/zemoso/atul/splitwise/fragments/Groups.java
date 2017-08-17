@@ -17,17 +17,21 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.zemoso.atul.splitwise.R;
 import com.zemoso.atul.splitwise.adapters.GroupRecyclerViewAdapter;
 import com.zemoso.atul.splitwise.javaBeans.RecyclerViewHolder;
-import com.zemoso.atul.splitwise.modules.Group;
+import com.zemoso.atul.splitwise.models.Group;
 import com.zemoso.atul.splitwise.singletons.VolleyRequests;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import io.realm.Realm;
-import io.realm.RealmResults;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -44,6 +48,7 @@ public class Groups extends Fragment {
     private RecyclerView.LayoutManager mLayoutManager;
     private GroupRecyclerViewAdapter mGroupRecyclerViewAdapter;
     private List<RecyclerViewHolder> mItems;
+    private List<Group> mGroups;
 
     private SharedPreferences preferences;
     private Long mUserId;
@@ -71,10 +76,11 @@ public class Groups extends Fragment {
         mRecyclerView = view.findViewById(R.id.recycler_groups);
         mLayoutManager = new LinearLayoutManager(getContext());
         mItems = new ArrayList<>();
+        mGroups = new ArrayList<>();
         mGroupRecyclerViewAdapter = new GroupRecyclerViewAdapter(mItems, getContext());
 
         mAddButton = view.findViewById(R.id.addGroups);
-
+        preferences = getActivity().getSharedPreferences("Settings", 0);
         mUserId = preferences.getLong("UserId", 0);
     }
 
@@ -82,8 +88,7 @@ public class Groups extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        VolleyRequests.getInstance(getContext()).groupFindByUserId(mUserId);
-        addGroups();
+        groupFindByUserId(mUserId);
         Log.d(TAG, String.valueOf(mItems.size()));
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -119,14 +124,47 @@ public class Groups extends Fragment {
     }
 
     private void addGroups() {
-        Realm realm = Realm.getDefaultInstance();
-        RealmResults<Group> mGroupData = realm.where(Group.class).findAll();
-        for (Group group : mGroupData) {
+        for (Group group : mGroups) {
             long mId = group.getGroupId();
             String mImageUrl = group.getImageFilePath();
             String mHeading = group.getGroupName();
             String mStatus = group.getCreatedBy();
             mItems.add(new RecyclerViewHolder(mId, mImageUrl, "", mHeading, mStatus));
         }
+    }
+
+    private void groupFindByUserId(long userId) {
+        String extension = getResources().getString(R.string.url_group_findByUserId);
+        String param = getResources().getString(R.string.url_user_id);
+        String mUrl = getActivity().getSharedPreferences("Settings", 0).getString("Hostname", "") + extension
+                + "?" + param + "=" + userId;
+        Log.d(TAG, mUrl);
+        Response.Listener<JSONArray> listener = new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                for (int i = 0; i < response.length(); i++)
+                    try {
+                        JSONObject jsonObject = response.getJSONObject(i);
+                        Group group = new Group(jsonObject);
+                        mGroups.add(group);
+                        Log.d(TAG, String.valueOf(jsonObject));
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                addGroups();
+                mGroupRecyclerViewAdapter.notifyDataSetChanged();
+            }
+        };
+        Response.ErrorListener errorListener = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(TAG, error.toString());
+
+            }
+        };
+        JsonArrayRequest userJsonObject = new JsonArrayRequest(mUrl, listener, errorListener);
+        VolleyRequests.getInstance(getContext()).addToRequestQueue(userJsonObject);
+
     }
 }

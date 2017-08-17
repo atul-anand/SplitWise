@@ -17,7 +17,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.zemoso.atul.splitwise.R;
-import com.zemoso.atul.splitwise.modules.User;
+import com.zemoso.atul.splitwise.models.User;
 
 import io.realm.Realm;
 
@@ -40,7 +40,7 @@ public class FriendProfile extends AppCompatActivity {
 //        collapsingToolbarLayout.setCollapsedTitleTextColor(Color.rgb(0, 0, 0));
 
         Bundle mBundle = getIntent().getExtras();
-        int id = mBundle.getInt("id");
+        long id = mBundle.getLong("userId");
         Realm realm = Realm.getDefaultInstance();
         User mUser = realm.where(User.class).equalTo("userId", id).findFirst();
 

@@ -17,17 +17,21 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.zemoso.atul.splitwise.R;
 import com.zemoso.atul.splitwise.adapters.FriendRecyclerViewAdapter;
 import com.zemoso.atul.splitwise.javaBeans.RecyclerViewHolder;
-import com.zemoso.atul.splitwise.modules.User;
+import com.zemoso.atul.splitwise.models.User;
 import com.zemoso.atul.splitwise.singletons.VolleyRequests;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import io.realm.Realm;
-import io.realm.RealmResults;
 
 
 /**
@@ -45,6 +49,7 @@ public class Friends extends Fragment {
     private RecyclerView.LayoutManager mLayoutManager;
     private FriendRecyclerViewAdapter mFriendRecyclerViewAdapter;
     private List<RecyclerViewHolder> mItems;
+    private List<User> mUsers;
 
     private SharedPreferences preferences;
     private Long mUserId;
@@ -78,8 +83,10 @@ public class Friends extends Fragment {
         mRecyclerView = view.findViewById(R.id.recycler_friends);
         mLayoutManager = new LinearLayoutManager(getContext());
         mItems = new ArrayList<>();
+        mUsers = new ArrayList<>();
         mFriendRecyclerViewAdapter = new FriendRecyclerViewAdapter(mItems, getContext());
-        mUserId = preferences.getLong("UserId", 0);
+        preferences = getActivity().getSharedPreferences("Settings", 0);
+        mUserId = preferences.getLong("userId", 0);
         mAddButton = view.findViewById(R.id.addFriends);
 
     }
@@ -88,8 +95,8 @@ public class Friends extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        VolleyRequests.getInstance(getContext()).userFindAll();
-        addUsers();
+//        VolleyRequests.getInstance(getContext()).userFindAll();
+        userFindAll();
         Log.d(TAG, String.valueOf(mItems.size()));
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -125,9 +132,7 @@ public class Friends extends Fragment {
     }
 
     private void addUsers() {
-        Realm realm = Realm.getDefaultInstance();
-        RealmResults<User> mUserData = realm.where(User.class).findAll();
-        for (User user : mUserData) {
+        for (User user : mUsers) {
             if (user.getUserId() == mUserId)
                 continue;
             long mId = user.getUserId();
@@ -136,5 +141,39 @@ public class Friends extends Fragment {
             String mStatus = String.valueOf(user.getDebt());
             mItems.add(new RecyclerViewHolder(mId, mImageUrl, "", mHeading, mStatus));
         }
+    }
+
+    private void userFindAll() {
+        String extension = getResources().getString(R.string.url_user_findAll);
+        String mUrl = getActivity().getSharedPreferences("Settings", 0).getString("Hostname", "") + extension;
+        Log.d(TAG, mUrl);
+        Response.Listener<JSONArray> listener = new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                mUsers = new ArrayList<User>();
+                for (int i = 0; i < response.length(); i++)
+                    try {
+                        JSONObject jsonObject = response.getJSONObject(i);
+                        User user = new User(jsonObject);
+                        mUsers.add(user);
+                        Log.d(TAG, String.valueOf(jsonObject));
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                addUsers();
+                mFriendRecyclerViewAdapter.notifyDataSetChanged();
+            }
+        };
+        Response.ErrorListener errorListener = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(TAG, error.toString());
+
+            }
+        };
+        JsonArrayRequest userJsonObject = new JsonArrayRequest(mUrl, listener, errorListener);
+        VolleyRequests.getInstance(getContext()).addToRequestQueue(userJsonObject);
+
     }
 }

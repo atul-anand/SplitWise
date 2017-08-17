@@ -7,9 +7,9 @@ import android.os.Bundle;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.zemoso.atul.splitwise.modules.Group;
-import com.zemoso.atul.splitwise.modules.Transaction;
-import com.zemoso.atul.splitwise.modules.User;
+import com.zemoso.atul.splitwise.models.Group;
+import com.zemoso.atul.splitwise.models.Transaction;
+import com.zemoso.atul.splitwise.models.User;
 
 
 public class JSONObjectDownload extends IntentService {

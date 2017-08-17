@@ -13,16 +13,12 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.zemoso.atul.splitwise.R;
-import com.zemoso.atul.splitwise.modules.User;
 import com.zemoso.atul.splitwise.singletons.VolleyRequests;
-import com.zemoso.atul.splitwise.utils.SplitWise;
 
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import io.realm.Realm;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -52,9 +48,9 @@ public class AddGroup extends DialogFragment {
         super.onViewCreated(view, savedInstanceState);
         mGroupName = view.findViewById(R.id.add_group_name);
         mSubmit = view.findViewById(R.id.add_group_create);
-        Realm realm = Realm.getDefaultInstance();
-        User user = realm.where(User.class).equalTo("id", ((SplitWise)getActivity().getApplication()).getUserId()).findFirst();
-//            mUserName = new JSONObject(user.getJSON()).getString("name");
+//        Realm realm = Realm.getDefaultInstance();
+//        User user = realm.where(User.class).equalTo("id", ((SplitWise)getActivity().getApplication()).getUserId()).findFirst();
+////            mUserName = new JSONObject(user.getJSON()).getString("name");
         mUserName = "Arya Stark";
     }
 

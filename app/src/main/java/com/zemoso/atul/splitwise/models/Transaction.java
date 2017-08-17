@@ -1,4 +1,4 @@
-package com.zemoso.atul.splitwise.modules;
+package com.zemoso.atul.splitwise.models;
 
 import org.json.JSONObject;
 
@@ -103,5 +103,16 @@ public class Transaction extends RealmObject {
 
     public void setImageFilePath(String imageFilePath) {
         this.imageFilePath = imageFilePath;
+    }
+
+    @Override
+    public String toString() {
+        return "Transaction{" +
+                "transId=" + transId +
+                ", groupId=" + groupId +
+                ", description='" + description + '\'' +
+                ", amount=" + amount +
+                ", mop='" + mop + '\'' +
+                '}';
     }
 }
