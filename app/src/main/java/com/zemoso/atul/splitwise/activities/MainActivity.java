@@ -3,6 +3,8 @@ package com.zemoso.atul.splitwise.activities;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -122,6 +124,9 @@ public class MainActivity extends AppCompatActivity
         mDrawerLayout.addDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
 
+        mNavigationView.bringToFront();
+        mDrawerLayout.requestLayout();
+
         mUserName = (TextView) findViewById(R.id.nav_user_name);
         mEmail = (TextView) findViewById(R.id.nav_user_email);
         preferences = getSharedPreferences("Settings", 0);
@@ -152,9 +157,11 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Log.d(TAG,"onOptionsItemSelected");
-        if (mDrawerToggle.onOptionsItemSelected(item)) {
-            return onNavigationItemSelected(item);
-        }
+//        if (mDrawerToggle.onOptionsItemSelected(item)) {
+//            return onNavigationItemSelected(item);
+//        }
+        if (onNavigationItemSelected(item))
+            return true;
         // Handle action buttons
         switch(item.getItemId()) {
             case R.id.action_websearch:
@@ -169,7 +176,7 @@ public class MainActivity extends AppCompatActivity
 //                }
                 return true;
             case R.id.action_settings:
-//                startActivity(new Intent(this,SettingsActivity.class));
+                startActivity(new Intent(this, SettingsActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -200,22 +207,30 @@ public class MainActivity extends AppCompatActivity
     //Navigation Drawer menu items
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         Log.d(TAG,"onNavigationItemSelected");
         // Handle component_navigation view item clicks here.
         int id = item.getItemId();
 
         switch (id){
-            case R.id.nav_home: Toast.makeText(getApplicationContext(),"Home",Toast.LENGTH_SHORT).show();
+            case R.id.nav_home:
+                Toast.makeText(this, "Home", Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.nav_setting: Toast.makeText(getApplicationContext(),"Setting",Toast.LENGTH_SHORT).show();
+            case R.id.nav_setting:
+                Toast.makeText(this, "Setting", Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.nav_rating: Toast.makeText(getApplicationContext(),"Rating",Toast.LENGTH_SHORT).show();
+            case R.id.nav_rating:
+                Toast.makeText(this, "Rating", Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.nav_contact: Toast.makeText(getApplicationContext(),"Contact",Toast.LENGTH_SHORT).show();
+            case R.id.nav_contact:
+                Toast.makeText(this, "TransactionHolder", Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.nav_logout: Toast.makeText(getApplicationContext(),"Logout",Toast.LENGTH_SHORT).show();
+            case R.id.nav_logout:
+                Toast.makeText(this, "Logout", Toast.LENGTH_SHORT).show();
                 break;
+            default:
+//                mDrawerLayout.closeDrawer(GravityCompat.START);
+                return false;
         }
 
         mDrawerLayout.closeDrawer(GravityCompat.START);
@@ -235,7 +250,8 @@ public class MainActivity extends AppCompatActivity
     private void userById(long userId) {
         String extension = getResources().getString(R.string.url_user_findById);
         String param = getResources().getString(R.string.url_user_id);
-        String mUrl = getSharedPreferences("Settings", 0).getString("Hostname", "") + extension + "?" + param + "=" + userId;
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String mUrl = preferences.getString("Hostname", "") + extension + "?" + param + "=" + userId;
         Log.d(TAG, mUrl);
         Response.Listener<JSONObject> listener = new Response.Listener<JSONObject>() {
             @Override

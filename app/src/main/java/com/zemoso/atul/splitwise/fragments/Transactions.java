@@ -3,6 +3,7 @@ package com.zemoso.atul.splitwise.fragments;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -80,7 +81,8 @@ public class Transactions extends Fragment {
         mTransactions = new ArrayList<>();
         mTransactionRecyclerViewAdapter = new TransactionRecyclerViewAdapter(mItems, getContext());
 
-        preferences = getActivity().getSharedPreferences("Settings", 0);
+//        preferences = getActivity().getSharedPreferences("Settings", 0);
+        preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         mUserId = preferences.getLong("userId", 0);
     }
 

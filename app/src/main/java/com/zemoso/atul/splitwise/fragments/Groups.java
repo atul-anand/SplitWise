@@ -3,6 +3,7 @@ package com.zemoso.atul.splitwise.fragments;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -80,7 +81,8 @@ public class Groups extends Fragment {
         mGroupRecyclerViewAdapter = new GroupRecyclerViewAdapter(mItems, getContext());
 
         mAddButton = view.findViewById(R.id.addGroups);
-        preferences = getActivity().getSharedPreferences("Settings", 0);
+//        preferences = getActivity().getSharedPreferences("Settings", 0);
+        preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         mUserId = preferences.getLong("UserId", 0);
     }
 
@@ -119,6 +121,7 @@ public class Groups extends Fragment {
                 VolleyRequests.getInstance(getContext()).groupFindByUserId(mUserId);
                 addGroups();
                 mGroupRecyclerViewAdapter.notifyDataSetChanged();
+//                getActivity().getSupportFragmentManager().beginTransaction().add(new AddMembers(),"Add Member").commit();
             }
         });
     }

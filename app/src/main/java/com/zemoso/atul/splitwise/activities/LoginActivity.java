@@ -4,7 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -51,21 +54,22 @@ public class LoginActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
+        mProgressBar.setVisibility(View.GONE);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         mContext = getApplication();
         Log.d(TAG, "Started");
 
         mContext = getApplication();
 
-        editor = getSharedPreferences("Settings", Context.MODE_PRIVATE).edit();
+        editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
         editor.putString("Hostname", getResources().getString(R.string.url_address));
         editor.apply();
 
 //        mSpinner = (Spinner) findViewById(R.id.spinner);
-        mAutoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.editText);
+        mAutoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.auto_complete);
         mButton = (Button) findViewById(R.id.button);
-        mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
-        mProgressBar.setVisibility(View.GONE);
+
         mUsers = new ArrayList<>();
         userName = new ArrayList<>();
 
@@ -73,31 +77,31 @@ public class LoginActivity extends AppCompatActivity {
         findDataSet();
 
 
-        arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, userName);
+        arrayAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, userName);
 //        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mAutoCompleteTextView.setAdapter(arrayAdapter);
-        mAutoCompleteTextView.setThreshold(0);
+
 
 //
-//        mAutoCompleteTextView.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//                String mText = String.valueOf(mAutoCompleteTextView.getText());
-//                userString(mText);
-//                findDataSet();
-//
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable editable) {
-//
-//            }
-//        });
+        mAutoCompleteTextView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                String mText = String.valueOf(mAutoCompleteTextView.getText());
+                userString(mText);
+                findDataSet();
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
 
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,7 +135,7 @@ public class LoginActivity extends AppCompatActivity {
         Response.Listener<JSONArray> listener = new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
-                mUsers = new ArrayList<User>();
+                mUsers.clear();
                 for (int i = 0; i < response.length(); i++)
                     try {
                         JSONObject jsonObject = response.getJSONObject(i);
@@ -161,7 +165,9 @@ public class LoginActivity extends AppCompatActivity {
 
     private void findDataSet() {
         userName.clear();
-        for (User user : mUsers)
+        for (User user : mUsers) {
             userName.add(user.getName());
+            Log.d(TAG, userName.get(userName.size() - 1));
+        }
     }
 }

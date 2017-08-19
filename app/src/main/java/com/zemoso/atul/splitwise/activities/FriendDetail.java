@@ -21,9 +21,9 @@ import com.zemoso.atul.splitwise.models.User;
 
 import io.realm.Realm;
 
-public class FriendProfile extends AppCompatActivity {
+public class FriendDetail extends AppCompatActivity {
 
-    private static final String TAG = FriendProfile.class.getSimpleName();
+    private static final String TAG = FriendDetail.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,12 +32,14 @@ public class FriendProfile extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_drawer);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+
         CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
 
         collapsingToolbarLayout.setExpandedTitleTextColor(ColorStateList.valueOf(Color.rgb(0, 0, 0)));
-//        collapsingToolbarLayout.setCollapsedTitleTextColor(Color.rgb(0, 0, 0));
+        collapsingToolbarLayout.setCollapsedTitleTextColor(Color.rgb(0, 0, 0));
 
         Bundle mBundle = getIntent().getExtras();
         long id = mBundle.getLong("userId");
@@ -50,14 +52,19 @@ public class FriendProfile extends AppCompatActivity {
         TextView mStatus = (TextView) findViewById(R.id.profile_status);
         Button mButton = (Button) findViewById(R.id.profile_settleUp);
 
-        getSupportActionBar().setTitle(mUser.getName());
+        String name = mUser.getName();
+        String imageUrl = mUser.getImageFilePath();
+        String email = mUser.getEmailId();
+        Double debt = mUser.getDebt();
+
+        getSupportActionBar().setTitle(name);
 
         Glide.with(this)
-                .load(mUser.getImageFilePath())
+                .load(imageUrl)
                 .into(mImageView);
-        mHeading.setText(mUser.getName());
-        mEmail.setText(mUser.getEmailId());
-        mStatus.setText(String.valueOf(mUser.getDebt()));
+        mHeading.setText(name);
+        mEmail.setText(email);
+        mStatus.setText(String.valueOf(debt));
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

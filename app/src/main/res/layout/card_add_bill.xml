@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/bill_card_height">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/bill_card_name"
+            android:layout_width="@dimen/bill_card_name_width"
+            android:layout_height="match_parent"
+            android:textSize="@dimen/list_item_1" />
+
+        <EditText
+            android:id="@+id/bill_card_amt"
+            android:layout_width="@dimen/bill_card_amt_width"
+            android:layout_height="match_parent"
+            android:inputType="numberDecimal"
+            android:textSize="@dimen/list_item_1" />
+
+        <Button
+            android:id="@+id/add_bill_button_subtract"
+            android:layout_width="@dimen/add_member_button_width"
+            android:layout_height="@dimen/add_member_button_width"
+            android:layout_gravity="center"
+            android:layout_marginStart="5dp"
+            android:background="@color/color_add_member_active"
+            android:text="@string/add_member_item_subtract"
+            android:textSize="@dimen/list_item_1" />
+    </LinearLayout>
+</android.support.v7.widget.CardView>

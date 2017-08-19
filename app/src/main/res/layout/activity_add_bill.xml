@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,29 +10,34 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/bill_category_height"
         android:orientation="horizontal">
-        <ImageButton
-            android:id="@+id/bill_category"
-            android:layout_width="@dimen/bill_category_width"
-            android:layout_height="match_parent"
-            android:src="@drawable/category_loading_image"/>
+        <!--<ImageButton-->
+        <!--android:id="@+id/bill_category"-->
+        <!--android:layout_width="@dimen/bill_category_width"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:src="@drawable/category_loading_image"/>-->
         <LinearLayout
-            android:layout_width="@dimen/bill_description_width"
+            android:layout_width="match_parent"
             android:layout_height="@dimen/bill_category_height"
+            android:layout_marginEnd="30dp"
+            android:layout_marginStart="30dp"
             android:orientation="vertical">
             <EditText
                 android:id="@+id/bill_description"
-                android:layout_width="match_parent"
+                android:layout_width="fill_parent"
                 android:layout_height="@dimen/bill_description_height"
                 android:hint="@string/bill_description"/>
             <LinearLayout
-                android:layout_width="@dimen/bill_description_width"
+                android:layout_width="fill_parent"
                 android:layout_height="@dimen/bill_currency_height"
                 android:orientation="horizontal">
                 <Button
-                    android:background="@drawable/bill_currency"
-                    android:id="@+id/bill_currency"
+
+                    android:id="@+id/bill_date"
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/bill_currency_height" />
+                    android:layout_height="@dimen/bill_currency_height"
+                    android:background="@color/colorButtonDebt"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="20sp" />
 
                 <EditText
                     android:id="@+id/bill_value"
@@ -44,4 +48,38 @@
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-</android.support.design.widget.CoordinatorLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/add_bill_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="10dp"
+            android:gravity="center_vertical"
+            android:text="@string/add_more_members"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/add_member_button_add"
+            android:layout_width="@dimen/add_member_button_width"
+            android:layout_height="@dimen/add_member_button_width"
+            android:layout_gravity="center"
+            android:layout_marginEnd="5dp"
+            android:background="@color/color_add_member_active"
+            android:text="@string/add_member_item_plus"
+            android:textSize="@dimen/list_item_1" />
+
+    </LinearLayout>
+
+</LinearLayout>

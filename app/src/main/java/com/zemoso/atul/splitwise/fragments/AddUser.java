@@ -75,7 +75,7 @@ public class AddUser extends DialogFragment {
                 Log.d(TAG,mEmailId);
                 Log.d(TAG,mPhoneNumber);
                 Log.d(TAG, String.valueOf(mAges));
-                Map newUser = new HashMap();
+                Map<String, Object> newUser = new HashMap<>();
                 newUser.put("name",mUserName);
                 newUser.put("emailId",mEmailId);
                 newUser.put("phoneNumber",mPhoneNumber);

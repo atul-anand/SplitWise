@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.zemoso.atul.splitwise.R;
-import com.zemoso.atul.splitwise.activities.FriendProfile;
+import com.zemoso.atul.splitwise.activities.FriendDetail;
 import com.zemoso.atul.splitwise.javaBeans.RecyclerViewHolder;
 
 import java.util.List;
@@ -41,7 +41,7 @@ public class FriendRecyclerViewAdapter extends RecyclerView.Adapter<FriendRecycl
     public RecyclerViewViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Log.d(TAG,"RecyclerViewViewHolder");
         View view = LayoutInflater.from(mContext)
-                .inflate(R.layout.component_card_view,parent,false);
+                .inflate(R.layout.card_friend_group, parent, false);
         return new RecyclerViewViewHolder(view);
     }
 
@@ -67,7 +67,7 @@ public class FriendRecyclerViewAdapter extends RecyclerView.Adapter<FriendRecycl
             @Override
             public void onClick(View view) {
                 Toast.makeText(mContext,mCardData.getId() + " " + mCardData.getmHeading(),Toast.LENGTH_SHORT).show();
-                Intent mIntent = new Intent(mContext, FriendProfile.class);
+                Intent mIntent = new Intent(mContext, FriendDetail.class);
                 Bundle mBundle = new Bundle();
                 mBundle.putLong("userId", mCardData.getId());
                 mIntent.putExtras(mBundle);

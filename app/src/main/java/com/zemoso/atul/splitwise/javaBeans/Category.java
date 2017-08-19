@@ -1,8 +1,5 @@
 package com.zemoso.atul.splitwise.javaBeans;
 
-import java.util.Iterator;
-import java.util.List;
-
 /**
  * Created by zemoso on 14/8/17.
  */
@@ -10,12 +7,12 @@ import java.util.List;
 public class Category {
     private String text;
     private String imageUrl;
-    private List<Category> menu;
 
-    public Category(String text, String imageUrl, List<Category> menu) {
+
+    public Category(String text, String imageUrl) {
         this.text = text;
         this.imageUrl = imageUrl;
-        this.menu = menu;
+
     }
 
     public String getText() {
@@ -32,14 +29,6 @@ public class Category {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
-    }
-
-    public List<Category> isMenu() {
-        return menu;
-    }
-
-    public void setMenu(List menu) {
-        menu = menu;
     }
 
 }

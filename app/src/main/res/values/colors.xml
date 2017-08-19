@@ -10,6 +10,7 @@
 
     <color name="colorButtonSettleUp">#F0512F</color>
     <color name="colorButtonBalances">#00AE85</color>
+    <color name="colorButtonDebt">@color/colorCardStatus</color>
     <color name="colorButtonUndeleteExpense">#989898</color>
     <color name="colorButtonAddMembers">@color/colorTotalBalance</color>
 
@@ -20,5 +21,9 @@
     <color name="colorCardStatus">@color/colorPrimary</color>
     <!--<color name="colorCardBackground"></color>-->
 
+    <!--Add Members-->
+
+    <color name="color_add_member_active">@color/colorPrimaryDark</color>
+    <color name="color_add_member_inactive">@color/colorAccent</color>
 
 </resources>

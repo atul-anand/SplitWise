@@ -1,6 +1,8 @@
 package com.zemoso.atul.splitwise.adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -13,6 +15,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.zemoso.atul.splitwise.R;
+import com.zemoso.atul.splitwise.activities.TransactionDetail;
 import com.zemoso.atul.splitwise.javaBeans.RecyclerViewHolder;
 
 import java.util.List;
@@ -21,8 +24,8 @@ import java.util.List;
  * Created by zemoso on 16/8/17.
  */
 
-public class TransactionRecyclerViewAdapter extends RecyclerView.Adapter<FriendRecyclerViewAdapter.RecyclerViewViewHolder> {
-    private static final String TAG = FriendRecyclerViewAdapter.class.getSimpleName();
+public class TransactionRecyclerViewAdapter extends RecyclerView.Adapter<TransactionRecyclerViewAdapter.RecyclerViewViewHolder> {
+    private static final String TAG = TransactionRecyclerViewAdapter.class.getSimpleName();
 
     private List<RecyclerViewHolder> mItems;
     private Context mContext;
@@ -34,15 +37,15 @@ public class TransactionRecyclerViewAdapter extends RecyclerView.Adapter<FriendR
     }
 
     @Override
-    public FriendRecyclerViewAdapter.RecyclerViewViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Log.d(TAG, "RecyclerViewViewHolder");
+    public TransactionRecyclerViewAdapter.RecyclerViewViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
         View view = LayoutInflater.from(mContext)
-                .inflate(R.layout.transaction_card_view, parent, false);
-        return new FriendRecyclerViewAdapter.RecyclerViewViewHolder(view);
+                .inflate(R.layout.card_transaction, parent, false);
+        return new TransactionRecyclerViewAdapter.RecyclerViewViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final FriendRecyclerViewAdapter.RecyclerViewViewHolder holder, int position) {
+    public void onBindViewHolder(final TransactionRecyclerViewAdapter.RecyclerViewViewHolder holder, int position) {
         Log.d(TAG, "onBindViewHolder");
         final RecyclerViewHolder mCardData = mItems.get(position);
         if (mCardData.isImageDownloaded())
@@ -63,11 +66,11 @@ public class TransactionRecyclerViewAdapter extends RecyclerView.Adapter<FriendR
             @Override
             public void onClick(View view) {
                 Toast.makeText(mContext, mCardData.getId() + " " + mCardData.getmHeading(), Toast.LENGTH_SHORT).show();
-//                Intent mIntent = new Intent(mContext, FriendProfile.class);
-//                Bundle mBundle = new Bundle();
-//                mBundle.putInt("id",mCardData.getId());
-//                mIntent.putExtras(mBundle);
-//                mContext.startActivity(mIntent);
+                Intent mIntent = new Intent(mContext, TransactionDetail.class);
+                Bundle mBundle = new Bundle();
+                mBundle.putLong("transId", mCardData.getId());
+                mIntent.putExtras(mBundle);
+                mContext.startActivity(mIntent);
             }
         });
     }

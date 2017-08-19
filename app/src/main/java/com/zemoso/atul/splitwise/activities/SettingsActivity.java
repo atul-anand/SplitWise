@@ -14,6 +14,7 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.zemoso.atul.splitwise.R;
@@ -32,6 +33,10 @@ import java.util.List;
  * API Guide</a> for more information on developing a Settings UI.
  */
 public class SettingsActivity extends AppCompatPreferenceActivity {
+
+    //    private SharedPreferences preferences = this.getPreferenceManager().getDefaultSharedPreferences(this);
+    private static final String TAG = SettingsActivity.class.getSimpleName();
+
     private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
         @Override
         public boolean onPreferenceChange(Preference preference, Object value) {
@@ -39,11 +44,12 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
 
             if (preference instanceof EditTextPreference) {
-
-//                SharedPreferences.Editor editor =  getSharedPreferences("Settings",Context.MODE_PRIVATE).edit();
+//
+//                SharedPreferences.Editor editor =  preferences.edit();
 //                editor.putString("Hostname",stringValue);
 //                editor.apply();
-
+                Log.d(TAG, stringValue);
+                preference.setSummary(stringValue);
             }
 //            else
 //            if (preference instanceof ListPreference) {
@@ -92,9 +98,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
      * A preference value change listener that updates the preference's summary
      * to reflect its new value.
      */
-    private EditTextPreference editTextPreference;
-    private String hostname;
-    private Context mContext;
 
     /**
      * Helper method to determine if the device has an extra-large screen. For

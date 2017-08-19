@@ -1,7 +1,9 @@
 package com.zemoso.atul.splitwise.fragments;
 
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -12,7 +14,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.zemoso.atul.splitwise.R;
+import com.zemoso.atul.splitwise.models.User;
 import com.zemoso.atul.splitwise.singletons.VolleyRequests;
 
 import org.json.JSONObject;
@@ -30,6 +36,8 @@ public class AddGroup extends DialogFragment {
     EditText mGroupName;
     String mUserName;
     Button mSubmit;
+    Long mUserId;
+    User mUser;
 
     public AddGroup() {
         // Required empty public constructor
@@ -51,7 +59,11 @@ public class AddGroup extends DialogFragment {
 //        Realm realm = Realm.getDefaultInstance();
 //        User user = realm.where(User.class).equalTo("id", ((SplitWise)getActivity().getApplication()).getUserId()).findFirst();
 ////            mUserName = new JSONObject(user.getJSON()).getString("name");
-        mUserName = "Arya Stark";
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        mUserId = preferences.getLong("userId", 0);
+        getUser();
+
     }
 
     @Override
@@ -70,5 +82,30 @@ public class AddGroup extends DialogFragment {
                 AddGroup.this.dismiss();
             }
         });
+    }
+
+    private void getUser() {
+        String extension = getResources().getString(R.string.url_user_findById);
+        String param = getResources().getString(R.string.url_user_id);
+        String mUrl = PreferenceManager.getDefaultSharedPreferences(getContext()).getString("Hostname", "") + extension + "?"
+                + param + "=" + mUserId;
+        Log.d(TAG, mUrl);
+        Response.Listener<JSONObject> listener = new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                mUser = new User(response);
+                mUserName = mUser.getName();
+                Log.d(TAG, String.valueOf(response));
+            }
+        };
+        Response.ErrorListener errorListener = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(TAG, error.toString());
+
+            }
+        };
+        JsonObjectRequest transJsonObject = new JsonObjectRequest(mUrl, null, listener, errorListener);
+        VolleyRequests.getInstance(getContext()).addToRequestQueue(transJsonObject);
     }
 }

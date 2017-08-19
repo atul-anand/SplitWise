@@ -21,7 +21,7 @@ import java.util.List;
  * Created by zemoso on 16/8/17.
  */
 
-public class GroupRecyclerViewAdapter extends RecyclerView.Adapter<FriendRecyclerViewAdapter.RecyclerViewViewHolder> {
+public class GroupRecyclerViewAdapter extends RecyclerView.Adapter<GroupRecyclerViewAdapter.RecyclerViewViewHolder> {
 
     private static final String TAG = FriendRecyclerViewAdapter.class.getSimpleName();
 
@@ -35,15 +35,15 @@ public class GroupRecyclerViewAdapter extends RecyclerView.Adapter<FriendRecycle
     }
 
     @Override
-    public FriendRecyclerViewAdapter.RecyclerViewViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public GroupRecyclerViewAdapter.RecyclerViewViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Log.d(TAG, "RecyclerViewViewHolder");
         View view = LayoutInflater.from(mContext)
-                .inflate(R.layout.component_card_view, parent, false);
-        return new FriendRecyclerViewAdapter.RecyclerViewViewHolder(view);
+                .inflate(R.layout.card_friend_group, parent, false);
+        return new GroupRecyclerViewAdapter.RecyclerViewViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final FriendRecyclerViewAdapter.RecyclerViewViewHolder holder, int position) {
+    public void onBindViewHolder(final GroupRecyclerViewAdapter.RecyclerViewViewHolder holder, int position) {
         Log.d(TAG, "onBindViewHolder");
         final RecyclerViewHolder mCardData = mItems.get(position);
         if (mCardData.isImageDownloaded())
@@ -64,7 +64,7 @@ public class GroupRecyclerViewAdapter extends RecyclerView.Adapter<FriendRecycle
             @Override
             public void onClick(View view) {
                 Toast.makeText(mContext, mCardData.getId() + " " + mCardData.getmHeading(), Toast.LENGTH_SHORT).show();
-//                Intent mIntent = new Intent(mContext, FriendProfile.class);
+//                Intent mIntent = new Intent(mContext, FriendDetail.class);
 //                Bundle mBundle = new Bundle();
 //                mBundle.putInt("id",mCardData.getId());
 //                mIntent.putExtras(mBundle);

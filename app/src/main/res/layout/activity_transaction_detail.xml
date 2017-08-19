@@ -1,8 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.zemoso.atul.splitwise.activities.TransactionDetail">
+    android:layout_height="wrap_content">
 
-</android.support.constraint.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:context="com.zemoso.atul.splitwise.activities.TransactionDetail">
+
+        <TextView
+            android:id="@+id/trans_detail_description"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/trans_detail_description_height"
+            android:textAlignment="center" />
+
+        <TextView
+            android:id="@+id/trans_detail_total_amount"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/trans_detail_amount_height"
+            android:textAlignment="center"
+            android:textSize="40sp" />
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_show_transaction"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </android.support.v7.widget.RecyclerView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/trans_detail_button_top_margin"
+            android:gravity="center_horizontal">
+
+            <Button
+                android:id="@+id/trans_detail_amount"
+                android:layout_width="@dimen/trans_detail_button_width"
+                android:layout_height="@dimen/trans_detail_button_height"
+                android:layout_marginEnd="10dp"
+                android:background="@color/colorButtonBalances"
+                android:text="@string/balances"
+                android:textColor="@color/colorWhite" />
+
+            <Button
+                android:id="@+id/trans_detail_debt"
+                android:layout_width="@dimen/trans_detail_button_width"
+                android:layout_height="@dimen/trans_detail_button_height"
+                android:layout_marginStart="10dp"
+                android:background="@color/colorButtonDebt"
+                android:text="@string/debt"
+                android:textColor="@color/colorWhite" />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

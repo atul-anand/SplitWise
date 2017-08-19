@@ -3,6 +3,7 @@ package com.zemoso.atul.splitwise.fragments;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -85,7 +86,8 @@ public class Friends extends Fragment {
         mItems = new ArrayList<>();
         mUsers = new ArrayList<>();
         mFriendRecyclerViewAdapter = new FriendRecyclerViewAdapter(mItems, getContext());
-        preferences = getActivity().getSharedPreferences("Settings", 0);
+//        preferences = getActivity().getSharedPreferences("Settings", 0);
+        preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         mUserId = preferences.getLong("userId", 0);
         mAddButton = view.findViewById(R.id.addFriends);
 
@@ -150,7 +152,6 @@ public class Friends extends Fragment {
         Response.Listener<JSONArray> listener = new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
-                mUsers = new ArrayList<User>();
                 for (int i = 0; i < response.length(); i++)
                     try {
                         JSONObject jsonObject = response.getJSONObject(i);
@@ -174,6 +175,5 @@ public class Friends extends Fragment {
         };
         JsonArrayRequest userJsonObject = new JsonArrayRequest(mUrl, listener, errorListener);
         VolleyRequests.getInstance(getContext()).addToRequestQueue(userJsonObject);
-
     }
 }
