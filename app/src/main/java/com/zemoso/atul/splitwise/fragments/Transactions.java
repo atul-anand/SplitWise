@@ -34,12 +34,20 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.Realm;
+
 /**
  * A simple {@link Fragment} subclass.
  */
 public class Transactions extends Fragment {
 
+    //region Variable Declaration
     private static final String TAG = Transactions.class.getSimpleName();
+
+    private SharedPreferences preferences;
+    private Long mUserId;
+    private List<RecyclerViewHolder> mItems;
+    private List<Transaction> mTransactions;
 
     private Button mButton;
     private PopupMenu mPopupMenu;
@@ -47,12 +55,9 @@ public class Transactions extends Fragment {
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private TransactionRecyclerViewAdapter mTransactionRecyclerViewAdapter;
-    private List<RecyclerViewHolder> mItems;
-    private List<Transaction> mTransactions;
+    //endregion
 
-    private SharedPreferences preferences;
-    private Long mUserId;
-
+    //region Constructor
     public Transactions() {
         // Required empty public constructor
     }
@@ -60,7 +65,9 @@ public class Transactions extends Fragment {
     public static Transactions newInstance() {
         return new Transactions();
     }
+    //endregion
 
+    //region Inherited Methods
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -72,18 +79,19 @@ public class Transactions extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mButton = view.findViewById(R.id.total_menu);
-        mPopupMenu = new PopupMenu(getContext(), mButton);
-
-        mRecyclerView = view.findViewById(R.id.recycler_transaction);
-        mLayoutManager = new LinearLayoutManager(getContext());
-        mItems = new ArrayList<>();
-        mTransactions = new ArrayList<>();
-        mTransactionRecyclerViewAdapter = new TransactionRecyclerViewAdapter(mItems, getContext());
-
-//        preferences = getActivity().getSharedPreferences("Settings", 0);
         preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         mUserId = preferences.getLong("userId", 0);
+        mItems = new ArrayList<>();
+        mTransactions = new ArrayList<>();
+
+        mButton = view.findViewById(R.id.total_menu);
+        mPopupMenu = new PopupMenu(getContext(), mButton);
+        mRecyclerView = view.findViewById(R.id.recycler_transaction);
+
+        mLayoutManager = new LinearLayoutManager(getContext());
+        mTransactionRecyclerViewAdapter = new TransactionRecyclerViewAdapter(mItems, getContext());
+
+
     }
 
     @Override
@@ -92,6 +100,7 @@ public class Transactions extends Fragment {
 
         transactionFindByUserId(mUserId);
         Log.d(TAG, String.valueOf(mItems.size()));
+
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -116,7 +125,9 @@ public class Transactions extends Fragment {
 
 
     }
+    //endregion
 
+    //region Private Methods
     private void addTransactions() {
         for (Transaction transaction : mTransactions) {
             long mId = transaction.getTransId();
@@ -130,22 +141,27 @@ public class Transactions extends Fragment {
     private void transactionFindByUserId(long userId) {
         String extension = getResources().getString(R.string.url_transaction_findByUserId);
         String param = getResources().getString(R.string.url_user_id);
-        String mUrl = getActivity().getSharedPreferences("Settings", 0).getString("Hostname", "") + extension
+        String mUrl = PreferenceManager.getDefaultSharedPreferences(getContext()).getString("Hostname", "") + extension
                 + "?" + param + "=" + userId;
         Log.d(TAG, mUrl);
         Response.Listener<JSONArray> listener = new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
+                Realm realm = Realm.getDefaultInstance();
+                realm.beginTransaction();
                 for (int i = 0; i < response.length(); i++)
                     try {
                         JSONObject jsonObject = response.getJSONObject(i);
                         Transaction transaction = new Transaction(jsonObject);
                         mTransactions.add(transaction);
+                        realm.insertOrUpdate(transaction);
                         Log.d(TAG, String.valueOf(jsonObject));
 
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                realm.commitTransaction();
+                realm.close();
                 addTransactions();
                 mTransactionRecyclerViewAdapter.notifyDataSetChanged();
             }
@@ -161,5 +177,5 @@ public class Transactions extends Fragment {
         VolleyRequests.getInstance(getContext()).addToRequestQueue(userJsonObject);
 
     }
-
+    //endregion
 }

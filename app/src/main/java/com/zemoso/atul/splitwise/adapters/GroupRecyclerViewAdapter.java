@@ -1,6 +1,8 @@
 package com.zemoso.atul.splitwise.adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -13,6 +15,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.zemoso.atul.splitwise.R;
+import com.zemoso.atul.splitwise.activities.GroupDetail;
 import com.zemoso.atul.splitwise.javaBeans.RecyclerViewHolder;
 
 import java.util.List;
@@ -23,10 +26,12 @@ import java.util.List;
 
 public class GroupRecyclerViewAdapter extends RecyclerView.Adapter<GroupRecyclerViewAdapter.RecyclerViewViewHolder> {
 
+    //region Variable Declaration
     private static final String TAG = FriendRecyclerViewAdapter.class.getSimpleName();
 
     private List<RecyclerViewHolder> mItems;
     private Context mContext;
+    //endregion
 
     public GroupRecyclerViewAdapter(List<RecyclerViewHolder> mItems, Context mContext) {
         Log.d(TAG, "Constructor");
@@ -34,6 +39,7 @@ public class GroupRecyclerViewAdapter extends RecyclerView.Adapter<GroupRecycler
         this.mContext = mContext;
     }
 
+    //region Inherited Methods
     @Override
     public GroupRecyclerViewAdapter.RecyclerViewViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Log.d(TAG, "RecyclerViewViewHolder");
@@ -45,7 +51,10 @@ public class GroupRecyclerViewAdapter extends RecyclerView.Adapter<GroupRecycler
     @Override
     public void onBindViewHolder(final GroupRecyclerViewAdapter.RecyclerViewViewHolder holder, int position) {
         Log.d(TAG, "onBindViewHolder");
-        final RecyclerViewHolder mCardData = mItems.get(position);
+
+        int pos = holder.getAdapterPosition();
+        final RecyclerViewHolder mCardData = mItems.get(pos);
+
         if (mCardData.isImageDownloaded())
             Glide.with(mContext)
                     .load(mCardData.getmAvatarFilePath())
@@ -57,18 +66,17 @@ public class GroupRecyclerViewAdapter extends RecyclerView.Adapter<GroupRecycler
 //            TODO: Set File Path
         }
 
-
         holder.mHeading.setText(mCardData.getmHeading());
         holder.mStatus.setText(mCardData.getmStatus());
         holder.mCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Toast.makeText(mContext, mCardData.getId() + " " + mCardData.getmHeading(), Toast.LENGTH_SHORT).show();
-//                Intent mIntent = new Intent(mContext, FriendDetail.class);
-//                Bundle mBundle = new Bundle();
-//                mBundle.putInt("id",mCardData.getId());
-//                mIntent.putExtras(mBundle);
-//                mContext.startActivity(mIntent);
+                Intent mIntent = new Intent(mContext, GroupDetail.class);
+                Bundle mBundle = new Bundle();
+                mBundle.putLong("groupId", mCardData.getId());
+                mIntent.putExtras(mBundle);
+                mContext.startActivity(mIntent);
             }
         });
     }
@@ -77,8 +85,9 @@ public class GroupRecyclerViewAdapter extends RecyclerView.Adapter<GroupRecycler
     public int getItemCount() {
         return mItems.size();
     }
+    //endregion
 
-    static class RecyclerViewViewHolder extends RecyclerView.ViewHolder {
+    class RecyclerViewViewHolder extends RecyclerView.ViewHolder {
 
         ImageView mAvatar;
         TextView mHeading;

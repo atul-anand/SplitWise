@@ -34,12 +34,20 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.Realm;
+
 /**
  * A simple {@link Fragment} subclass.
  */
 public class Groups extends Fragment {
 
+    //region Variable Declaration
     private static final String TAG = Groups.class.getSimpleName();
+
+    private SharedPreferences preferences;
+    private Long mUserId;
+    private List<RecyclerViewHolder> mItems;
+    private List<Group> mGroups;
 
     private Button mButton;
     private PopupMenu mPopupMenu;
@@ -48,42 +56,80 @@ public class Groups extends Fragment {
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private GroupRecyclerViewAdapter mGroupRecyclerViewAdapter;
-    private List<RecyclerViewHolder> mItems;
-    private List<Group> mGroups;
+    //endregion
+    //region Listener
+    private View.OnClickListener popUpListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            mPopupMenu.getMenuInflater().inflate(R.menu.menu_total_balance, mPopupMenu.getMenu());
+            mPopupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    Toast.makeText(getContext(),
+                            "You clicked" + item.getTitle(),
+                            Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+            });
+            mPopupMenu.show();
+        }
+    };
+    private View.OnClickListener addGroupListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            getActivity().getSupportFragmentManager().beginTransaction().add(AddGroup.newInstance(), "Add Group").commit();
+            VolleyRequests.getInstance(getContext()).groupFindByUserId(mUserId);
+            addGroups();
+            mGroupRecyclerViewAdapter.notifyDataSetChanged();
+//                getActivity().getSupportFragmentManager().beginTransaction().add(new AddMembers(),"Add Member").commit();
+        }
+    };
+    //endregion
 
-    private SharedPreferences preferences;
-    private Long mUserId;
-
+    //region Constructor
     public Groups() {
         // Required empty public constructor
     }
+
     public static Groups newInstance(){
         return new Groups();
     }
 
+    //region Inherited Methods
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_groups, container, false);
     }
+    //endregion
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mButton = view.findViewById(R.id.total_menu);
-        mPopupMenu = new PopupMenu(getContext(),mButton);
 
-        mRecyclerView = view.findViewById(R.id.recycler_groups);
-        mLayoutManager = new LinearLayoutManager(getContext());
-        mItems = new ArrayList<>();
-        mGroups = new ArrayList<>();
-        mGroupRecyclerViewAdapter = new GroupRecyclerViewAdapter(mItems, getContext());
-
-        mAddButton = view.findViewById(R.id.addGroups);
+        //region Data
 //        preferences = getActivity().getSharedPreferences("Settings", 0);
         preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         mUserId = preferences.getLong("UserId", 0);
+
+        mItems = new ArrayList<>();
+        mGroups = new ArrayList<>();
+        mItems.add(new RecyclerViewHolder(1, "a", "b", "c", "d"));
+        //endregion
+
+        //region Views
+        mButton = view.findViewById(R.id.total_menu);
+        mPopupMenu = new PopupMenu(getContext(),mButton);
+        mAddButton = view.findViewById(R.id.addGroups);
+        //endregion
+
+        //region Recycler View
+        mRecyclerView = view.findViewById(R.id.recycler_groups);
+        mLayoutManager = new LinearLayoutManager(getContext());
+        mGroupRecyclerViewAdapter = new GroupRecyclerViewAdapter(mItems, getContext());
+        //endregion
+
     }
 
     @Override
@@ -92,40 +138,18 @@ public class Groups extends Fragment {
 
         groupFindByUserId(mUserId);
         Log.d(TAG, String.valueOf(mItems.size()));
+
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setAdapter(mGroupRecyclerViewAdapter);
 
-        mButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mPopupMenu.getMenuInflater().inflate(R.menu.menu_total_balance,mPopupMenu.getMenu());
-                mPopupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        Toast.makeText(getContext(),
-                                "You clicked"+item.getTitle(),
-                                Toast.LENGTH_SHORT).show();
-                        return true;
-                    }
-                });
-                mPopupMenu.show();
-            }
-        });
-
-        mAddButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getActivity().getSupportFragmentManager().beginTransaction().add(new AddGroup(),"Add Group").commit();
-                VolleyRequests.getInstance(getContext()).groupFindByUserId(mUserId);
-                addGroups();
-                mGroupRecyclerViewAdapter.notifyDataSetChanged();
-//                getActivity().getSupportFragmentManager().beginTransaction().add(new AddMembers(),"Add Member").commit();
-            }
-        });
+        mButton.setOnClickListener(popUpListener);
+        mAddButton.setOnClickListener(addGroupListener);
     }
+    //endregion
 
+    //region Private Methods
     private void addGroups() {
         for (Group group : mGroups) {
             long mId = group.getGroupId();
@@ -139,22 +163,27 @@ public class Groups extends Fragment {
     private void groupFindByUserId(long userId) {
         String extension = getResources().getString(R.string.url_group_findByUserId);
         String param = getResources().getString(R.string.url_user_id);
-        String mUrl = getActivity().getSharedPreferences("Settings", 0).getString("Hostname", "") + extension
+        String mUrl = PreferenceManager.getDefaultSharedPreferences(getContext()).getString("Hostname", "") + extension
                 + "?" + param + "=" + userId;
         Log.d(TAG, mUrl);
         Response.Listener<JSONArray> listener = new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
+                Realm realm = Realm.getDefaultInstance();
+                realm.beginTransaction();
                 for (int i = 0; i < response.length(); i++)
                     try {
                         JSONObject jsonObject = response.getJSONObject(i);
                         Group group = new Group(jsonObject);
                         mGroups.add(group);
+                        realm.insertOrUpdate(group);
                         Log.d(TAG, String.valueOf(jsonObject));
 
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                realm.commitTransaction();
+                realm.close();
                 addGroups();
                 mGroupRecyclerViewAdapter.notifyDataSetChanged();
             }
@@ -170,4 +199,6 @@ public class Groups extends Fragment {
         VolleyRequests.getInstance(getContext()).addToRequestQueue(userJsonObject);
 
     }
+    //endregion
+
 }

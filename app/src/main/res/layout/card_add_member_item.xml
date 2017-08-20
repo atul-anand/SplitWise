@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         android:gravity="center_horizontal">
 
-        <EditText
+        <AutoCompleteTextView
             android:id="@+id/add_member_edit_text"
             android:layout_width="@dimen/add_member_edit_width"
             android:layout_height="@dimen/add_member_list_height"

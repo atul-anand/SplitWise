@@ -21,7 +21,8 @@
         android:layout_marginBottom="25dp"
         android:hint="@string/add_user_name"
         android:inputType="text"
-        android:textAlignment="center"/>
+        android:textAlignment="center"
+        android:textColor="@color/colorPrimaryDark" />
     <!--<Spinner-->
     <!--android:id="@+id/spinner"-->
     <!--android:layout_width="@dimen/edit_text_width"-->
@@ -42,15 +43,18 @@
 
     <ProgressBar
         android:id="@+id/progress_bar"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        style="?android:attr/progressBarStyleSmall"
+        android:layout_width="@dimen/progress_bar_width"
+        android:layout_height="@dimen/progress_bar_height"
         android:layout_gravity="center"
+        android:layout_marginBottom="30dp"
+        android:layout_marginStart="80dp"
         android:background="@color/colorWhite"
         android:elevation="@dimen/progress_bar_elevation"
         android:indeterminate="true"
         android:paddingBottom="@dimen/progress_bar_vertical_padding"
         android:paddingEnd="@dimen/progress_bar_horizontal_padding"
         android:paddingStart="@dimen/progress_bar_horizontal_padding"
-        android:paddingTop="@dimen/progress_bar_vertical_padding" />
+        android:paddingTop="@dimen/progress_bar_vertical_padding"
+        android:visibility="gone" />
 </FrameLayout>

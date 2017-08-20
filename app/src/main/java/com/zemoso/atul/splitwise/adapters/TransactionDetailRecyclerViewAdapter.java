@@ -18,16 +18,19 @@ import java.util.List;
 
 public class TransactionDetailRecyclerViewAdapter extends RecyclerView.Adapter<TransactionDetailRecyclerViewAdapter.RecyclerViewViewHolder> {
 
+    //region Variable Declaration
     private static final String TAG = TransactionDetailRecyclerViewAdapter.class.getSimpleName();
 
     private List<TransactionHolder> mItems;
     private Context mContext;
+    //endregion
 
     public TransactionDetailRecyclerViewAdapter(List mItems, Context mContext) {
         this.mItems = mItems;
         this.mContext = mContext;
     }
 
+    //region Inherited Methods
     @Override
     public TransactionDetailRecyclerViewAdapter.RecyclerViewViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext)
@@ -39,7 +42,7 @@ public class TransactionDetailRecyclerViewAdapter extends RecyclerView.Adapter<T
     public void onBindViewHolder(TransactionDetailRecyclerViewAdapter.RecyclerViewViewHolder holder, int position) {
         final TransactionHolder mCardData = mItems.get(position);
         holder.mUsername.setText(mCardData.getName());
-        holder.mAmount.setText(mCardData.getAmount().toString());
+        holder.mAmount.setText(String.valueOf(mCardData.getAmount()));
 
     }
 
@@ -47,14 +50,15 @@ public class TransactionDetailRecyclerViewAdapter extends RecyclerView.Adapter<T
     public int getItemCount() {
         return mItems.size();
     }
+    //endregion
 
-    public class RecyclerViewViewHolder extends RecyclerView.ViewHolder {
+    class RecyclerViewViewHolder extends RecyclerView.ViewHolder {
 
         TextView mUsername;
         TextView mAmount;
 
 
-        public RecyclerViewViewHolder(View itemView) {
+        RecyclerViewViewHolder(View itemView) {
             super(itemView);
             mUsername = itemView.findViewById(R.id.card_heading);
             mAmount = itemView.findViewById(R.id.card_status);

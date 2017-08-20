@@ -16,8 +16,8 @@
     <dimen name="fab_margin">20dp</dimen>
 
     <!--Progress Bar-->
-    <dimen name="progress_bar_width">100dp</dimen>
-    <dimen name="progress_bar_height">100dp</dimen>
+    <dimen name="progress_bar_width">30dp</dimen>
+    <dimen name="progress_bar_height">30dp</dimen>
     <dimen name="progress_bar_horizontal_padding">100dp</dimen>
     <dimen name="progress_bar_vertical_padding">220dp</dimen>
     <dimen name="progress_bar_elevation">5dp</dimen>
@@ -85,6 +85,12 @@
     <dimen name="trans_detail_description_height">50dp</dimen>
     <dimen name="trans_detail_button_top_margin">20dp</dimen>
 
+    <!--Group Detail-->
+    <dimen name="group_detail_card_height">60dp</dimen>
+    <dimen name="group_detail_text_width">300dp</dimen>
+    <dimen name="group_detail_name_height">60dp</dimen>
+    <dimen name="group_detail_button_width">150dp</dimen>
+
     <!--Add Bill-->
     <dimen name="bill_category_height">100dp</dimen>
     <dimen name="bill_category_width">83dp</dimen>
@@ -96,9 +102,13 @@
     <dimen name="bill_value_width">225dp</dimen>
     <dimen name="bill_value_font">28sp</dimen>
     <dimen name="bill_card_height">50dp</dimen>
-    <dimen name="bill_card_name_width">220dp</dimen>
-    <dimen name="bill_card_amt_width">100dp</dimen>
+    <dimen name="bill_card_name_width">160dp</dimen>
+    <dimen name="bill_card_amt_width">80dp</dimen>
     <dimen name="bill_card_horizontal_padding">10dp</dimen>
+
+    <!--Single Amount-->
+    <dimen name="bill_card_single_name_width">300dp</dimen>
+    <dimen name="bill_card_single_checkbox_width">40dp</dimen>
 
     <!--Add User-->
     <dimen name="user_edit_width">300dp</dimen>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.zemoso.atul.splitwise.activities.GroupDetail">
+
+    <TextView
+        android:id="@+id/group_detail_group_name"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/group_detail_name_height"
+        android:textAlignment="center"
+        android:textSize="40sp" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/group_detail_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/group_detail_add_member"
+            android:layout_width="@dimen/group_detail_button_width"
+            android:layout_height="@dimen/group_detail_card_height"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginEnd="10dp"
+            android:onClick="addMemberDialog"
+            android:text="@string/add_member_heading"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/group_detail_settle_up"
+            android:layout_width="@dimen/group_detail_button_width"
+            android:layout_height="@dimen/group_detail_card_height"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginStart="10dp"
+            android:text="@string/settleUp"
+            android:textSize="20sp" />
+    </LinearLayout>
+</LinearLayout>

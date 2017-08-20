@@ -2,14 +2,12 @@ package com.zemoso.atul.splitwise.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.zemoso.atul.splitwise.R;
 import com.zemoso.atul.splitwise.javaBeans.TransactionHolder;
@@ -22,6 +20,7 @@ import java.util.List;
 
 public class AddBillRecyclerViewAdapter extends RecyclerView.Adapter<AddBillRecyclerViewAdapter.RecyclerViewViewHolder> {
 
+    //region Variable Declaration
     private static final String TAG = AddBillRecyclerViewAdapter.class.getSimpleName();
 
     private List<TransactionHolder> mItems;
@@ -31,7 +30,9 @@ public class AddBillRecyclerViewAdapter extends RecyclerView.Adapter<AddBillRecy
         this.mItems = mItems;
         this.mContext = mContext;
     }
+    //endregion
 
+    //region Inherited Methods
     @Override
     public RecyclerViewViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext)
@@ -40,33 +41,37 @@ public class AddBillRecyclerViewAdapter extends RecyclerView.Adapter<AddBillRecy
     }
 
     @Override
-    public void onBindViewHolder(RecyclerViewViewHolder holder, final int position) {
-        final TransactionHolder transactionHolder = mItems.get(position);
+    public void onBindViewHolder(RecyclerViewViewHolder holder, int position) {
+
+        final RecyclerViewViewHolder hold = holder;
+        final int pos = holder.getAdapterPosition();
+
+        TransactionHolder transactionHolder = mItems.get(pos);
+
+        final Long id = transactionHolder.getUserId();
+
         String name = transactionHolder.getName();
-        Double amount = transactionHolder.getAmount();
+        String amount = transactionHolder.getAmount().toString();
+
         holder.textView.setText(name);
-        holder.editText.setText(amount.toString());
-        holder.editText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        holder.editText.setText(amount);
 
-            }
-
+        holder.btnCheck.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                transactionHolder.setAmount(Double.parseDouble(String.valueOf(charSequence)));
+            public void onClick(View view) {
+                String nam = String.valueOf(hold.textView.getText());
+                Double amt = Double.parseDouble(String.valueOf(hold.editText.getText()));
+                TransactionHolder tH = new TransactionHolder(id, nam, amt);
+                mItems.set(pos, tH);
+                mItems.add(new TransactionHolder(-1L, "", 0.0));
                 notifyDataSetChanged();
             }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
         });
+
         holder.button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mItems.remove(position);
+                mItems.remove(pos);
                 notifyDataSetChanged();
             }
         });
@@ -76,17 +81,20 @@ public class AddBillRecyclerViewAdapter extends RecyclerView.Adapter<AddBillRecy
     public int getItemCount() {
         return mItems.size();
     }
+    //endregion
 
-    public class RecyclerViewViewHolder extends RecyclerView.ViewHolder {
-        TextView textView;
+    class RecyclerViewViewHolder extends RecyclerView.ViewHolder {
+        AutoCompleteTextView textView;
         EditText editText;
         Button button;
+        Button btnCheck;
 
-        public RecyclerViewViewHolder(View itemView) {
+        RecyclerViewViewHolder(View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.bill_card_name);
             editText = itemView.findViewById(R.id.bill_card_amt);
             button = itemView.findViewById(R.id.add_bill_button_subtract);
+            btnCheck = itemView.findViewById(R.id.add_bill_button_check);
         }
     }
 }

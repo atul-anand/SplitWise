@@ -30,60 +30,73 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.Realm;
+
 public class TransactionDetail extends AppCompatActivity {
 
+    //region Variable Declaration
     private static final String TAG = TransactionDetail.class.getSimpleName();
 
-    private RecyclerView mRecyclerView;
-    private RecyclerView.LayoutManager mLayoutManager;
-    private TransactionDetailRecyclerViewAdapter mTransactionDetailRecyclerViewAdapter;
-
-    private List<TransactionBalances> mData;
-    private List<TransactionHolder> mItems;
+    //region Views
     private TextView mDescription;
     private TextView mAmount;
     private Button mTotalButton;
     private Button mDebtButton;
+    private RecyclerView mRecyclerView;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private TransactionDetailRecyclerViewAdapter mTransactionDetailRecyclerViewAdapter;
+    //endregion
 
+    //region Data
+    private Long transId;
     private Transaction mTransaction;
     private String description;
     private Double amount;
-
-    private Long transId;
+    private List<TransactionBalances> mData;
+    private List<TransactionHolder> mItems;
+    //endregion
+    //endregion
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transaction_detail);
 
+        //region Action Bar
 //        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_drawer);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+        //endregion
 
+        //region Data
         Bundle mBundle = getIntent().getExtras();
         transId = mBundle.getLong("transId");
-
-        mDescription = (TextView) findViewById(R.id.trans_detail_description);
-        mAmount = (TextView) findViewById(R.id.trans_detail_total_amount);
-
         mData = new ArrayList<>();
+        mItems = new ArrayList<>();
         getTransactionData();
         getTransaction();
+        //endregion
 
-        description = mTransaction.getDescription();
-        amount = mTransaction.getAmount();
-
-        mDescription.setText(description);
-        mAmount.setText(String.valueOf(amount));
-
+        //region Views
+        mDescription = (TextView) findViewById(R.id.trans_detail_description);
+        mAmount = (TextView) findViewById(R.id.trans_detail_total_amount);
         mTotalButton = (Button) findViewById(R.id.trans_detail_amount);
         mDebtButton = (Button) findViewById(R.id.trans_detail_debt);
 
-        mItems = new ArrayList<>();
+        //region Recycler View
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_show_transaction);
         mLayoutManager = new LinearLayoutManager(getApplicationContext());
         mTransactionDetailRecyclerViewAdapter = new TransactionDetailRecyclerViewAdapter(mItems, getApplicationContext());
 
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mRecyclerView.setAdapter(mTransactionDetailRecyclerViewAdapter);
+        //endregion
+
+        //endregion
+
+        //region Attach Listeners
         mTotalButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -97,14 +110,14 @@ public class TransactionDetail extends AppCompatActivity {
                 toDebtMode();
             }
         });
+        //endregion
 
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mRecyclerView.setAdapter(mTransactionDetailRecyclerViewAdapter);
 
     }
 
+    //region Private Methods
+
+    //region Change Data
     private void toDebtMode() {
         mItems.clear();
         for (TransactionBalances balances : mData) {
@@ -126,7 +139,9 @@ public class TransactionDetail extends AppCompatActivity {
         }
         mTransactionDetailRecyclerViewAdapter.notifyDataSetChanged();
     }
+    //endregion
 
+    //region Volley Requests
     private void getTransactionData() {
         String extension = getResources().getString(R.string.url_transaction_findAmountsByTransId);
         String param = getResources().getString(R.string.url_transaction_id);
@@ -171,6 +186,10 @@ public class TransactionDetail extends AppCompatActivity {
             @Override
             public void onResponse(JSONObject response) {
                 mTransaction = new Transaction(response);
+                description = mTransaction.getDescription();
+                amount = mTransaction.getAmount();
+                mDescription.setText(description);
+                mAmount.setText(String.valueOf(amount));
                 Log.d(TAG, String.valueOf(response));
             }
         };
@@ -183,5 +202,11 @@ public class TransactionDetail extends AppCompatActivity {
         };
         JsonObjectRequest transJsonObject = new JsonObjectRequest(mUrl, null, listener, errorListener);
         VolleyRequests.getInstance(getApplicationContext()).addToRequestQueue(transJsonObject);
+        Realm realm = Realm.getDefaultInstance();
+        mTransaction = realm.where(Transaction.class).equalTo("transId", transId).findFirst();
+        realm.close();
     }
+    //endregion
+
+    //endregion
 }

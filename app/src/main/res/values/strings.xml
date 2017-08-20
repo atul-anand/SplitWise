@@ -31,6 +31,8 @@
     <string name="url_group_findByUserId">group/findAllByUserId</string>
     <string name="url_group_add">group/addUsers</string>
     <string name="url_group_findAllUsersByGroupId">group/findAllUsersByGroupId</string>
+    <string name="url_group_findDataById">group/showSplits</string>
+
 
     <!--Transactions-->
     <string name="url_transaction_findAll">transaction/findAll</string>
@@ -55,7 +57,19 @@
     <string name="bill_title">Add bill</string>
     <string name="bill_save">SAVE</string>
     <string name="bill_description">Enter a description</string>
-    <string name="bill_value">0.00</string>
+    <string name="bill_value">Amount</string>
+    <string name="bill_card_value">0.00</string>
+    <string name="bill_select_group">Select Group</string>
+    <string name="bill_select_user">Select User</string>
+    <string name="bill_amount">Amount</string>
+
+    <string-array name="bill_mop_list">
+        <item>Cash</item>
+        <item>Credit Card</item>
+        <item>Debit Card</item>
+        <item>Paytm</item>
+        <item>Freecharge</item>
+    </string-array>
 
     <!--Bill Category-->
     <string name="bill_category_title">Choose a category</string>
@@ -213,8 +227,9 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!--Add Member-->
-    <string name="add_member_heading">Add Members</string>
+    <string name="add_member_heading">Members+?</string>
     <string name="add_member_item_plus">+</string>
+    <string name="add_member_item_check">OK</string>
     <string name="add_member_item_subtract">-</string>
     <string name="add_member_item_text">Member ID?</string>
     <string name="add_member_button">Done</string>
@@ -237,6 +252,7 @@
 
     <!--Add Transaction-->
     <string name="addTransaction">+ ADD A TRANSACTION</string>
+
 
     <!-- Strings related to Settings -->
 
@@ -310,6 +326,7 @@
 
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="add_more_members">Add more members?</string>
+    <string name="bill_date">Date</string>
 
 
 </resources>

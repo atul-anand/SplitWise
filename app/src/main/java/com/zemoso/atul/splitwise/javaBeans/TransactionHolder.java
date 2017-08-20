@@ -1,5 +1,7 @@
 package com.zemoso.atul.splitwise.javaBeans;
 
+import org.json.JSONObject;
+
 /**
  * Created by zemoso on 14/8/17.
  */
@@ -15,6 +17,12 @@ public class TransactionHolder {
         this.userId = userId;
         this.name = name;
         this.amount = amount;
+    }
+
+    public TransactionHolder(JSONObject jsonObject) {
+        this.userId = jsonObject.optLong("userId");
+        this.name = jsonObject.optString("name");
+        this.amount = 0.0;
     }
 
     public Long getUserId() {

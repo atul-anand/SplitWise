@@ -34,62 +34,104 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.Realm;
+
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class Friends extends Fragment {
 
+    //region Variable Decalaration
     private static final String TAG = Friends.class.getSimpleName();
 
+    //region Data
+    private SharedPreferences preferences;
+    private Long mUserId;
+    private List<RecyclerViewHolder> mItems;
+    private List<User> mUsers;
+    //endregion
+
+    //region Views
     private Button mButton;
     private PopupMenu mPopupMenu;
     private Button mAddButton;
+    //endregion
 
+    //region Recycler View
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private FriendRecyclerViewAdapter mFriendRecyclerViewAdapter;
-    private List<RecyclerViewHolder> mItems;
-    private List<User> mUsers;
+    //endregion
+    //endregion
+    //region Listeners
+    private View.OnClickListener popUpListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            mPopupMenu.getMenuInflater().inflate(R.menu.menu_total_balance, mPopupMenu.getMenu());
+            mPopupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    Toast.makeText(getContext(),
+                            "You clicked" + item.getTitle(),
+                            Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+            });
+            mPopupMenu.show();
+        }
+    };
+    private View.OnClickListener addUserListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            getActivity().getSupportFragmentManager().beginTransaction().add(AddUser.newInstance(), "Add User").commit();
+            VolleyRequests.getInstance(getContext()).userFindAll();
+            addUsers();
+            mFriendRecyclerViewAdapter.notifyDataSetChanged();
+        }
+    };
+    //endregion
 
-    private SharedPreferences preferences;
-    private Long mUserId;
-
-
+    //region Constructor
     public Friends() {
         // Required empty public constructor
     }
+
     public static Friends newInstance(){
         return new Friends();
     }
 
-    public static void changeData() {
-
-    }
-
+    //region Inherited Methods
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_friends, container, false);
     }
+    //endregion
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mButton = view.findViewById(R.id.total_menu);
-        mPopupMenu = new PopupMenu(getContext(),mButton);
-
-        mRecyclerView = view.findViewById(R.id.recycler_friends);
-        mLayoutManager = new LinearLayoutManager(getContext());
-        mItems = new ArrayList<>();
-        mUsers = new ArrayList<>();
-        mFriendRecyclerViewAdapter = new FriendRecyclerViewAdapter(mItems, getContext());
-//        preferences = getActivity().getSharedPreferences("Settings", 0);
+        //region Data
         preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         mUserId = preferences.getLong("userId", 0);
+        mItems = new ArrayList<>();
+        mUsers = new ArrayList<>();
+        //endregion
+
+        //region Views
+        mButton = view.findViewById(R.id.total_menu);
+        mPopupMenu = new PopupMenu(getContext(),mButton);
         mAddButton = view.findViewById(R.id.addFriends);
+        //endregion
+
+        //region Recycler View
+        mRecyclerView = view.findViewById(R.id.recycler_friends);
+        mLayoutManager = new LinearLayoutManager(getContext());
+        mFriendRecyclerViewAdapter = new FriendRecyclerViewAdapter(mItems, getContext());
+        //endregion
 
     }
 
@@ -97,42 +139,27 @@ public class Friends extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-//        VolleyRequests.getInstance(getContext()).userFindAll();
+        //region Data
         userFindAll();
         Log.d(TAG, String.valueOf(mItems.size()));
+        //endregion
+
+        //region Recycler View
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setAdapter(mFriendRecyclerViewAdapter);
+        //endregion
 
-        mButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mPopupMenu.getMenuInflater().inflate(R.menu.menu_total_balance,mPopupMenu.getMenu());
-                mPopupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        Toast.makeText(getContext(),
-                                "You clicked"+item.getTitle(),
-                                Toast.LENGTH_SHORT).show();
-                        return true;
-                    }
-                });
-                mPopupMenu.show();
-            }
-        });
-
-        mAddButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getActivity().getSupportFragmentManager().beginTransaction().add(new AddUser(),"Add User").commit();
-                VolleyRequests.getInstance(getContext()).userFindAll();
-                addUsers();
-                mFriendRecyclerViewAdapter.notifyDataSetChanged();
-            }
-        });
+        //region Attach Listeners
+        mButton.setOnClickListener(popUpListener);
+        mAddButton.setOnClickListener(addUserListener);
+        //endregion
     }
 
+    //endregion
+
+    //region Private Methods
     private void addUsers() {
         for (User user : mUsers) {
             if (user.getUserId() == mUserId)
@@ -147,21 +174,26 @@ public class Friends extends Fragment {
 
     private void userFindAll() {
         String extension = getResources().getString(R.string.url_user_findAll);
-        String mUrl = getActivity().getSharedPreferences("Settings", 0).getString("Hostname", "") + extension;
+        String mUrl = PreferenceManager.getDefaultSharedPreferences(getContext()).getString("Hostname", "") + extension;
         Log.d(TAG, mUrl);
         Response.Listener<JSONArray> listener = new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
+                Realm realm = Realm.getDefaultInstance();
+                realm.beginTransaction();
                 for (int i = 0; i < response.length(); i++)
                     try {
                         JSONObject jsonObject = response.getJSONObject(i);
                         User user = new User(jsonObject);
                         mUsers.add(user);
+                        realm.insertOrUpdate(user);
                         Log.d(TAG, String.valueOf(jsonObject));
 
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                realm.commitTransaction();
+                realm.close();
                 addUsers();
                 mFriendRecyclerViewAdapter.notifyDataSetChanged();
             }
@@ -176,4 +208,5 @@ public class Friends extends Fragment {
         JsonArrayRequest userJsonObject = new JsonArrayRequest(mUrl, listener, errorListener);
         VolleyRequests.getInstance(getContext()).addToRequestQueue(userJsonObject);
     }
+    //endregion
 }

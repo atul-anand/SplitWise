@@ -25,10 +25,13 @@ import java.util.List;
  */
 
 public class TransactionRecyclerViewAdapter extends RecyclerView.Adapter<TransactionRecyclerViewAdapter.RecyclerViewViewHolder> {
+
+    //region Variable Declaration
     private static final String TAG = TransactionRecyclerViewAdapter.class.getSimpleName();
 
     private List<RecyclerViewHolder> mItems;
     private Context mContext;
+    //endregion
 
     public TransactionRecyclerViewAdapter(List<RecyclerViewHolder> mItems, Context mContext) {
         Log.d(TAG, "Constructor");
@@ -36,6 +39,7 @@ public class TransactionRecyclerViewAdapter extends RecyclerView.Adapter<Transac
         this.mContext = mContext;
     }
 
+    //region Inherited Methods
     @Override
     public TransactionRecyclerViewAdapter.RecyclerViewViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
@@ -47,7 +51,9 @@ public class TransactionRecyclerViewAdapter extends RecyclerView.Adapter<Transac
     @Override
     public void onBindViewHolder(final TransactionRecyclerViewAdapter.RecyclerViewViewHolder holder, int position) {
         Log.d(TAG, "onBindViewHolder");
-        final RecyclerViewHolder mCardData = mItems.get(position);
+        int pos = holder.getAdapterPosition();
+        final RecyclerViewHolder mCardData = mItems.get(pos);
+
         if (mCardData.isImageDownloaded())
             Glide.with(mContext)
                     .load(mCardData.getmAvatarFilePath())
@@ -58,7 +64,6 @@ public class TransactionRecyclerViewAdapter extends RecyclerView.Adapter<Transac
                     .into(holder.mAvatar);
 //            TODO: Set File Path
         }
-
 
         holder.mHeading.setText(mCardData.getmHeading());
         holder.mStatus.setText(mCardData.getmStatus());
@@ -79,6 +84,7 @@ public class TransactionRecyclerViewAdapter extends RecyclerView.Adapter<Transac
     public int getItemCount() {
         return mItems.size();
     }
+    //endregion
 
     static class RecyclerViewViewHolder extends RecyclerView.ViewHolder {
 

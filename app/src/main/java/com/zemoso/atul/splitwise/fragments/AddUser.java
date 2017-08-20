@@ -25,6 +25,7 @@ import java.util.Map;
  */
 public class AddUser extends DialogFragment {
 
+    //region Variable Declaration
     private static final String TAG = AddUser.class.getSimpleName();
 
     EditText mUser;
@@ -37,11 +38,17 @@ public class AddUser extends DialogFragment {
     String mEmailId;
     String mPhoneNumber;
     int mAges;
+    //endregion
 
-
+    //region Constructor
     public AddUser() {
         // Required empty public constructor
     }
+
+    public static AddUser newInstance() {
+        return new AddUser();
+    }
+    //endregion
 
 
     @Override

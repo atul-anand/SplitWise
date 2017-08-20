@@ -19,6 +19,7 @@ import android.widget.Button;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.zemoso.atul.splitwise.R;
 import com.zemoso.atul.splitwise.adapters.MembersRecyclerViewAdapter;
@@ -32,49 +33,84 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.Realm;
+
 /**
  * A simple {@link Fragment} subclass.
  */
 public class AddMembers extends DialogFragment {
 
+    //region Variable Declaration
     private static final String TAG = AddMembers.class.getSimpleName();
 
+    private SharedPreferences preferences;
     private List<String> mItems;
     private List<User> mUsers;
-    private SharedPreferences preferences;
     private String mUrl;
-    private Button mButton;
-    private Button mAddButton;
     private Long mGroupId;
     private String mGroupParam;
+
+    private Button mButton;
+    private Button mAddButton;
 
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private MembersRecyclerViewAdapter mMembersRecyclerViewAdapter;
+    //endregion
+    //region Listener
+    private View.OnClickListener addButtonListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            mItems.add(String.valueOf(-1));
+            mMembersRecyclerViewAdapter.notifyDataSetChanged();
+        }
+    };
+    private View.OnClickListener postJsonListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            for (String data : mItems) {
+                addUrl(data);
+                Log.d(TAG, data);
+            }
+            postJsonObject();
+            mUrl = getActivity().getSharedPreferences("Settings", 0).getString("Hostname", "");
+            mUrl = mUrl + getResources().getString(R.string.url_group_add);
+            AddMembers.this.dismiss();
+        }
+    };
+    //endregion
 
+    //region Constructor
     public AddMembers() {
         // Required empty public constructor
     }
 
+    public static AddMembers newInstance() {
+        return new AddMembers();
+    }
 
+    //region Inherited Methods
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_add_members, container, false);
     }
+    //endregion
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mButton = view.findViewById(R.id.add_member_button_done);
-        mAddButton = view.findViewById(R.id.add_member_button_add);
-
         mGroupId = 21L;
         mItems = new ArrayList<>();
         getMembersByGroupId();
         mItems.add(String.valueOf(-1));
+
+        mButton = view.findViewById(R.id.add_member_button_done);
+        mAddButton = view.findViewById(R.id.add_member_button_add);
+
+
         mRecyclerView = view.findViewById(R.id.add_member_recycler);
         mLayoutManager = new LinearLayoutManager(getContext());
         mMembersRecyclerViewAdapter = new MembersRecyclerViewAdapter(mItems, getContext());
@@ -85,8 +121,8 @@ public class AddMembers extends DialogFragment {
         super.onActivityCreated(savedInstanceState);
         preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         mUrl = preferences.getString("Hostname", "");
-        mUrl = mUrl + getResources().getString(R.string.url_group_add);
 
+        mUrl = mUrl + getResources().getString(R.string.url_group_add);
         mGroupParam = getResources().getString(R.string.url_group_id);
         mUrl = mUrl + "?" + mGroupParam + "=" + mGroupId;
 
@@ -95,36 +131,28 @@ public class AddMembers extends DialogFragment {
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setAdapter(mMembersRecyclerViewAdapter);
 
-        mAddButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mItems.add(String.valueOf(-1));
-                mMembersRecyclerViewAdapter.notifyDataSetChanged();
-            }
-        });
-
-
-        mButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                for (String data : mItems) {
-                    addUrl(data);
-                    Log.d(TAG, data);
-                }
-                postJsonObject();
-                mUrl = getActivity().getSharedPreferences("Settings", 0).getString("Hostname", "");
-                mUrl = mUrl + getResources().getString(R.string.url_group_add);
-                AddMembers.this.dismiss();
-            }
-        });
+        mAddButton.setOnClickListener(addButtonListener);
+        mButton.setOnClickListener(postJsonListener);
 
     }
+    //endregion
 
+    //region Private Methods
+    //region Data
     private void addUrl(String userId) {
         String param = getResources().getString(R.string.url_user_id);
         mUrl = mUrl + "?" + param + "=" + userId;
     }
 
+    private void getData() {
+        for (User user : mUsers) {
+            String data = user.getName();
+            mItems.add(data);
+        }
+    }
+    //endregion
+
+    //region VolleyRequests
     private void postJsonObject() {
         Log.d(TAG, mUrl);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, mUrl, null,
@@ -150,25 +178,34 @@ public class AddMembers extends DialogFragment {
         Response.Listener<JSONArray> listener = new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
+                Realm realm = Realm.getDefaultInstance();
+                realm.beginTransaction();
                 for (int i = 0; i < response.length(); i++) {
                     try {
                         JSONObject jsonObject = response.getJSONObject(i);
                         mUsers.add(new User(jsonObject));
+                        realm.insertOrUpdate(mUsers.get(mUsers.size() - 1));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 }
+                realm.commitTransaction();
+                realm.close();
                 getData();
                 mMembersRecyclerViewAdapter.notifyDataSetChanged();
             }
         };
+        Response.ErrorListener errorListener = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(TAG, error.toString());
+            }
+        };
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, listener, errorListener);
+        VolleyRequests.getInstance(getContext()).addToRequestQueue(jsonArrayRequest);
     }
+    //endregion
 
-    private void getData() {
-        for (User user : mUsers) {
-            String data = user.getName();
-            mItems.add(data);
-        }
-    }
+    //endregion
 
 }

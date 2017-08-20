@@ -12,6 +12,7 @@ import java.util.List;
  */
 
 public class HomePagerAdapter extends FragmentStatePagerAdapter {
+
     //region Variable Declaration
     private static final String TAG = HomePagerAdapter.class.getSimpleName();
 

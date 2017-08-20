@@ -23,16 +23,41 @@ import io.realm.Realm;
 
 public class FriendDetail extends AppCompatActivity {
 
+    //region Variable Declaration
     private static final String TAG = FriendDetail.class.getSimpleName();
 
+    //region Data
+    long id;
+    User mUser;
+    String name;
+    String imageUrl;
+    String email;
+    Double debt;
+    //endregion
+    //endregion
+
+    //region Inherited Methods
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friend_profile);
+
+        //region Data
+        Bundle mBundle = getIntent().getExtras();
+        id = mBundle.getLong("userId");
+        Realm realm = Realm.getDefaultInstance();
+        mUser = realm.where(User.class).equalTo("userId", id).findFirst();
+        name = mUser.getName();
+        imageUrl = mUser.getImageFilePath();
+        email = mUser.getEmailId();
+        debt = mUser.getDebt();
+        //endregion
+
+        //region Action Bar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_drawer);
+//        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_drawer);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
@@ -40,25 +65,19 @@ public class FriendDetail extends AppCompatActivity {
 
         collapsingToolbarLayout.setExpandedTitleTextColor(ColorStateList.valueOf(Color.rgb(0, 0, 0)));
         collapsingToolbarLayout.setCollapsedTitleTextColor(Color.rgb(0, 0, 0));
+        getSupportActionBar().setTitle(name);
+        //endregion
 
-        Bundle mBundle = getIntent().getExtras();
-        long id = mBundle.getLong("userId");
-        Realm realm = Realm.getDefaultInstance();
-        User mUser = realm.where(User.class).equalTo("userId", id).findFirst();
-
+        //region Views
         ImageView mImageView = (ImageView) findViewById(R.id.profile_image);
         TextView mHeading = (TextView) findViewById(R.id.profile_heading);
         TextView mEmail = (TextView) findViewById(R.id.profile_email);
         TextView mStatus = (TextView) findViewById(R.id.profile_status);
         Button mButton = (Button) findViewById(R.id.profile_settleUp);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        //endregion
 
-        String name = mUser.getName();
-        String imageUrl = mUser.getImageFilePath();
-        String email = mUser.getEmailId();
-        Double debt = mUser.getDebt();
-
-        getSupportActionBar().setTitle(name);
-
+        //region Set View Properties
         Glide.with(this)
                 .load(imageUrl)
                 .into(mImageView);
@@ -73,9 +92,6 @@ public class FriendDetail extends AppCompatActivity {
             }
         });
 
-
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -83,6 +99,7 @@ public class FriendDetail extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+        //endregion
     }
 
     @Override
@@ -94,4 +111,5 @@ public class FriendDetail extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+    //endregion
 }

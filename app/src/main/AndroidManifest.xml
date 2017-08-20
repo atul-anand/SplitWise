@@ -52,7 +52,8 @@
         <activity
             android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_settings" />
-        <activity android:name=".activities.TransactionDetail"></activity>
+        <activity android:name=".activities.TransactionDetail" />
+        <activity android:name=".activities.GroupDetail"></activity>
     </application>
 
 </manifest>

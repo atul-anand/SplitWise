@@ -26,10 +26,12 @@ import java.util.List;
 
 public class FriendRecyclerViewAdapter extends RecyclerView.Adapter<FriendRecyclerViewAdapter.RecyclerViewViewHolder> {
 
+    //region Variable Declaration
     private static final String TAG = FriendRecyclerViewAdapter.class.getSimpleName();
 
     private List<RecyclerViewHolder> mItems;
     private Context mContext;
+    //endregion
 
     public FriendRecyclerViewAdapter(List<RecyclerViewHolder> mItems, Context mContext) {
         Log.d(TAG,"Constructor");
@@ -37,6 +39,7 @@ public class FriendRecyclerViewAdapter extends RecyclerView.Adapter<FriendRecycl
         this.mContext = mContext;
     }
 
+    //region Inherited Methods
     @Override
     public RecyclerViewViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Log.d(TAG,"RecyclerViewViewHolder");
@@ -48,7 +51,9 @@ public class FriendRecyclerViewAdapter extends RecyclerView.Adapter<FriendRecycl
     @Override
     public void onBindViewHolder(final RecyclerViewViewHolder holder, int position) {
         Log.d(TAG,"onBindViewHolder");
-        final RecyclerViewHolder mCardData = mItems.get(position);
+        int pos = holder.getAdapterPosition();
+        final RecyclerViewHolder mCardData = mItems.get(pos);
+
         if(mCardData.isImageDownloaded())
             Glide.with(mContext)
                     .load(mCardData.getmAvatarFilePath())
@@ -60,9 +65,9 @@ public class FriendRecyclerViewAdapter extends RecyclerView.Adapter<FriendRecycl
 //            TODO: Set File Path
         }
 
-
         holder.mHeading.setText(mCardData.getmHeading());
         holder.mStatus.setText(mCardData.getmStatus());
+
         holder.mCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -71,7 +76,7 @@ public class FriendRecyclerViewAdapter extends RecyclerView.Adapter<FriendRecycl
                 Bundle mBundle = new Bundle();
                 mBundle.putLong("userId", mCardData.getId());
                 mIntent.putExtras(mBundle);
-//                mContext.startActivity(mIntent);
+                mContext.startActivity(mIntent);
             }
         });
     }
@@ -80,6 +85,7 @@ public class FriendRecyclerViewAdapter extends RecyclerView.Adapter<FriendRecycl
     public int getItemCount() {
         return mItems.size();
     }
+    //endregion
 
     static class RecyclerViewViewHolder extends RecyclerView.ViewHolder {
 

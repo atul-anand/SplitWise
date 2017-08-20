@@ -31,103 +31,111 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.Realm;
+
 public class LoginActivity extends AppCompatActivity {
 
+    //region Variable Declaration
     private static final String TAG = LoginActivity.class.getSimpleName();
-
-    private AutoCompleteTextView mAutoCompleteTextView;
-    //    private Spinner mSpinner;
-    private Button mButton;
-    private Long mUserId;
+    String[] da = {"Android", "Bluetooth", "Party"};
+    //region System
     private Context mContext;
-//    private VolleyRequests requests;
-
+    //endregion
+    private SharedPreferences.Editor editor;
+    //region Views
+    private AutoCompleteTextView mAutoCompleteTextView;
+    private Button mButton;
+    //endregion
+    private ProgressBar mProgressBar;
+    //region Data
+    private Long mUserId;
     private List<User> mUsers;
     private List<String> userName;
-    private ProgressBar mProgressBar;
-    private ArrayAdapter<String> arrayAdapter;
+    //endregion
 
-    private SharedPreferences.Editor editor;
+    private ArrayAdapter<String> arrayAdapter;
+    //endregion
+    private TextWatcher userNameTextListener = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            String mText = String.valueOf(mAutoCompleteTextView.getText());
+            userString(mText);
+            findDataSet();
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+
+        }
+    };
+
+    //region Listeners
+    private View.OnClickListener loginListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            mUserId = Long.valueOf(mAutoCompleteTextView.getText().toString());
+            Log.d(TAG, mUserId + "111");
+            editor.putLong("userId", mUserId);
+            VolleyRequests.getInstance(getApplicationContext()).groupFindByUserId(mUserId);
+            editor.apply();
+            Toast.makeText(getApplicationContext(), "Application Starting for user #" + mUserId, Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate");
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash);
-        mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
-        mProgressBar.setVisibility(View.GONE);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        mContext = getApplication();
-        Log.d(TAG, "Started");
+        setContentView(R.layout.activity_login);
 
+        //region System Data
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         mContext = getApplication();
 
         editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
         editor.putString("Hostname", getResources().getString(R.string.url_address));
         editor.apply();
+        //endregion
 
-//        mSpinner = (Spinner) findViewById(R.id.spinner);
+        //region Views
+        mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
         mAutoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.auto_complete);
         mButton = (Button) findViewById(R.id.button);
+        //endregion
 
+//        mProgressBar.setVisibility(View.GONE);
+        Log.d(TAG, "Started");
+
+        //region Data
         mUsers = new ArrayList<>();
         userName = new ArrayList<>();
-
         userString("");
         findDataSet();
+        //endregion
 
-
-        arrayAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, userName);
+        //region Adapter
+        arrayAdapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.card_autocomplete_item, userName);
 //        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mAutoCompleteTextView.setAdapter(arrayAdapter);
+        mAutoCompleteTextView.setThreshold(1);
+        //endregion
 
-
-//
-        mAutoCompleteTextView.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                String mText = String.valueOf(mAutoCompleteTextView.getText());
-                userString(mText);
-                findDataSet();
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
-
-        mButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-//                int pos = userName.indexOf(mAutoCompleteTextView.getText().toString());
-//                mUserId = mUsers.get(pos).getUserId();
-                mUserId = Long.valueOf(mAutoCompleteTextView.getText().toString());
-                Log.d(TAG, mUserId + "111");
-                editor.putLong("userId", mUserId);
-
-                editor.apply();
-                Toast.makeText(getApplicationContext(), "Application Starting for user #" + mUserId, Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
-            }
-        });
+        //region Attach Listeners
+        mAutoCompleteTextView.addTextChangedListener(userNameTextListener);
+        mButton.setOnClickListener(loginListener);
+        //endregion
 
     }
+    //endregion
 
-    @Override
-    protected void onResume() {
-        Log.d(TAG, "onResume");
-        super.onResume();
-
-    }
-
+    //region Private Methods
     private void userString(String param) {
         final String extension = mContext.getResources().getString(R.string.url_user_string);
         String mUrl = getSharedPreferences("Settings", 0).getString("Hostname", "") + extension + "?s=" + param;
@@ -136,17 +144,22 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onResponse(JSONArray response) {
                 mUsers.clear();
+                Realm realm = Realm.getDefaultInstance();
+                realm.beginTransaction();
                 for (int i = 0; i < response.length(); i++)
                     try {
                         JSONObject jsonObject = response.getJSONObject(i);
                         User user = new User(jsonObject);
                         mUsers.add(user);
+                        realm.insertOrUpdate(user);
                         Log.d(TAG, String.valueOf(jsonObject));
 //                        Log.d(TAG, String.valueOf(userName.get(0)));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                mProgressBar.setVisibility(View.GONE);
+                realm.commitTransaction();
+                realm.close();
+//                mProgressBar.setVisibility(View.GONE);
                 arrayAdapter.notifyDataSetChanged();
 
             }
@@ -160,7 +173,7 @@ public class LoginActivity extends AppCompatActivity {
         };
         JsonArrayRequest userJsonArray = new JsonArrayRequest(mUrl, listener, errorListener);
         VolleyRequests.getInstance(getApplicationContext()).addToRequestQueue(userJsonArray);
-        mProgressBar.setVisibility(View.VISIBLE);
+//        mProgressBar.setVisibility(View.VISIBLE);
     }
 
     private void findDataSet() {
@@ -170,4 +183,5 @@ public class LoginActivity extends AppCompatActivity {
             Log.d(TAG, userName.get(userName.size() - 1));
         }
     }
+    //endregion
 }

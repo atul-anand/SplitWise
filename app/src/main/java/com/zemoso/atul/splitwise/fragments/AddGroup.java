@@ -26,11 +26,14 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.realm.Realm;
+
 /**
  * A simple {@link Fragment} subclass.
  */
 public class AddGroup extends DialogFragment {
 
+    //region Variable Declaration
     private static final String TAG = AddGroup.class.getSimpleName();
 
     EditText mGroupName;
@@ -38,12 +41,19 @@ public class AddGroup extends DialogFragment {
     Button mSubmit;
     Long mUserId;
     User mUser;
+    //endregion
 
+    //region Constructor
     public AddGroup() {
         // Required empty public constructor
     }
 
+    public static AddGroup newInstance() {
+        return new AddGroup();
+    }
+    //endregion
 
+    //region Inherited Methods
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -54,15 +64,16 @@ public class AddGroup extends DialogFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        mUserId = preferences.getLong("userId", 0);
+        getUser();
+
         mGroupName = view.findViewById(R.id.add_group_name);
         mSubmit = view.findViewById(R.id.add_group_create);
 //        Realm realm = Realm.getDefaultInstance();
 //        User user = realm.where(User.class).equalTo("id", ((SplitWise)getActivity().getApplication()).getUserId()).findFirst();
 ////            mUserName = new JSONObject(user.getJSON()).getString("name");
-
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        mUserId = preferences.getLong("userId", 0);
-        getUser();
 
     }
 
@@ -83,7 +94,9 @@ public class AddGroup extends DialogFragment {
             }
         });
     }
+    //endregion
 
+    //region Private Methods
     private void getUser() {
         String extension = getResources().getString(R.string.url_user_findById);
         String param = getResources().getString(R.string.url_user_id);
@@ -107,5 +120,10 @@ public class AddGroup extends DialogFragment {
         };
         JsonObjectRequest transJsonObject = new JsonObjectRequest(mUrl, null, listener, errorListener);
         VolleyRequests.getInstance(getContext()).addToRequestQueue(transJsonObject);
+        Realm realm = Realm.getDefaultInstance();
+        mUser = realm.where(User.class).equalTo("userId", mUserId).findFirst();
+        mUserName = mUser.getName();
+        realm.close();
     }
+    //endregion
 }

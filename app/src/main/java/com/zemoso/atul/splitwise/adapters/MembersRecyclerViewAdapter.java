@@ -20,16 +20,19 @@ import java.util.List;
 
 public class MembersRecyclerViewAdapter extends RecyclerView.Adapter<MembersRecyclerViewAdapter.RecyclerViewViewHolder> {
 
+    //region Variable Declaration
     private static final String TAG = MembersRecyclerViewAdapter.class.getSimpleName();
 
     private List<String> mItems;
     private Context mContext;
+    //endregion
 
     public MembersRecyclerViewAdapter(List<String> mItems, Context mContext) {
         this.mItems = mItems;
         this.mContext = mContext;
     }
 
+    //region Inherited Methods
     @Override
     public MembersRecyclerViewAdapter.RecyclerViewViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext)
@@ -38,11 +41,13 @@ public class MembersRecyclerViewAdapter extends RecyclerView.Adapter<MembersRecy
     }
 
     @Override
-    public void onBindViewHolder(MembersRecyclerViewAdapter.RecyclerViewViewHolder holder, final int position) {
+    public void onBindViewHolder(MembersRecyclerViewAdapter.RecyclerViewViewHolder holder, int position) {
 
 
         final String memberId = String.valueOf(holder.mEditText.getText());
-        mItems.set(position, memberId);
+        final int pos = holder.getAdapterPosition();
+
+        mItems.set(pos, memberId);
         holder.mEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -51,7 +56,7 @@ public class MembersRecyclerViewAdapter extends RecyclerView.Adapter<MembersRecy
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                mItems.set(position, (String.valueOf(charSequence)));
+                mItems.set(pos, (String.valueOf(charSequence)));
                 notifyDataSetChanged();
             }
 
@@ -63,7 +68,7 @@ public class MembersRecyclerViewAdapter extends RecyclerView.Adapter<MembersRecy
         holder.mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mItems.remove(position);
+                mItems.remove(pos);
                 notifyDataSetChanged();
             }
         });
@@ -73,14 +78,14 @@ public class MembersRecyclerViewAdapter extends RecyclerView.Adapter<MembersRecy
     public int getItemCount() {
         return mItems.size();
     }
-
+    //endregion
 
     static class RecyclerViewViewHolder extends RecyclerView.ViewHolder {
 
         EditText mEditText;
         Button mButton;
 
-        public RecyclerViewViewHolder(View itemView) {
+        RecyclerViewViewHolder(View itemView) {
             super(itemView);
             mEditText = itemView.findViewById(R.id.add_member_edit_text);
             mButton = itemView.findViewById(R.id.add_member_button_subtract);

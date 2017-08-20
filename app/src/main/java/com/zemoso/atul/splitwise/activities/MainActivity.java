@@ -38,12 +38,17 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.Realm;
+
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     //region Variable Declaration
     private static final String TAG = MainActivity.class.getSimpleName();
+
+    //region Views
+    private Toolbar toolbar;
 
     //region Sliding TabLayout (Fragment Components)
     private HomePagerAdapter mPagerAdapter;
@@ -53,7 +58,7 @@ public class MainActivity extends AppCompatActivity
     //endregion
 
     private FloatingActionButton fab;
-    private Toolbar toolbar;
+    //endregion
 
     //region Navigation Drawer
     private DrawerLayout mDrawerLayout;
@@ -66,12 +71,13 @@ public class MainActivity extends AppCompatActivity
 
     //endregion
 
+    //region Data
     private SharedPreferences preferences;
     private Long mUserId;
     private User mUser;
     private String mUsername;
     private String mEmailId;
-    private JSONObject jsonObject;
+    //endregion
 
     //endregion
 
@@ -145,7 +151,7 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-
+    //region Menu Items
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         Log.d(TAG,"onCreateOptionsMenu");
@@ -157,9 +163,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Log.d(TAG,"onOptionsItemSelected");
-//        if (mDrawerToggle.onOptionsItemSelected(item)) {
-//            return onNavigationItemSelected(item);
-//        }
         if (onNavigationItemSelected(item))
             return true;
         // Handle action buttons
@@ -193,8 +196,9 @@ public class MainActivity extends AppCompatActivity
 //        menu.findItem(R.id.action_settings).setVisible(!drawerOpen);
         return super.onPrepareOptionsMenu(menu);
     }
+    //endregion
 
-
+    //region Navigation Drawer
     @Override
     public void onBackPressed() {
         Log.d(TAG,"onBackPressed");
@@ -204,7 +208,6 @@ public class MainActivity extends AppCompatActivity
             super.onBackPressed();
     }
 
-    //Navigation Drawer menu items
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -238,6 +241,8 @@ public class MainActivity extends AppCompatActivity
     }
     //endregion
 
+    //endregion
+
     //region Private Methods
 
     private void updateFragments(){
@@ -262,6 +267,11 @@ public class MainActivity extends AppCompatActivity
                 mEmailId = mUser.getEmailId();
                 mUserName.setText(mUsername);
                 mEmail.setText(mEmailId);
+                Realm realm = Realm.getDefaultInstance();
+                realm.beginTransaction();
+                realm.insertOrUpdate(mUser);
+                realm.commitTransaction();
+                realm.close();
             }
         };
         Response.ErrorListener errorListener = new Response.ErrorListener() {
