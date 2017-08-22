@@ -10,10 +10,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.zemoso.atul.splitwise.R;
@@ -43,10 +41,13 @@ public class FriendDetail extends AppCompatActivity {
         setContentView(R.layout.activity_friend_profile);
 
         //region Data
+
         Bundle mBundle = getIntent().getExtras();
         id = mBundle.getLong("userId");
+
         Realm realm = Realm.getDefaultInstance();
         mUser = realm.where(User.class).equalTo("userId", id).findFirst();
+//        mUser = new User();
         name = mUser.getName();
         imageUrl = mUser.getImageFilePath();
         email = mUser.getEmailId();
@@ -65,7 +66,7 @@ public class FriendDetail extends AppCompatActivity {
 
         collapsingToolbarLayout.setExpandedTitleTextColor(ColorStateList.valueOf(Color.rgb(0, 0, 0)));
         collapsingToolbarLayout.setCollapsedTitleTextColor(Color.rgb(0, 0, 0));
-        getSupportActionBar().setTitle(name);
+        getSupportActionBar().setTitle("");
         //endregion
 
         //region Views
@@ -73,7 +74,7 @@ public class FriendDetail extends AppCompatActivity {
         TextView mHeading = (TextView) findViewById(R.id.profile_heading);
         TextView mEmail = (TextView) findViewById(R.id.profile_email);
         TextView mStatus = (TextView) findViewById(R.id.profile_status);
-        Button mButton = (Button) findViewById(R.id.profile_settleUp);
+//        Button mButton = (Button) findViewById(R.id.profile_settleUp);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         //endregion
 
@@ -83,14 +84,28 @@ public class FriendDetail extends AppCompatActivity {
                 .into(mImageView);
         mHeading.setText(name);
         mEmail.setText(email);
-        mStatus.setText(String.valueOf(debt));
-        mButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(getApplicationContext(), "Settled", Toast.LENGTH_SHORT).show();
 
-            }
-        });
+        String status;
+        try {
+            debt = mUser.getDebt();
+            if (debt.equals(0.0))
+                status = "You are settled up";
+            else if (debt > 0.0)
+                status = "You are owed Rs." + debt;
+            else
+                status = "You owe Rs." + Math.abs(debt);
+
+        } catch (Exception e) {
+            status = "You are settled up.";
+        }
+        mStatus.setText(String.valueOf(debt));
+//        mButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Toast.makeText(getApplicationContext(), "Settled", Toast.LENGTH_SHORT).show();
+//
+//            }
+//        });
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -1,5 +1,7 @@
 package com.zemoso.atul.splitwise.javaBeans;
 
+import com.zemoso.atul.splitwise.models.Transaction;
+
 import org.json.JSONObject;
 
 /**
@@ -11,6 +13,17 @@ public class TransactionBalances {
     private String username;
     private Double debt;
     private Double amount;
+
+    public TransactionBalances() {
+        this.userId = -1L;
+        this.username = "";
+        this.debt = 0.0;
+        this.amount = 0.0;
+    }
+
+    public TransactionBalances(Transaction transaction) {
+
+    }
 
     public TransactionBalances(JSONObject jsonObject) {
         this.userId = jsonObject.optLong("userId");

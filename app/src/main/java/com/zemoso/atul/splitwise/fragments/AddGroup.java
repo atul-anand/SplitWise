@@ -65,8 +65,12 @@ public class AddGroup extends DialogFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        mUserId = preferences.getLong("userId", 0);
+        try {
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+            mUserId = preferences.getLong("userId", 0);
+        } catch (NumberFormatException e) {
+            mUserId = -1L;
+        }
         getUser();
 
         mGroupName = view.findViewById(R.id.add_group_name);
@@ -94,6 +98,8 @@ public class AddGroup extends DialogFragment {
             }
         });
     }
+
+
     //endregion
 
     //region Private Methods
@@ -109,6 +115,9 @@ public class AddGroup extends DialogFragment {
                 mUser = new User(response);
                 mUserName = mUser.getName();
                 Log.d(TAG, String.valueOf(response));
+                Realm realm = Realm.getDefaultInstance();
+                mUser = realm.where(User.class).equalTo("userId", mUserId).findFirst();
+                mUserName = mUser.getName();
             }
         };
         Response.ErrorListener errorListener = new Response.ErrorListener() {
@@ -120,10 +129,7 @@ public class AddGroup extends DialogFragment {
         };
         JsonObjectRequest transJsonObject = new JsonObjectRequest(mUrl, null, listener, errorListener);
         VolleyRequests.getInstance(getContext()).addToRequestQueue(transJsonObject);
-        Realm realm = Realm.getDefaultInstance();
-        mUser = realm.where(User.class).equalTo("userId", mUserId).findFirst();
-        mUserName = mUser.getName();
-        realm.close();
+
     }
     //endregion
 }

@@ -50,6 +50,7 @@ public class SingleRecyclerViewAdapter extends RecyclerView.Adapter<SingleRecycl
     public void onBindViewHolder(final SingleRecyclerViewAdapter.RecyclerViewViewHolder holder, int position) {
         userArrayAdapter = new ArrayAdapter<String>(mContext, R.layout.card_add_member_item, mSelUserNames);
         holder.textView.setAdapter(userArrayAdapter);
+        holder.textView.setThreshold(0);
         holder.textView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {

@@ -23,6 +23,13 @@ public class User extends RealmObject {
     private String imageFilePath;
 
     public User() {
+        this.userId = -1L;
+        this.name = "master";
+        this.emailId = "abc@def.com";
+        this.phoneNumber = "0987654321";
+        this.age = 21;
+        this.debt = 0.0;
+        this.imageFilePath = "";
     }
 
     public User(JSONObject jsonObject) {
@@ -32,7 +39,7 @@ public class User extends RealmObject {
         this.phoneNumber = jsonObject.optString("phoneNumber");
         this.age = jsonObject.optInt("age");
         this.debt = jsonObject.optDouble("debt");
-        this.imageFilePath = jsonObject.optString("imageFilePath");
+        this.imageFilePath = jsonObject.optString("url");
     }
 
     public long getUserId() {

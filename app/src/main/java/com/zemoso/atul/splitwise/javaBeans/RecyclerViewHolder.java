@@ -13,6 +13,15 @@ public class RecyclerViewHolder {
     private String mStatus;
     private Boolean mImageDownloaded;
 
+    public RecyclerViewHolder() {
+        this.id = 0;
+        this.mAvatarUrl = "";
+        this.mAvatarFilePath = "";
+        this.mHeading = "";
+        this.mStatus = "";
+        this.mImageDownloaded = false;
+    }
+
     public RecyclerViewHolder(long id, String mAvatarUrl, String mAvatarFilePath, String mHeading, String mStatus) {
         this.id = id;
         this.mAvatarUrl = mAvatarUrl;

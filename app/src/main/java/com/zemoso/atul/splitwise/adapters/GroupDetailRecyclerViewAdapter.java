@@ -2,12 +2,14 @@ package com.zemoso.atul.splitwise.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.zemoso.atul.splitwise.R;
+import com.zemoso.atul.splitwise.javaBeans.GroupSplit;
 
 import java.util.List;
 
@@ -20,11 +22,11 @@ public class GroupDetailRecyclerViewAdapter extends RecyclerView.Adapter<GroupDe
     //region Variable Declaration
     private static final String TAG = GroupDetailRecyclerViewAdapter.class.getSimpleName();
 
-    private List<String> mItems;
+    private List<GroupSplit> mItems;
     private Context mContext;
     //endregion
 
-    public GroupDetailRecyclerViewAdapter(List<String> mItems, Context mContext) {
+    public GroupDetailRecyclerViewAdapter(List<GroupSplit> mItems, Context mContext) {
         this.mItems = mItems;
         this.mContext = mContext;
     }
@@ -40,8 +42,14 @@ public class GroupDetailRecyclerViewAdapter extends RecyclerView.Adapter<GroupDe
     @Override
     public void onBindViewHolder(RecyclerViewViewHolder holder, int position) {
         int pos = holder.getAdapterPosition();
-        String detail = mItems.get(pos);
-        holder.textView.setText(detail);
+        GroupSplit detail = mItems.get(pos);
+        String creditorName = detail.getCreditorName();
+        String debtorName = detail.getDebtorName();
+        Double amount = detail.getAmount();
+        Log.d(TAG, String.valueOf(amount));
+        holder.creditorName.setText(creditorName);
+        holder.debtorName.setText(debtorName);
+        holder.amount.setText(String.valueOf(amount));
     }
 
     @Override
@@ -51,11 +59,14 @@ public class GroupDetailRecyclerViewAdapter extends RecyclerView.Adapter<GroupDe
     //endregion
 
     class RecyclerViewViewHolder extends RecyclerView.ViewHolder {
-        TextView textView;
-
+        TextView creditorName;
+        TextView debtorName;
+        TextView amount;
         RecyclerViewViewHolder(View itemView) {
             super(itemView);
-            textView = itemView.findViewById(R.id.group_detail_text_view);
+            creditorName = itemView.findViewById(R.id.group_detail_creditor);
+            debtorName = itemView.findViewById(R.id.group_detail_debtor);
+            amount = itemView.findViewById(R.id.group_detail_amount);
         }
     }
 }

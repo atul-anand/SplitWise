@@ -42,6 +42,7 @@ public class VolleyRequests {
     private String mHostName;
 
     private SharedPreferences preferences;
+    private long mUserId;
     //endregion
 
     //region Constructors
@@ -53,6 +54,8 @@ public class VolleyRequests {
 //        preferences = mContext.getSharedPreferences("Settings", 0);
         preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         mHostName = preferences.getString("Hostname", "");
+        mUserId = preferences.getLong("userId", 0);
+        Log.d(TAG, String.valueOf(mUserId));
 //        mHostName = ;
         Log.d(TAG, mHostName);
 //        mHostName = mContext.getSharedPreferences();
@@ -235,7 +238,8 @@ public class VolleyRequests {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Transaction transaction = new Transaction(response);
+                        Transaction transaction = null;
+                        transaction = new Transaction(response);
                         Realm realm = Realm.getDefaultInstance();
                         realm.beginTransaction();
                         realm.insertOrUpdate(transaction);
@@ -375,16 +379,34 @@ public class VolleyRequests {
         }
         final String mUrl = mHostName + tag;
         Log.d(TAG,mUrl);
-        JsonObjectRequest request = postJsonObject(mUrl,jsonObject,tag);
+        JsonObjectRequest request = postJsonObject(mUrl, jsonObject, tag, type);
         addToRequestQueue(request, String.valueOf(reqNo));
     }
 
-    private JsonObjectRequest postJsonObject(String mUrl, final JSONObject jsonObject, final String tag) {
+    private JsonObjectRequest postJsonObject(String mUrl, final JSONObject jsonObject, final String tag, final int type) {
         return new JsonObjectRequest(Request.Method.POST, mUrl, jsonObject,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.d(tag, String.valueOf(response));
+                        Realm realm = Realm.getDefaultInstance();
+                        realm.beginTransaction();
+                        switch (type) {
+                            case VolleyRequests.USER:
+                                User user = new User(response);
+                                realm.insertOrUpdate(user);
+                                break;
+                            case VolleyRequests.GROUP:
+                                Group group = new Group(response);
+                                realm.insertOrUpdate(group);
+                                break;
+                            case VolleyRequests.TRANSACTION:
+                                Transaction transaction = new Transaction(response);
+                                realm.insertOrUpdate(transaction);
+                                break;
+                        }
+                        realm.commitTransaction();
+                        realm.close();
                     }
                 }, new Response.ErrorListener() {
             @Override

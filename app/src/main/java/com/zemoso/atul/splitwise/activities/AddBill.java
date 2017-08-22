@@ -73,17 +73,22 @@ public class AddBill extends AppCompatActivity {
     private ArrayAdapter<String> groupArrayAdapter;
     //endregion
 
-    private Button mAddButton;
+    private Button mAddLenderButton;
+    private Button mAddBorrowerButton;
 
     //region Recycler View
-    private RecyclerView mRecyclerView;
-    private RecyclerView.LayoutManager mLayoutManager;
+    private RecyclerView mRecyclerViewLender;
+    private RecyclerView.LayoutManager mLayoutManagerLender;
+    private RecyclerView mRecyclerViewBorrower;
+    private RecyclerView.LayoutManager mLayoutManagerBorrower;
 
     private List<TransactionHolder> mItems;
     private AddBillRecyclerViewAdapter mAddBillRecyclerViewAdapter;
 
-    private List<User> mUserItems;
-    private SingleRecyclerViewAdapter mSingleRecyclerViewAdapter;
+    private List<User> mUserLenders;
+    private List<User> mUserBorrowers;
+    private SingleRecyclerViewAdapter mSingleRecyclerViewAdapterLender;
+    private SingleRecyclerViewAdapter mSingleRecyclerViewAdapterBorrower;
     //endregion
     //endregion
 
@@ -110,13 +115,22 @@ public class AddBill extends AppCompatActivity {
         }
     };
     //region Item Listener
-    private View.OnClickListener addMemberListener = new View.OnClickListener() {
+    private View.OnClickListener addMemberLenderListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
 //                mItems.add(new TransactionHolder(-1L, "", 0.0));
 //                mAddBillRecyclerViewAdapter.notifyDataSetChanged();
-            mUserItems.add(null);
-            mSingleRecyclerViewAdapter.notifyDataSetChanged();
+            mUserLenders.add(null);
+            mSingleRecyclerViewAdapterLender.notifyDataSetChanged();
+        }
+    };
+    private View.OnClickListener addMemberBorrowerListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+//                mItems.add(new TransactionHolder(-1L, "", 0.0));
+//                mAddBillRecyclerViewAdapter.notifyDataSetChanged();
+            mUserBorrowers.add(null);
+            mSingleRecyclerViewAdapterBorrower.notifyDataSetChanged();
         }
     };
     private AdapterView.OnItemSelectedListener selectGroupListener = new AdapterView.OnItemSelectedListener() {
@@ -129,12 +143,17 @@ public class AddBill extends AppCompatActivity {
 
             } else {
                 Realm realm = Realm.getDefaultInstance();
-                mGroupId = realm.where(Group.class).equalTo("groupName", item).findFirst().getGroupId();
+                try {
+                    mGroupId = realm.where(Group.class).equalTo("groupName", item).findFirst().getGroupId();
+                } catch (Exception e) {
+                    mGroupId = -1L;
+                }
                 getUsersByGroupId();
 
             }
 
-            mRecyclerView.setVisibility(View.VISIBLE);
+            mRecyclerViewLender.setVisibility(View.VISIBLE);
+            mRecyclerViewBorrower.setVisibility(View.VISIBLE);
 
         }
 
@@ -174,8 +193,10 @@ public class AddBill extends AppCompatActivity {
         mMode = (Spinner) findViewById(R.id.bill_value);
         mDate = (Button) findViewById(R.id.bill_date);
         mSelGroup = (AutoCompleteTextView) findViewById(R.id.bill_select_group);
-        mRecyclerView = (RecyclerView) findViewById(R.id.add_bill_recycler);
-        mAddButton = (Button) findViewById(R.id.add_member_button_add);
+        mRecyclerViewLender = (RecyclerView) findViewById(R.id.add_bill_recycler_lender);
+        mRecyclerViewBorrower = (RecyclerView) findViewById(R.id.add_bill_recycler_borrower);
+        mAddLenderButton = (Button) findViewById(R.id.add_member_button_add_lender);
+        mAddBorrowerButton = (Button) findViewById(R.id.add_member_button_add_borrower);
         mValue = (EditText) findViewById(R.id.bill_single_value_amt);
         //endregion
 
@@ -194,7 +215,8 @@ public class AddBill extends AppCompatActivity {
         mSelGroupNames = new ArrayList<>();
         mSelUserNames = new ArrayList<>();
         mUsers = new ArrayList<>();
-        mUserItems = new ArrayList<>();
+        mUserLenders = new ArrayList<>();
+        mUserBorrowers = new ArrayList<>();
 
         mItems = new ArrayList<>();
         lender = new ArrayList<>();
@@ -203,35 +225,45 @@ public class AddBill extends AppCompatActivity {
         //endregion
 
         //region Fake Data Addition
-        mItems.add(new TransactionHolder(-1L, "", 0.0));
-
-        mUsers.add(null);
-        mUserItems.add(null);
-
-        Log.d(TAG, String.valueOf(mUsers.size()));
-
-        mSelGroupNames.add("DSA");
-        mSelGroupNames.add("FUN");
-
-        mSelUserNames.add("INDIA");
-        mSelUserNames.add("PAK");
+//        mItems.add(new TransactionHolder());
+//
+//        mUsers.add(new User());
+//        mUserLenders.add(new User());
+//
+//        mGroups.add(new Group());
+//
+//        Log.d(TAG, String.valueOf(mUsers.size()));
+//
+//        mSelGroupNames.add("DSA");
+//        mSelGroupNames.add("FUN");
+//
+//        mSelUserNames.add("INDIA");
+//        mSelUserNames.add("PAK");
 
         mSelGroupNames.add("Non Group Expenses");
         //endregion
 
         //region Recycler View Attributes
-        mLayoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mLayoutManagerLender = new LinearLayoutManager(this);
+        mRecyclerViewLender.setHasFixedSize(true);
+        mRecyclerViewLender.setLayoutManager(mLayoutManagerLender);
+        mRecyclerViewLender.setItemAnimator(new DefaultItemAnimator());
+
+        mLayoutManagerBorrower = new LinearLayoutManager(this);
+        mRecyclerViewBorrower.setHasFixedSize(true);
+        mRecyclerViewBorrower.setLayoutManager(mLayoutManagerBorrower);
+        mRecyclerViewBorrower.setItemAnimator(new DefaultItemAnimator());
         //endregion
 
         //region Attach Adapters
         groupArrayAdapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.card_autocomplete_item, mSelGroupNames);
         mSelGroup.setAdapter(groupArrayAdapter);
+        mSelGroup.setThreshold(0);
 
-        mSingleRecyclerViewAdapter = new SingleRecyclerViewAdapter(mUserItems, this, mSelUserNames);
-        mRecyclerView.setAdapter(mSingleRecyclerViewAdapter);
+        mSingleRecyclerViewAdapterLender = new SingleRecyclerViewAdapter(mUserLenders, this, mSelUserNames);
+        mRecyclerViewLender.setAdapter(mSingleRecyclerViewAdapterLender);
+        mSingleRecyclerViewAdapterBorrower = new SingleRecyclerViewAdapter(mUserBorrowers, this, mSelUserNames);
+        mRecyclerViewBorrower.setAdapter(mSingleRecyclerViewAdapterBorrower);
 
 //        mAddBillRecyclerViewAdapter = new AddBillRecyclerViewAdapter(mItems, this);
 //        mRecyclerView.setAdapter(mAddBillRecyclerViewAdapter);
@@ -239,7 +271,8 @@ public class AddBill extends AppCompatActivity {
 
         //region Attach Listeners
         mDate.setOnClickListener(selectDateListener);
-        mAddButton.setOnClickListener(addMemberListener);
+        mAddLenderButton.setOnClickListener(addMemberLenderListener);
+        mAddBorrowerButton.setOnClickListener(addMemberBorrowerListener);
         mSelGroup.setOnItemSelectedListener(selectGroupListener);
         //endregion
     }
@@ -258,6 +291,9 @@ public class AddBill extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action buttons
         switch(item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
             case R.id.action_save:
                 Map<String, Object> newTrans = new HashMap<>();
 
@@ -276,7 +312,7 @@ public class AddBill extends AppCompatActivity {
                 newTrans.put("mop", mMop);
                 newTrans.put("lender", lender);
                 newTrans.put("borrower", borrower);
-                newTrans.put("mDot", mDot);
+                newTrans.put("dot", mDot);
                 JSONObject transaction = new JSONObject(newTrans);
                 Log.d(TAG, String.valueOf(transaction));
                 VolleyRequests.getInstance(getApplicationContext()).save(transaction, 3);
@@ -329,7 +365,8 @@ public class AddBill extends AppCompatActivity {
                     }
                 realm.commitTransaction();
                 realm.close();
-                mSingleRecyclerViewAdapter.notifyDataSetChanged();
+                mSingleRecyclerViewAdapterLender.notifyDataSetChanged();
+                mSingleRecyclerViewAdapterBorrower.notifyDataSetChanged();
 //                mAddBillRecyclerViewAdapter.notifyDataSetChanged() ;
             }
         };
@@ -396,16 +433,19 @@ public class AddBill extends AppCompatActivity {
 //        }
 
 
-        for (User user : mUserItems)
-            lender.add(user.getUserId());
-        for (User user : mUsers) {
-            boolean exists = false;
-            for (Long data : lender) {
-                if (data.equals(user.getUserId())) ;
-                exists = true;
+        for (User user : mUserLenders) {
+            try {
+                lender.add(user.getUserId());
+            } catch (Exception e) {
+                lender.add(-1L);
             }
-            if (!exists)
+        }
+        for (User user : mUserBorrowers) {
+            try {
                 borrower.add(user.getUserId());
+            } catch (Exception e) {
+                borrower.add(-1L);
+            }
         }
     }
     //endregion

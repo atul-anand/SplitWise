@@ -8,6 +8,10 @@ public class Category {
     private String text;
     private String imageUrl;
 
+    public Category() {
+        this.text = "";
+        this.imageUrl = "";
+    }
 
     public Category(String text, String imageUrl) {
         this.text = text;

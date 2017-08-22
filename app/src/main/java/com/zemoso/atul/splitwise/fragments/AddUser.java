@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.zemoso.atul.splitwise.R;
 import com.zemoso.atul.splitwise.singletons.VolleyRequests;
@@ -90,6 +91,8 @@ public class AddUser extends DialogFragment {
                 JSONObject jsonObject = new JSONObject(newUser);
                 Log.d(TAG, String.valueOf(jsonObject));
                 VolleyRequests.getInstance(getContext()).save(jsonObject,1);
+                Toast.makeText(getContext(), "User " + mUserName + " registered\n Use this username for login", Toast.LENGTH_SHORT).show();
+
                 AddUser.this.dismiss();
             }
         });

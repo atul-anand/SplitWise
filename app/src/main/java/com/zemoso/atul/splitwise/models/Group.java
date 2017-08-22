@@ -2,6 +2,9 @@ package com.zemoso.atul.splitwise.models;
 
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import io.realm.RealmObject;
@@ -23,15 +26,28 @@ public class Group extends RealmObject {
     private String imageFilePath;
 
     public Group() {
+        this.groupId = -1;
+        this.groupName = "Non Group Expenses";
+        this.createdBy = "master";
+        this.totalMembers = 1;
+        this.dateOfCreation = new Date();
+        this.imageFilePath = "";
     }
 
     public Group(JSONObject jsonObject) {
         this.groupId = jsonObject.optLong("groupId");
         this.groupName = jsonObject.optString("groupName");
-        this.dateOfCreation = new Date(jsonObject.optString("dateOfCreation"));
+
+        try {
+            DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+            this.dateOfCreation = df.parse(jsonObject.optString("dateOfCreation"));
+        } catch (ParseException e) {
+            this.dateOfCreation = new Date();
+            e.printStackTrace();
+        }
         this.totalMembers = jsonObject.optInt("totalMembers");
         this.createdBy = jsonObject.optString("createdBy");
-        this.imageFilePath = jsonObject.optString("imageFilePath");
+        this.imageFilePath = jsonObject.optString("url");
     }
 
     public long getGroupId() {

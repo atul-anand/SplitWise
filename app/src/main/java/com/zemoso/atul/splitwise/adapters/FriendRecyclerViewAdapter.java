@@ -66,7 +66,7 @@ public class FriendRecyclerViewAdapter extends RecyclerView.Adapter<FriendRecycl
         }
 
         holder.mHeading.setText(mCardData.getmHeading());
-        holder.mStatus.setText(mCardData.getmStatus());
+//        holder.mStatus.setText(mCardData.getmStatus());
 
         holder.mCardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,14 +91,14 @@ public class FriendRecyclerViewAdapter extends RecyclerView.Adapter<FriendRecycl
 
         ImageView mAvatar;
         TextView mHeading;
-        TextView mStatus;
+        //        TextView mStatus;
         CardView mCardView;
 
         RecyclerViewViewHolder(View itemView) {
             super(itemView);
             mAvatar = itemView.findViewById(R.id.card_avatar);
             mHeading = itemView.findViewById(R.id.card_heading);
-            mStatus = itemView.findViewById(R.id.card_status);
+//            mStatus = itemView.findViewById(R.id.card_status);
             mCardView = itemView.findViewById(R.id.card_holder);
         }
     }

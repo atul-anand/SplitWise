@@ -31,8 +31,8 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginEnd="10dp"
             android:onClick="addMemberDialog"
-            android:text="@string/add_member_heading"
-            android:textSize="20sp" />
+            android:text="@string/add_members_button"
+            android:textSize="16sp" />
 
         <Button
             android:id="@+id/group_detail_settle_up"
@@ -41,6 +41,6 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginStart="10dp"
             android:text="@string/settleUp"
-            android:textSize="20sp" />
+            android:textSize="16sp" />
     </LinearLayout>
 </LinearLayout>

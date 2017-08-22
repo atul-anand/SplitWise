@@ -16,14 +16,33 @@
             android:layout_height="@dimen/trans_detail_description_height"
             android:textAlignment="center" />
 
-        <TextView
-            android:id="@+id/trans_detail_total_amount"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/trans_detail_amount_height"
-            android:textAlignment="center"
-            android:textSize="40sp" />
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
+            <TextView
+                android:id="@+id/trans_detail_dot"
+                android:layout_width="100dp"
+                android:layout_height="@dimen/trans_detail_amount_height"
+                android:textAlignment="center"
+                android:textSize="40sp" />
 
+            <TextView
+                android:id="@+id/trans_detail_total_amount"
+                android:layout_width="150dp"
+                android:layout_height="@dimen/trans_detail_amount_height"
+                android:textAlignment="center"
+                android:textSize="40sp" />
+
+            <TextView
+                android:id="@+id/trans_detail_mop"
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/trans_detail_amount_height"
+                android:textAlignment="center"
+                android:textSize="40sp" />
+
+        </LinearLayout>
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_show_transaction"
             android:layout_width="match_parent"
@@ -37,23 +56,23 @@
             android:layout_marginTop="@dimen/trans_detail_button_top_margin"
             android:gravity="center_horizontal">
 
-            <Button
-                android:id="@+id/trans_detail_amount"
-                android:layout_width="@dimen/trans_detail_button_width"
-                android:layout_height="@dimen/trans_detail_button_height"
-                android:layout_marginEnd="10dp"
-                android:background="@color/colorButtonBalances"
-                android:text="@string/balances"
-                android:textColor="@color/colorWhite" />
+            <!--<Button-->
+            <!--android:id="@+id/trans_detail_amount"-->
+            <!--android:layout_width="@dimen/trans_detail_button_width"-->
+            <!--android:layout_height="@dimen/trans_detail_button_height"-->
+            <!--android:layout_marginEnd="10dp"-->
+            <!--android:background="@color/colorButtonBalances"-->
+            <!--android:text="@string/balances"-->
+            <!--android:textColor="@color/colorWhite" />-->
 
-            <Button
-                android:id="@+id/trans_detail_debt"
-                android:layout_width="@dimen/trans_detail_button_width"
-                android:layout_height="@dimen/trans_detail_button_height"
-                android:layout_marginStart="10dp"
-                android:background="@color/colorButtonDebt"
-                android:text="@string/debt"
-                android:textColor="@color/colorWhite" />
+            <!--<Button-->
+            <!--android:id="@+id/trans_detail_debt"-->
+            <!--android:layout_width="@dimen/trans_detail_button_width"-->
+            <!--android:layout_height="@dimen/trans_detail_button_height"-->
+            <!--android:layout_marginStart="10dp"-->
+            <!--android:background="@color/colorButtonDebt"-->
+            <!--android:text="@string/debt"-->
+            <!--android:textColor="@color/colorWhite" />-->
         </LinearLayout>
 
     </LinearLayout>

@@ -15,6 +15,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -23,6 +25,8 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.zemoso.atul.splitwise.R;
 import com.zemoso.atul.splitwise.adapters.MembersRecyclerViewAdapter;
+import com.zemoso.atul.splitwise.javaBeans.UserPresent;
+import com.zemoso.atul.splitwise.models.Group;
 import com.zemoso.atul.splitwise.models.User;
 import com.zemoso.atul.splitwise.singletons.VolleyRequests;
 
@@ -44,12 +48,16 @@ public class AddMembers extends DialogFragment {
     private static final String TAG = AddMembers.class.getSimpleName();
 
     private SharedPreferences preferences;
-    private List<String> mItems;
+    private List<UserPresent> mItems;
+    private Group mGroup;
+    private String mGroupNam;
     private List<User> mUsers;
     private String mUrl;
+    private String mUrlForPost;
     private Long mGroupId;
     private String mGroupParam;
 
+    private TextView mGroupName;
     private Button mButton;
     private Button mAddButton;
 
@@ -57,25 +65,37 @@ public class AddMembers extends DialogFragment {
     private RecyclerView.LayoutManager mLayoutManager;
     private MembersRecyclerViewAdapter mMembersRecyclerViewAdapter;
     //endregion
+
     //region Listener
     private View.OnClickListener addButtonListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            mItems.add(String.valueOf(-1));
+            mItems.add(new UserPresent(-1L, "master", false));
             mMembersRecyclerViewAdapter.notifyDataSetChanged();
         }
     };
     private View.OnClickListener postJsonListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            for (String data : mItems) {
-                addUrl(data);
-                Log.d(TAG, data);
+            int ctr = 0;
+            for (UserPresent userPresent : mItems) {
+                if (userPresent.getVerified())
+                    ctr++;
             }
-            postJsonObject();
-            mUrl = getActivity().getSharedPreferences("Settings", 0).getString("Hostname", "");
-            mUrl = mUrl + getResources().getString(R.string.url_group_add);
-            AddMembers.this.dismiss();
+            if (ctr != mItems.size()) {
+                Toast.makeText(getContext(), "All users not verified", Toast.LENGTH_SHORT).show();
+            } else {
+                mUrl = mUrlForPost;
+                Log.d(TAG, mUrlForPost);
+                for (UserPresent data : mItems) {
+                    addUrl(String.valueOf(data.getUserId()));
+                    Log.d(TAG, data.getUsername());
+                }
+                Log.d(TAG, mUrl);
+                postJsonObject();
+
+                AddMembers.this.dismiss();
+            }
         }
     };
     //endregion
@@ -88,6 +108,7 @@ public class AddMembers extends DialogFragment {
     public static AddMembers newInstance() {
         return new AddMembers();
     }
+    //endregion
 
     //region Inherited Methods
     @Override
@@ -96,19 +117,22 @@ public class AddMembers extends DialogFragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_add_members, container, false);
     }
-    //endregion
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mGroupId = 21L;
-        mItems = new ArrayList<>();
-        getMembersByGroupId();
-        mItems.add(String.valueOf(-1));
 
+        mGroupId = getArguments().getLong("groupId");
+        mItems = new ArrayList<>();
+        mUsers = new ArrayList<>();
+        getMembersByGroupId();
+
+//        mItems.add(new UserPresent(4L,"das",false));
+
+        mGroupName = view.findViewById(R.id.add_member_group_name);
         mButton = view.findViewById(R.id.add_member_button_done);
-        mAddButton = view.findViewById(R.id.add_member_button_add);
+        mAddButton = view.findViewById(R.id.add_member_button_add_lender);
 
 
         mRecyclerView = view.findViewById(R.id.add_member_recycler);
@@ -120,11 +144,18 @@ public class AddMembers extends DialogFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        mUrl = preferences.getString("Hostname", "");
-
-        mUrl = mUrl + getResources().getString(R.string.url_group_add);
+        mUrlForPost = preferences.getString("Hostname", "");
+        Log.d(TAG, mUrlForPost);
+        mUrlForPost = mUrlForPost + getResources().getString(R.string.url_group_add);
         mGroupParam = getResources().getString(R.string.url_group_id);
-        mUrl = mUrl + "?" + mGroupParam + "=" + mGroupId;
+        mUrlForPost = mUrlForPost + "?" + mGroupParam + "=" + mGroupId;
+        Log.d(TAG, mUrlForPost);
+
+        Realm realm = Realm.getDefaultInstance();
+        mGroup = realm.where(Group.class).equalTo("groupId", mGroupId).findFirst();
+        mGroupNam = mGroup.getGroupName();
+
+        mGroupName.setText(mGroupNam);
 
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -145,10 +176,12 @@ public class AddMembers extends DialogFragment {
     }
 
     private void getData() {
+        mItems.clear();
         for (User user : mUsers) {
             String data = user.getName();
-            mItems.add(data);
+            mItems.add(new UserPresent(user.getUserId(), data, true));
         }
+        mMembersRecyclerViewAdapter.notifyDataSetChanged();
     }
     //endregion
 
@@ -178,13 +211,17 @@ public class AddMembers extends DialogFragment {
         Response.Listener<JSONArray> listener = new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
+                Log.d(TAG, String.valueOf(response));
+                mUsers.clear();
                 Realm realm = Realm.getDefaultInstance();
                 realm.beginTransaction();
                 for (int i = 0; i < response.length(); i++) {
                     try {
                         JSONObject jsonObject = response.getJSONObject(i);
+                        if (jsonObject.equals(null))
+                            continue;
                         mUsers.add(new User(jsonObject));
-                        realm.insertOrUpdate(mUsers.get(mUsers.size() - 1));
+//                        realm.insertOrUpdate(mUsers.get(mUsers.size() - 1));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -192,7 +229,6 @@ public class AddMembers extends DialogFragment {
                 realm.commitTransaction();
                 realm.close();
                 getData();
-                mMembersRecyclerViewAdapter.notifyDataSetChanged();
             }
         };
         Response.ErrorListener errorListener = new Response.ErrorListener() {

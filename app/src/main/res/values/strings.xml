@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">SplitWise</string>
-    <string name="app_heading">S P L I T W I S E</string>
+    <string name="app_name">Demo App</string>
+    <string name="app_heading">DEMO APP</string>
 
     <string name="image_url">"http://www.careerbased.com/themes/comb/img/avatar/default-avatar-male_10.png"</string>
 
@@ -17,13 +17,14 @@
     <string name="url_group_id">groupId</string>
     <string name="url_transaction_id">transId</string>
     <string name="url_image">imageUrl</string>
+    <string name="url_user_name">userName</string>
 
     <!--GET Request-->
 
     <!--User-->
     <string name="url_user_findAll">user/findAll</string>
     <string name="url_user_findById">user/findById</string>
-    <string name="url_user_string">user/username</string>
+    <string name="url_user_string">user/profile</string>
 
     <!--Group-->
     <string name="url_group_findAll">group/findAll</string>
@@ -41,15 +42,15 @@
     <string name="url_transaction_findByUserId">transaction/findAllByUserId</string>
     <string name="url_transaction_findGroupExpByUserId">transaction/findGroupByUserId</string>
     <string name="url_transaction_findNonGroupExpByUserId">transaction/findNonGroupByUserId</string>
-    <string name="url_transaction_findAmountsByTransId">transaction/findAmountsByTransId</string>
+    <string name="url_transaction_findAmountsByTransId">transaction/findAmountByTransId</string>
 
     <!--POST Request-->
-    <string name="url_user_save">user/save</string>
+    <string name="url_user_save">user</string>
     <string name="url_group_save">group/save</string>
     <string name="url_transaction_save">transaction/save</string>
 
     <!--PUT Request-->
-    <string name="url_user_update">user/update</string>
+    <string name="url_user_update">user</string>
     <string name="url_group_update">group/update</string>
     <string name="url_transaction_update">transaction/update</string>
 
@@ -62,6 +63,10 @@
     <string name="bill_select_group">Select Group</string>
     <string name="bill_select_user">Select User</string>
     <string name="bill_amount">Amount</string>
+    <string name="bill_text_lender">Lenders</string>
+    <string name="bill_text_borrower">Borrowers</string>
+    <string name="bill_add_lender">Add Lenders?</string>
+    <string name="bill_add_borrower">Add Borrowers?</string>
 
     <string-array name="bill_mop_list">
         <item>Cash</item>
@@ -126,6 +131,8 @@
         v4.1.10/166
     </string>
     <string name="proceed">Proceed</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
     <string name="current_user_id">Enter User Id</string>
 
     <!--Download Data-->
@@ -227,11 +234,11 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!--Add Member-->
-    <string name="add_member_heading">Members+?</string>
+    <string name="add_member_heading">Group Name</string>
     <string name="add_member_item_plus">+</string>
     <string name="add_member_item_check">OK</string>
     <string name="add_member_item_subtract">-</string>
-    <string name="add_member_item_text">Member ID?</string>
+    <string name="add_member_item_text">Name?</string>
     <string name="add_member_button">Done</string>
 
 
@@ -327,6 +334,8 @@
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="add_more_members">Add more members?</string>
     <string name="bill_date">Date</string>
+    <string name="add_members_button">Members+?</string>
+    <string name="add_group_name_edit">Group Name?</string>
 
 
 </resources>

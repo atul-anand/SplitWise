@@ -74,13 +74,88 @@
             android:paddingStart="@dimen/add_member_horizontal_margin"
             android:textSize="24sp" />
 
+        <TextView
+            android:id="@+id/bill_text_lender"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="50dp"
+            android:text="@string/bill_text_lender"
+            android:textColor="@color/color_add_member_active"
+            android:textSize="20sp" />
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/add_bill_recycler"
+            android:id="@+id/add_bill_recycler_lender"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginEnd="30dp"
             android:layout_marginStart="30dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="10dp"
+                android:gravity="center_vertical"
+                android:text="@string/bill_add_lender"
+                android:textSize="20sp" />
+
+            <Button
+                android:id="@+id/add_member_button_add_lender"
+                android:layout_width="@dimen/add_member_button_width"
+                android:layout_height="@dimen/add_member_button_width"
+                android:layout_gravity="center"
+                android:layout_marginEnd="5dp"
+                android:background="@color/color_add_member_active"
+                android:text="@string/add_member_item_plus"
+                android:textSize="@dimen/list_item_1" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/bill_text_borrower"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="50dp"
+            android:text="@string/bill_text_borrower"
+            android:textColor="@color/color_add_member_active"
+            android:textSize="20sp" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/add_bill_recycler_borrower"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginEnd="30dp"
+            android:layout_marginStart="30dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="10dp"
+                android:gravity="center_vertical"
+                android:text="@string/bill_add_borrower"
+                android:textSize="20sp" />
+
+            <Button
+                android:id="@+id/add_member_button_add_borrower"
+                android:layout_width="@dimen/add_member_button_width"
+                android:layout_height="@dimen/add_member_button_width"
+                android:layout_gravity="center"
+                android:layout_marginEnd="5dp"
+                android:background="@color/color_add_member_active"
+                android:text="@string/add_member_item_plus"
+                android:textSize="@dimen/list_item_1" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -92,7 +167,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginStart="50dp"
-                android:background="@color/cardview_light_background"
                 android:text="@string/bill_amount"
                 android:textColor="@color/color_add_member_active"
                 android:textSize="30sp" />
@@ -107,32 +181,6 @@
                 android:paddingEnd="20dp"
                 android:paddingStart="20dp"
                 android:textAlignment="viewEnd" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="10dp"
-                android:gravity="center_vertical"
-                android:text="@string/add_more_members"
-                android:textSize="20sp" />
-
-            <Button
-                android:id="@+id/add_member_button_add"
-                android:layout_width="@dimen/add_member_button_width"
-                android:layout_height="@dimen/add_member_button_width"
-                android:layout_gravity="center"
-                android:layout_marginEnd="5dp"
-                android:background="@color/color_add_member_active"
-                android:text="@string/add_member_item_plus"
-                android:textSize="@dimen/list_item_1" />
-
         </LinearLayout>
 
 

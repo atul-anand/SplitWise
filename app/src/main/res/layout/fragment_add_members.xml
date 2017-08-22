@@ -6,6 +6,7 @@
     tools:context="com.zemoso.atul.splitwise.fragments.AddMembers">
 
     <TextView
+        android:id="@+id/add_member_group_name"
         android:layout_width="match_parent"
         android:layout_height="@dimen/add_member_list_height"
         android:padding="10dp"
@@ -35,7 +36,7 @@
             android:textSize="20sp" />
 
         <Button
-            android:id="@+id/add_member_button_add"
+            android:id="@+id/add_member_button_add_lender"
             android:layout_width="@dimen/add_member_button_width"
             android:layout_height="@dimen/add_member_button_width"
             android:layout_gravity="center"

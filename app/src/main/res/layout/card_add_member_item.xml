@@ -2,8 +2,7 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/add_member_list_height"
-    android:layout_marginBottom="@dimen/add_member_vertical_margin"
-    android:layout_marginTop="@dimen/add_member_vertical_margin"
+
     android:orientation="horizontal">
 
     <LinearLayout
@@ -16,16 +15,29 @@
             android:layout_width="@dimen/add_member_edit_width"
             android:layout_height="@dimen/add_member_list_height"
             android:layout_gravity="center_horizontal"
+            android:background="@drawable/text_border_red"
             android:hint="@string/add_member_item_text"
-            android:inputType="number"
+            android:inputType="text"
             android:paddingEnd="@dimen/add_member_horizontal_margin"
             android:paddingStart="@dimen/add_member_horizontal_margin" />
+
+        <Button
+            android:id="@+id/add_member_button_check"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="10dp"
+            android:background="@color/color_add_member_active"
+            android:text="@string/add_member_item_check"
+            android:textColor="@color/colorWhite"
+            android:textSize="20sp" />
 
         <Button
             android:id="@+id/add_member_button_subtract"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_gravity="center_vertical"
+            android:layout_marginStart="10dp"
             android:background="@color/color_add_member_active"
             android:text="@string/add_member_item_subtract"
             android:textColor="@color/colorWhite"

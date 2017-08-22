@@ -4,7 +4,6 @@
     android:id="@+id/card_holder"
     android:layout_width="match_parent"
     android:layout_height="@dimen/transaction_card_height"
-    android:layout_margin="@dimen/transaction_card_margin"
     app:cardCornerRadius="@dimen/cardview_default_radius"
     app:cardElevation="@dimen/card_elevation">
 
@@ -14,8 +13,8 @@
 
         <ImageView
             android:id="@+id/card_avatar"
-            android:layout_width="@dimen/profilePic"
-            android:layout_height="@dimen/profilePic"
+            android:layout_width="@dimen/card_profile_pic_height"
+            android:layout_height="@dimen/card_profile_pic_height"
             android:layout_centerVertical="true"
             android:layout_marginBottom="@dimen/button_padding"
             android:layout_marginStart="@dimen/transaction_card_left_margin"

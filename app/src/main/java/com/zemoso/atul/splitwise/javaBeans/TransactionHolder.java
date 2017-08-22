@@ -13,6 +13,12 @@ public class TransactionHolder {
     private String name;
     private Double amount;
 
+    public TransactionHolder() {
+        this.userId = -1L;
+        this.name = "";
+        this.amount = 0.0;
+    }
+
     public TransactionHolder(Long userId, String name, Double amount) {
         this.userId = userId;
         this.name = name;
@@ -21,8 +27,8 @@ public class TransactionHolder {
 
     public TransactionHolder(JSONObject jsonObject) {
         this.userId = jsonObject.optLong("userId");
-        this.name = jsonObject.optString("name");
-        this.amount = 0.0;
+        this.name = jsonObject.optString("userName");
+        this.amount = jsonObject.optDouble("debt");
     }
 
     public Long getUserId() {

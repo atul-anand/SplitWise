@@ -13,12 +13,18 @@
     <!--android:layout_marginBottom="25dp"-->
     <!--android:hint="@string/current_user_id"-->
     <!--android:textAlignment="center"/>-->
-    <AutoCompleteTextView
+    <LinearLayout
+        android:id="@+id/login_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <EditText
         android:id="@+id/auto_complete"
         android:layout_width="@dimen/edit_text_width"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginBottom="25dp"
+            android:layout_marginTop="230dp"
         android:hint="@string/add_user_name"
         android:inputType="text"
         android:textAlignment="center"
@@ -31,24 +37,36 @@
     <!--android:layout_marginBottom="25dp"-->
     <!--android:prompt="@string/select_user"-->
     <!--android:textAlignment="center"/>-->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal">
     <Button
-        android:id="@+id/button"
+        android:id="@+id/button_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="25dp"
+        android:layout_marginEnd="9dp"
         android:background="@color/colorButtonSettleUp"
-        android:text="@string/proceed"
+        android:text="@string/login"
         android:textColor="@color/colorWhite"/>
 
+            <Button
+                android:id="@+id/button_register"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="9dp"
+                android:background="@color/colorButtonSettleUp"
+                android:text="@string/register"
+                android:textColor="@color/colorWhite" />
+        </LinearLayout>
+    </LinearLayout>
     <ProgressBar
         android:id="@+id/progress_bar"
-        style="?android:attr/progressBarStyleSmall"
-        android:layout_width="@dimen/progress_bar_width"
-        android:layout_height="@dimen/progress_bar_height"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:layout_marginBottom="30dp"
-        android:layout_marginStart="80dp"
         android:background="@color/colorWhite"
         android:elevation="@dimen/progress_bar_elevation"
         android:indeterminate="true"

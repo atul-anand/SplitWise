@@ -8,15 +8,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -44,13 +40,10 @@ public class Transactions extends Fragment {
     //region Variable Declaration
     private static final String TAG = Transactions.class.getSimpleName();
 
-    private SharedPreferences preferences;
     private Long mUserId;
     private List<RecyclerViewHolder> mItems;
     private List<Transaction> mTransactions;
 
-    private Button mButton;
-    private PopupMenu mPopupMenu;
 
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -79,13 +72,14 @@ public class Transactions extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         mUserId = preferences.getLong("userId", 0);
         mItems = new ArrayList<>();
         mTransactions = new ArrayList<>();
 
-        mButton = view.findViewById(R.id.total_menu);
-        mPopupMenu = new PopupMenu(getContext(), mButton);
+//        mItems.add(new RecyclerViewHolder());
+//        mTransactions.add(new Transaction());
+
         mRecyclerView = view.findViewById(R.id.recycler_transaction);
 
         mLayoutManager = new LinearLayoutManager(getContext());
@@ -106,29 +100,14 @@ public class Transactions extends Fragment {
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setAdapter(mTransactionRecyclerViewAdapter);
 
-        mButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mPopupMenu.getMenuInflater().inflate(R.menu.menu_total_balance, mPopupMenu.getMenu());
-                mPopupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        Toast.makeText(getContext(),
-                                "You clicked" + item.getTitle(),
-                                Toast.LENGTH_SHORT).show();
-                        return true;
-                    }
-                });
-                mPopupMenu.show();
-            }
-        });
-
 
     }
     //endregion
 
     //region Private Methods
     private void addTransactions() {
+        Realm realm = Realm.getDefaultInstance();
+        mTransactions = realm.where(Transaction.class).findAll();
         for (Transaction transaction : mTransactions) {
             long mId = transaction.getTransId();
             String mImageUrl = transaction.getImageFilePath();
@@ -136,6 +115,7 @@ public class Transactions extends Fragment {
             String mStatus = String.valueOf(transaction.getAmount());
             mItems.add(new RecyclerViewHolder(mId, mImageUrl, "", mHeading, mStatus));
         }
+        mTransactionRecyclerViewAdapter.notifyDataSetChanged();
     }
 
     private void transactionFindByUserId(long userId) {
@@ -143,6 +123,8 @@ public class Transactions extends Fragment {
         String param = getResources().getString(R.string.url_user_id);
         String mUrl = PreferenceManager.getDefaultSharedPreferences(getContext()).getString("Hostname", "") + extension
                 + "?" + param + "=" + userId;
+//        extension = getResources().getString(R.string.url_transaction_findAll);
+//        mUrl = PreferenceManager.getDefaultSharedPreferences(getContext()).getString("Hostname","") + extension;
         Log.d(TAG, mUrl);
         Response.Listener<JSONArray> listener = new Response.Listener<JSONArray>() {
             @Override
@@ -153,7 +135,6 @@ public class Transactions extends Fragment {
                     try {
                         JSONObject jsonObject = response.getJSONObject(i);
                         Transaction transaction = new Transaction(jsonObject);
-                        mTransactions.add(transaction);
                         realm.insertOrUpdate(transaction);
                         Log.d(TAG, String.valueOf(jsonObject));
 
@@ -163,7 +144,6 @@ public class Transactions extends Fragment {
                 realm.commitTransaction();
                 realm.close();
                 addTransactions();
-                mTransactionRecyclerViewAdapter.notifyDataSetChanged();
             }
         };
         Response.ErrorListener errorListener = new Response.ErrorListener() {

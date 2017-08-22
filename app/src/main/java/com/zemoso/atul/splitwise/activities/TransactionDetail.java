@@ -8,14 +8,12 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.zemoso.atul.splitwise.R;
 import com.zemoso.atul.splitwise.adapters.TransactionDetailRecyclerViewAdapter;
 import com.zemoso.atul.splitwise.javaBeans.TransactionBalances;
@@ -27,7 +25,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import io.realm.Realm;
@@ -40,8 +40,8 @@ public class TransactionDetail extends AppCompatActivity {
     //region Views
     private TextView mDescription;
     private TextView mAmount;
-    private Button mTotalButton;
-    private Button mDebtButton;
+    //    private Button mTotalButton;
+//    private Button mDebtButton;
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private TransactionDetailRecyclerViewAdapter mTransactionDetailRecyclerViewAdapter;
@@ -52,8 +52,12 @@ public class TransactionDetail extends AppCompatActivity {
     private Transaction mTransaction;
     private String description;
     private Double amount;
+    private String mop;
+    private String dot;
     private List<TransactionBalances> mData;
     private List<TransactionHolder> mItems;
+    private TextView mMop;
+    private TextView mDot;
     //endregion
     //endregion
 
@@ -71,17 +75,35 @@ public class TransactionDetail extends AppCompatActivity {
         //region Data
         Bundle mBundle = getIntent().getExtras();
         transId = mBundle.getLong("transId");
+
         mData = new ArrayList<>();
         mItems = new ArrayList<>();
         getTransactionData();
         getTransaction();
+
+//        mData.add(new TransactionBalances());
+//        mItems.add(new TransactionHolder());
         //endregion
 
         //region Views
         mDescription = (TextView) findViewById(R.id.trans_detail_description);
         mAmount = (TextView) findViewById(R.id.trans_detail_total_amount);
-        mTotalButton = (Button) findViewById(R.id.trans_detail_amount);
-        mDebtButton = (Button) findViewById(R.id.trans_detail_debt);
+        mMop = (TextView) findViewById(R.id.trans_detail_mop);
+        mDot = (TextView) findViewById(R.id.trans_detail_dot);
+//        mTotalButton = (Button) findViewById(R.id.trans_detail_amount);
+//        mDebtButton = (Button) findViewById(R.id.trans_detail_debt);
+
+
+        description = mTransaction.getDescription();
+        amount = mTransaction.getAmount();
+        mop = mTransaction.getMop();
+        Date date = mTransaction.getDot();
+        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        dot = df.format(date);
+        mDescription.setText(description);
+        mAmount.setText(String.valueOf(amount));
+        mMop.setText(mop);
+        mDot.setText(dot);
 
         //region Recycler View
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_show_transaction);
@@ -97,22 +119,33 @@ public class TransactionDetail extends AppCompatActivity {
         //endregion
 
         //region Attach Listeners
-        mTotalButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                toBalanceMode();
-            }
-        });
-
-        mDebtButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                toDebtMode();
-            }
-        });
+//        mTotalButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                toBalanceMode();
+//            }
+//        });
+//
+//        mDebtButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                toDebtMode();
+//            }
+//        });
         //endregion
 
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     //region Private Methods
@@ -155,8 +188,8 @@ public class TransactionDetail extends AppCompatActivity {
                 for (int i = 0; i < response.length(); i++)
                     try {
                         JSONObject jsonObject = response.getJSONObject(i);
-                        TransactionBalances balances = new TransactionBalances(jsonObject);
-                        mData.add(balances);
+                        TransactionHolder transactionHolder = new TransactionHolder(jsonObject);
+                        mItems.add(transactionHolder);
                         Log.d(TAG, String.valueOf(jsonObject));
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -177,34 +210,34 @@ public class TransactionDetail extends AppCompatActivity {
     }
 
     private void getTransaction() {
-        String extension = getResources().getString(R.string.url_transaction_findById);
-        String param = getResources().getString(R.string.url_transaction_id);
-        String mUrl = PreferenceManager.getDefaultSharedPreferences(this).getString("Hostname", "") + extension + "?"
-                + param + "=" + transId;
-        Log.d(TAG, mUrl);
-        Response.Listener<JSONObject> listener = new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                mTransaction = new Transaction(response);
-                description = mTransaction.getDescription();
-                amount = mTransaction.getAmount();
-                mDescription.setText(description);
-                mAmount.setText(String.valueOf(amount));
-                Log.d(TAG, String.valueOf(response));
-            }
-        };
-        Response.ErrorListener errorListener = new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e(TAG, error.toString());
-
-            }
-        };
-        JsonObjectRequest transJsonObject = new JsonObjectRequest(mUrl, null, listener, errorListener);
-        VolleyRequests.getInstance(getApplicationContext()).addToRequestQueue(transJsonObject);
+//        String extension = getResources().getString(R.string.url_transaction_findById);
+//        String param = getResources().getString(R.string.url_transaction_id);
+//        String mUrl = PreferenceManager.getDefaultSharedPreferences(this).getString("Hostname", "") + extension + "?"
+//                + param + "=" + transId;
+//        Log.d(TAG, mUrl);
+//        Response.Listener<JSONObject> listener = new Response.Listener<JSONObject>() {
+//            @Override
+//            public void onResponse(JSONObject response) {
+//                mTransaction = new Transaction(response);
+//                description = mTransaction.getDescription();
+//                amount = mTransaction.getAmount();
+//                mDescription.setText(description);
+//                mAmount.setText(String.valueOf(amount));
+//                Log.d(TAG, String.valueOf(response));
+//            }
+//        };
+//        Response.ErrorListener errorListener = new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                Log.e(TAG, error.toString());
+//
+//            }
+//        };
+//        JsonObjectRequest transJsonObject = new JsonObjectRequest(mUrl, null, listener, errorListener);
+//        VolleyRequests.getInstance(getApplicationContext()).addToRequestQueue(transJsonObject);
         Realm realm = Realm.getDefaultInstance();
         mTransaction = realm.where(Transaction.class).equalTo("transId", transId).findFirst();
-        realm.close();
+
     }
     //endregion
 

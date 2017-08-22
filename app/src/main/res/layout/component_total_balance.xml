@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+    android:id="@+id/totalBalanceCard"
     android:layout_width="match_parent"
     android:layout_height="@dimen/totalBalance"
     android:layout_gravity="center"
-    android:id="@+id/totalBalanceCard">
+    android:orientation="horizontal">
     <ImageView
         android:id="@+id/totalProfilePic"
         android:layout_width="@dimen/profilePic"
@@ -16,15 +16,15 @@
     <LinearLayout
         android:layout_width="@dimen/totalTextWidth"
         android:layout_height="@dimen/totalBalance"
-        android:orientation="vertical"
+        android:layout_gravity="center"
         android:layout_marginStart="@dimen/totalBalanceLeftMargin"
-        android:layout_gravity="center">
+        android:orientation="vertical">
         <TextView
             android:id="@+id/totalBalance"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/total"
             android:layout_marginTop="30dp"
+            android:text="@string/total"
             android:textSize="@dimen/font_totalBalance"/>
         <TextView
             android:id="@+id/totalStatus"
@@ -33,10 +33,10 @@
             android:text="@string/settled"
             android:textSize="@dimen/font_totalSettledUp"/>
     </LinearLayout>
-    <Button
-        android:id="@+id/total_menu"
-        android:layout_width="@dimen/buttonHeight"
-        android:layout_height="@dimen/buttonHeight"
-        android:layout_gravity="center" />
+    <!--<Button-->
+    <!--android:id="@+id/total_menu"-->
+    <!--android:layout_width="@dimen/buttonHeight"-->
+    <!--android:layout_height="@dimen/buttonHeight"-->
+    <!--android:layout_gravity="center" />-->
 
 </LinearLayout>

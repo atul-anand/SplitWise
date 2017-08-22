@@ -39,7 +39,7 @@
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_friend_profile" />
+    <!--<include layout="@layout/content_friend_profile" />-->
 
     <include layout="@layout/component_floating_button"/>
 

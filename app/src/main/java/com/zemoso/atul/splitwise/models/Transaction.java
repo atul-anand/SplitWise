@@ -1,10 +1,15 @@
 package com.zemoso.atul.splitwise.models;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.List;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
-import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.Ignore;
 import io.realm.annotations.PrimaryKey;
@@ -20,14 +25,24 @@ public class Transaction extends RealmObject {
     private String description;
     private double amount;
     private String mop;
+    private Date dot;
     @Ignore
-    private RealmList lender;
+    private ArrayList lender;
     @Ignore
-    private RealmList borrower;
+    private ArrayList borrower;
     @Ignore
     private String imageFilePath;
 
     public Transaction() {
+        this.transId = -1;
+        this.groupId = -1;
+        this.description = "testTransaction";
+        this.mop = "Cash";
+        this.dot = new Date();
+        this.lender = new ArrayList();
+        this.borrower = new ArrayList<>();
+        this.amount = 0.0;
+        this.imageFilePath = "";
     }
 
     public Transaction(JSONObject jsonObject) {
@@ -36,8 +51,39 @@ public class Transaction extends RealmObject {
         this.description = jsonObject.optString("description");
         this.amount = jsonObject.optDouble("amount");
         this.mop = jsonObject.optString("mop");
-        this.lender = (RealmList) ((List) jsonObject.optJSONArray("lender"));
-        this.borrower = (RealmList) ((List) jsonObject.optJSONArray("borrower"));
+        try {
+            DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+            this.dot = df.parse(jsonObject.optString("dot"));
+        } catch (ParseException e) {
+            this.dot = new Date();
+            e.printStackTrace();
+        }
+        this.lender = new ArrayList();
+        this.borrower = new ArrayList<>();
+
+        try {
+            JSONArray lenders = null;
+            lenders = jsonObject.getJSONArray("lender");
+            for (int i = 0; i < lenders.length(); i++) {
+                lender.add(lenders.get(i));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            JSONArray borrowers = null;
+            borrowers = jsonObject.getJSONArray("borrower");
+            for (int i = 0; i < borrowers.length(); i++) {
+                borrower.add(borrowers.get(i));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+//        this.lender = new RealmList( jsonObject.optJSONArray("lender"));
+//        this.borrower = ((List) jsonObject.optJSONArray("borrower"));
         this.imageFilePath = jsonObject.optString("imageFilePath");
     }
 
@@ -81,20 +127,28 @@ public class Transaction extends RealmObject {
         this.mop = mop;
     }
 
-    public List getLender() {
+    public Date getDot() {
+        return dot;
+    }
+
+    public void setDot(Date dot) {
+        this.dot = dot;
+    }
+
+    public ArrayList getLender() {
         return lender;
     }
 
-    public void setLender(List lender) {
-        this.lender = (RealmList) lender;
+    public void setLender(ArrayList lender) {
+        this.lender = lender;
     }
 
-    public List getBorrower() {
+    public ArrayList getBorrower() {
         return borrower;
     }
 
-    public void setBorrower(List borrower) {
-        this.borrower = (RealmList) borrower;
+    public void setBorrower(ArrayList borrower) {
+        this.borrower = borrower;
     }
 
     public String getImageFilePath() {
