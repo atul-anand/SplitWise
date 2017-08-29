@@ -1,19 +1,27 @@
 package com.zemoso.atul.splitwise.activities;
 
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.zemoso.atul.splitwise.R;
 import com.zemoso.atul.splitwise.adapters.TransactionDetailRecyclerViewAdapter;
 import com.zemoso.atul.splitwise.javaBeans.TransactionBalances;
@@ -25,9 +33,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import io.realm.Realm;
@@ -54,6 +60,7 @@ public class TransactionDetail extends AppCompatActivity {
     private Double amount;
     private String mop;
     private String dot;
+    private String imageUrl;
     private List<TransactionBalances> mData;
     private List<TransactionHolder> mItems;
     private TextView mMop;
@@ -66,27 +73,33 @@ public class TransactionDetail extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transaction_detail);
 
-        //region Action Bar
-//        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_drawer);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-        //endregion
-
         //region Data
         Bundle mBundle = getIntent().getExtras();
         transId = mBundle.getLong("transId");
+        Realm realm = Realm.getDefaultInstance();
+        mTransaction = realm.where(Transaction.class).equalTo("transId", transId).findFirst();
 
         mData = new ArrayList<>();
         mItems = new ArrayList<>();
         getTransactionData();
-        getTransaction();
+
+        //region Action Bar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_trans);
+        setSupportActionBar(toolbar);
+
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setTitle(mTransaction.getDescription());
+        //endregion
 
 //        mData.add(new TransactionBalances());
 //        mItems.add(new TransactionHolder());
         //endregion
 
         //region Views
-        mDescription = (TextView) findViewById(R.id.trans_detail_description);
+        final ImageView mImageView = (ImageView) findViewById(R.id.profile_image);
+//        mDescription = (TextView) findViewById(R.id.trans_detail_description);
         mAmount = (TextView) findViewById(R.id.trans_detail_total_amount);
         mMop = (TextView) findViewById(R.id.trans_detail_mop);
         mDot = (TextView) findViewById(R.id.trans_detail_dot);
@@ -97,13 +110,26 @@ public class TransactionDetail extends AppCompatActivity {
         description = mTransaction.getDescription();
         amount = mTransaction.getAmount();
         mop = mTransaction.getMop();
-        Date date = mTransaction.getDot();
-        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-        dot = df.format(date);
-        mDescription.setText(description);
+        dot = mTransaction.getDot();
+        imageUrl = mTransaction.getImageFilePath();
+//          mDescription.setText(description);
         mAmount.setText(String.valueOf(amount));
         mMop.setText(mop);
         mDot.setText(dot);
+        Glide.with(this)
+                .load(imageUrl)
+                .asBitmap()
+                .centerCrop()
+                .into(new BitmapImageViewTarget(mImageView) {
+                    @Override
+                    protected void setResource(Bitmap resource) {
+                        RoundedBitmapDrawable circularBitmapDrawable =
+                                RoundedBitmapDrawableFactory.create(getApplicationContext().getResources(), resource);
+                        circularBitmapDrawable.setCircular(true);
+                        mImageView.setImageDrawable(circularBitmapDrawable);
+                    }
+                });
+
 
         //region Recycler View
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_show_transaction);
@@ -188,13 +214,14 @@ public class TransactionDetail extends AppCompatActivity {
                 for (int i = 0; i < response.length(); i++)
                     try {
                         JSONObject jsonObject = response.getJSONObject(i);
+                        Log.d(TAG, String.valueOf(jsonObject));
                         TransactionHolder transactionHolder = new TransactionHolder(jsonObject);
                         mItems.add(transactionHolder);
                         Log.d(TAG, String.valueOf(jsonObject));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-
+                Log.d(TAG, String.valueOf(mItems.size()));
                 mTransactionDetailRecyclerViewAdapter.notifyDataSetChanged();
             }
         };
@@ -202,6 +229,7 @@ public class TransactionDetail extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e(TAG, error.toString());
+                Toast.makeText(getApplicationContext(), "No data for transaction #" + transId, Toast.LENGTH_SHORT).show();
 
             }
         };
@@ -209,36 +237,6 @@ public class TransactionDetail extends AppCompatActivity {
         VolleyRequests.getInstance(getApplicationContext()).addToRequestQueue(transJsonObject);
     }
 
-    private void getTransaction() {
-//        String extension = getResources().getString(R.string.url_transaction_findById);
-//        String param = getResources().getString(R.string.url_transaction_id);
-//        String mUrl = PreferenceManager.getDefaultSharedPreferences(this).getString("Hostname", "") + extension + "?"
-//                + param + "=" + transId;
-//        Log.d(TAG, mUrl);
-//        Response.Listener<JSONObject> listener = new Response.Listener<JSONObject>() {
-//            @Override
-//            public void onResponse(JSONObject response) {
-//                mTransaction = new Transaction(response);
-//                description = mTransaction.getDescription();
-//                amount = mTransaction.getAmount();
-//                mDescription.setText(description);
-//                mAmount.setText(String.valueOf(amount));
-//                Log.d(TAG, String.valueOf(response));
-//            }
-//        };
-//        Response.ErrorListener errorListener = new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                Log.e(TAG, error.toString());
-//
-//            }
-//        };
-//        JsonObjectRequest transJsonObject = new JsonObjectRequest(mUrl, null, listener, errorListener);
-//        VolleyRequests.getInstance(getApplicationContext()).addToRequestQueue(transJsonObject);
-        Realm realm = Realm.getDefaultInstance();
-        mTransaction = realm.where(Transaction.class).equalTo("transId", transId).findFirst();
-
-    }
     //endregion
 
     //endregion

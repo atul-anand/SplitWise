@@ -31,7 +31,7 @@ public class UserPresent {
         this.username = username;
     }
 
-    public Boolean getVerified() {
+    public Boolean isVerified() {
         return verified;
     }
 

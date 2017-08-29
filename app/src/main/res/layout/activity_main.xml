@@ -3,19 +3,19 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.zemoso.atul.splitwise.activities.MainActivity"
     android:fitsSystemWindows="true"
-    tools:openDrawer="start"
-    android:id="@+id/drawer_layout">
+    tools:context="com.zemoso.atul.splitwise.activities.MainActivity"
+    tools:openDrawer="start">
 
     <include layout="@layout/component_navigation_drawer"/>
 
     <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/main_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/main_layout">
+        android:layout_height="match_parent">
         <android.support.design.widget.AppBarLayout
             android:id="@+id/appbar"
             android:layout_width="match_parent"
@@ -27,7 +27,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
-                app:layout_scrollFlags="scroll|snap"
+                app:layout_collapseMode="pin"
+                app:layout_scrollFlags="scroll|enterAlways|snap"
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
 
             <android.support.design.widget.TabLayout

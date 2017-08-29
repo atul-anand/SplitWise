@@ -2,7 +2,9 @@
     <string name="app_name">Demo App</string>
     <string name="app_heading">DEMO APP</string>
 
-    <string name="image_url">"http://www.careerbased.com/themes/comb/img/avatar/default-avatar-male_10.png"</string>
+    <string name="image_url_user">"http://www.careerbased.com/themes/comb/img/avatar/default-avatar-male_10.png"</string>
+    <string name="image_url_group">"http://www.careerbased.com/themes/comb/img/avatar/default-avatar-male_10.png"</string>
+    <string name="image_url_trans">"http://www.careerbased.com/themes/comb/img/avatar/default-avatar-male_10.png"</string>
 
 
     <!--Splash-->
@@ -10,7 +12,7 @@
 
     <!--Server Interaction-->
     <string name="url_hostname">Hostname</string>
-    <string name="url_address">http://192.168.86.204:8080/</string>
+    <string name="url_address">http://192.168.1.129:8080/</string>
 
     <!--Ids-->
     <string name="url_user_id">userId</string>
@@ -33,7 +35,8 @@
     <string name="url_group_add">group/addUsers</string>
     <string name="url_group_findAllUsersByGroupId">group/findAllUsersByGroupId</string>
     <string name="url_group_findDataById">group/showSplits</string>
-
+    <string name="url_group_settleUp">group/settleUp</string>
+    <string name="url_group_name">group/groupName</string>
 
     <!--Transactions-->
     <string name="url_transaction_findAll">transaction/findAll</string>
@@ -62,11 +65,23 @@
     <string name="bill_card_value">0.00</string>
     <string name="bill_select_group">Select Group</string>
     <string name="bill_select_user">Select User</string>
+    <string name="bill_date">Click to choose date</string>
+    <string name="bill_label_mop">Mode of Payment</string>
     <string name="bill_amount">Amount</string>
-    <string name="bill_text_lender">Lenders</string>
-    <string name="bill_text_borrower">Borrowers</string>
+    <string name="bill_label_date">Date</string>
+    <string name="bill_label_description">Description</string>
+    <string name="bill_label_lender">Lenders</string>
+    <string name="bill_label_borrower">Borrowers</string>
+    <string name="bill_label_group">Group</string>
     <string name="bill_add_lender">Add Lenders?</string>
     <string name="bill_add_borrower">Add Borrowers?</string>
+
+    <!--Lender, Borrower Dialog-->
+    <string name="lender_heading">Click to select</string>
+    <string name="borrower_heading">Click to select</string>
+    <string name="lb_submit">Submit</string>
+    <string name="lb_cancel">Dismiss</string>
+
 
     <string-array name="bill_mop_list">
         <item>Cash</item>
@@ -119,16 +134,15 @@
 
     <string name="nav_home">Home</string>
     <string name="nav_setting">Settings</string>
-    <string name="nav_rating">Rate Splitwise</string>
-    <string name="nav_contact">Contact Us</string>
+    <string name="nav_add_user">Add User</string>
+    <string name="nav_add_group">Add Group</string>
     <string name="nav_logout">Log out</string>
     <string name="action_websearch">Search</string>
 
     <string name="navigation_copyright">
-        Made with :) in Providence, RI, USA\n
-        Copyright 2017 Splitwise , Inc.\n
-        P.S Bunnies!\n\n
-        v4.1.10/166
+        Made with :) at Zemoso, HYD, India\n
+        Authored by Atul Anand,\n
+        P.S Demo App! 2017
     </string>
     <string name="proceed">Proceed</string>
     <string name="login">Login</string>
@@ -236,13 +250,14 @@
     <!--Add Member-->
     <string name="add_member_heading">Group Name</string>
     <string name="add_member_item_plus">+</string>
-    <string name="add_member_item_check">OK</string>
+    <string name="add_member_item_check">Check</string>
     <string name="add_member_item_subtract">-</string>
     <string name="add_member_item_text">Name?</string>
     <string name="add_member_button">Done</string>
 
 
     <!--Add User-->
+    <string name="add_user_heading">Add Users</string>
     <string name="add_user_name">Name?</string>
     <string name="add_user_email">Email?</string>
     <string name="add_user_phone">Phone number?</string>
@@ -260,6 +275,13 @@
     <!--Add Transaction-->
     <string name="addTransaction">+ ADD A TRANSACTION</string>
 
+    <!--Friend Detail-->
+    <string name="detail_email">Email</string>
+    <string name="detail_debt">Debt</string>
+    <string name="detail_debts">Debts</string>
+    <string name="detail_date">Date</string>
+    <string name="detail_amount">Amount</string>
+    <string name="detail_mop">Mode of Payment</string>
 
     <!-- Strings related to Settings -->
 
@@ -333,9 +355,10 @@
 
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="add_more_members">Add more members?</string>
-    <string name="bill_date">Date</string>
-    <string name="add_members_button">Members+?</string>
+
+    <string name="add_members_button">Add Members?</string>
     <string name="add_group_name_edit">Group Name?</string>
+    <string name="add_group_heading">Add Group</string>
 
 
 </resources>

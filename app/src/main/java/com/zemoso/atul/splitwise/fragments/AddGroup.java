@@ -14,12 +14,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.zemoso.atul.splitwise.R;
 import com.zemoso.atul.splitwise.models.User;
-import com.zemoso.atul.splitwise.singletons.VolleyRequests;
 
 import org.json.JSONObject;
 
@@ -40,7 +36,12 @@ public class AddGroup extends DialogFragment {
     String mUserName;
     Button mSubmit;
     Long mUserId;
+    Long mGroupId;
+    String mGroupNam;
     User mUser;
+    String mHostname;
+    String mUrl;
+    private GroupDataCallback groupDataCallback;
     //endregion
 
     //region Constructor
@@ -48,8 +49,10 @@ public class AddGroup extends DialogFragment {
         // Required empty public constructor
     }
 
-    public static AddGroup newInstance() {
-        return new AddGroup();
+    public static AddGroup newInstance(GroupDataCallback instance) {
+        AddGroup addGroup = new AddGroup();
+        addGroup.groupDataCallback = instance;
+        return addGroup;
     }
     //endregion
 
@@ -72,7 +75,7 @@ public class AddGroup extends DialogFragment {
             mUserId = -1L;
         }
         getUser();
-
+        mHostname = PreferenceManager.getDefaultSharedPreferences(getContext()).getString("Hostname", "");
         mGroupName = view.findViewById(R.id.add_group_name);
         mSubmit = view.findViewById(R.id.add_group_create);
 //        Realm realm = Realm.getDefaultInstance();
@@ -88,13 +91,16 @@ public class AddGroup extends DialogFragment {
             @Override
             public void onClick(View view) {
                 Map newGroup = new HashMap();
-                String name = String.valueOf(mGroupName.getText());
-                newGroup.put("groupName", name);
+                mGroupNam = String.valueOf(AddGroup.this.mGroupName.getText());
+                mUrl = getResources().getString(R.string.image_url_group);
+                newGroup.put("groupName", mGroupNam);
                 newGroup.put("createdBy",mUserName);
+                newGroup.put("url", mUrl);
                 JSONObject jsonObject = new JSONObject(newGroup);
                 Log.d(TAG, String.valueOf(jsonObject));
-                VolleyRequests.getInstance(getContext()).save(jsonObject,2);
+                groupDataCallback.updateGroupData(jsonObject, mGroupNam);
                 AddGroup.this.dismiss();
+
             }
         });
     }
@@ -104,32 +110,15 @@ public class AddGroup extends DialogFragment {
 
     //region Private Methods
     private void getUser() {
-        String extension = getResources().getString(R.string.url_user_findById);
-        String param = getResources().getString(R.string.url_user_id);
-        String mUrl = PreferenceManager.getDefaultSharedPreferences(getContext()).getString("Hostname", "") + extension + "?"
-                + param + "=" + mUserId;
-        Log.d(TAG, mUrl);
-        Response.Listener<JSONObject> listener = new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                mUser = new User(response);
-                mUserName = mUser.getName();
-                Log.d(TAG, String.valueOf(response));
-                Realm realm = Realm.getDefaultInstance();
-                mUser = realm.where(User.class).equalTo("userId", mUserId).findFirst();
-                mUserName = mUser.getName();
-            }
-        };
-        Response.ErrorListener errorListener = new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e(TAG, error.toString());
 
-            }
-        };
-        JsonObjectRequest transJsonObject = new JsonObjectRequest(mUrl, null, listener, errorListener);
-        VolleyRequests.getInstance(getContext()).addToRequestQueue(transJsonObject);
+        Realm realm = Realm.getDefaultInstance();
+        mUser = realm.where(User.class).equalTo("userId", mUserId).findFirst();
+        mUserName = mUser.getName();
 
+    }
+
+    public interface GroupDataCallback {
+        void updateGroupData(JSONObject jsonObject, String mGroupName);
     }
     //endregion
 }

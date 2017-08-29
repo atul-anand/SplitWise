@@ -6,8 +6,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
@@ -16,23 +14,29 @@ import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.zemoso.atul.splitwise.R;
 import com.zemoso.atul.splitwise.adapters.AddBillRecyclerViewAdapter;
 import com.zemoso.atul.splitwise.adapters.SingleRecyclerViewAdapter;
+import com.zemoso.atul.splitwise.fragments.MultiSelectionDialog;
+import com.zemoso.atul.splitwise.fragments.Transactions;
 import com.zemoso.atul.splitwise.javaBeans.TransactionHolder;
 import com.zemoso.atul.splitwise.models.Group;
+import com.zemoso.atul.splitwise.models.Transaction;
 import com.zemoso.atul.splitwise.models.User;
 import com.zemoso.atul.splitwise.singletons.VolleyRequests;
+import com.zemoso.atul.splitwise.utils.MultiSpinner;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -46,7 +50,7 @@ import java.util.Map;
 
 import io.realm.Realm;
 
-public class AddBill extends AppCompatActivity {
+public class AddBill extends AppCompatActivity implements MultiSelectionDialog.dataCallback {
 
     //region Variable Declaration
 
@@ -59,24 +63,36 @@ public class AddBill extends AppCompatActivity {
     private List<String> mSelUserNames;
     private List<User> mUsers;
     private List<String> mSelGroupNames;
+    private boolean[] lenderIndices;
+    private boolean[] borrowerIndices;
     private int year, month, day;
+
     //endregion
 
     //region Views
     private EditText mDescription;
-    private Button mDate;
-    private Spinner mMode;
+    private EditText mDate;
+
     private EditText mValue;
+    private LinearLayout mLenderLayout;
+    private LinearLayout mBorrowerLayout;
 
     //region Auto Complete Text View
-    private AutoCompleteTextView mSelGroup;
+    private Spinner mSelGroup;
     private ArrayAdapter<String> groupArrayAdapter;
+
+    private Spinner mMode;
+    private String[] modes;
+    private ArrayAdapter<String> modeArrayAdapter;
+
     //endregion
 
+    //region Recycler View
     private Button mAddLenderButton;
     private Button mAddBorrowerButton;
+    private MultiSpinner mLenderSpinner;
+    private MultiSpinner mBorrowerSpinner;
 
-    //region Recycler View
     private RecyclerView mRecyclerViewLender;
     private RecyclerView.LayoutManager mLayoutManagerLender;
     private RecyclerView mRecyclerViewBorrower;
@@ -84,12 +100,19 @@ public class AddBill extends AppCompatActivity {
 
     private List<TransactionHolder> mItems;
     private AddBillRecyclerViewAdapter mAddBillRecyclerViewAdapter;
-
-    private List<User> mUserLenders;
-    private List<User> mUserBorrowers;
     private SingleRecyclerViewAdapter mSingleRecyclerViewAdapterLender;
     private SingleRecyclerViewAdapter mSingleRecyclerViewAdapterBorrower;
     //endregion
+
+    private List<User> mUserLenders;
+    private List<User> mUserBorrowers;
+
+
+    private EditText mLenderText;
+    private EditText mBorrowerText;
+    private MultiSelectionDialog mLendersDialog;
+    private MultiSelectionDialog mBorrowersDialog;
+
     //endregion
 
     //region Final Data
@@ -100,9 +123,12 @@ public class AddBill extends AppCompatActivity {
     private String mDot;
     private String mMop;
     private Double mAmt;
+    private String mUrl;
+
     //endregion
 
     //endregion
+    //region Listeners
     private DatePickerDialog.OnDateSetListener dpickerlistener = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
@@ -114,46 +140,41 @@ public class AddBill extends AppCompatActivity {
 //            Toast.makeText(getApplicationContext(), year + month + day, Toast.LENGTH_SHORT).show();
         }
     };
-    //region Item Listener
-    private View.OnClickListener addMemberLenderListener = new View.OnClickListener() {
+    //endregion
+    private View.OnClickListener mLenderListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-//                mItems.add(new TransactionHolder(-1L, "", 0.0));
-//                mAddBillRecyclerViewAdapter.notifyDataSetChanged();
-            mUserLenders.add(null);
-            mSingleRecyclerViewAdapterLender.notifyDataSetChanged();
+            mLenderText.setText("");
+            mLendersDialog.show(getSupportFragmentManager(), "Lenders");
         }
     };
-    private View.OnClickListener addMemberBorrowerListener = new View.OnClickListener() {
+    private View.OnClickListener mBorrowerListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-//                mItems.add(new TransactionHolder(-1L, "", 0.0));
-//                mAddBillRecyclerViewAdapter.notifyDataSetChanged();
-            mUserBorrowers.add(null);
-            mSingleRecyclerViewAdapterBorrower.notifyDataSetChanged();
+            mBorrowerText.setText("");
+            mBorrowersDialog.show(getSupportFragmentManager(), "Borrowers");
+
         }
     };
+    //endregion
     private AdapterView.OnItemSelectedListener selectGroupListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long l) {
             String item = adapterView.getSelectedItem().toString();
-            if (item.equals("Non Group Expenses")) {
+            if (item.equals(getResources().getString(R.string.bill_select_group))) {
                 mGroupId = -1L;
-
-
+                mLenderLayout.setVisibility(View.GONE);
+                mBorrowerLayout.setVisibility(View.GONE);
+//                TODO: Find Users List
             } else {
                 Realm realm = Realm.getDefaultInstance();
-                try {
-                    mGroupId = realm.where(Group.class).equalTo("groupName", item).findFirst().getGroupId();
-                } catch (Exception e) {
-                    mGroupId = -1L;
-                }
-                getUsersByGroupId();
-
+                mGroupId = realm.where(Group.class).equalTo("groupName", item).findFirst().getGroupId();
+                getUsersByGroupId(mGroupId);
+                mLenderLayout.setVisibility(View.VISIBLE);
+                mBorrowerLayout.setVisibility(View.VISIBLE);
             }
-
-            mRecyclerViewLender.setVisibility(View.VISIBLE);
-            mRecyclerViewBorrower.setVisibility(View.VISIBLE);
+            Log.d(TAG, String.valueOf(mGroupId));
+            Log.d(TAG, item);
 
         }
 
@@ -171,6 +192,7 @@ public class AddBill extends AppCompatActivity {
         }
     };
 
+    //region Inherited Methods
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -179,7 +201,6 @@ public class AddBill extends AppCompatActivity {
 
         //region User Data
         mUserId = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getLong("userId", 0);
-        mGroupId = -1L;
         //endregion
 
         //region Action Bar
@@ -189,15 +210,25 @@ public class AddBill extends AppCompatActivity {
         //endregion
 
         //region View Lookup
+        mLenderLayout = (LinearLayout) findViewById(R.id.lender_layout);
+        mBorrowerLayout = (LinearLayout) findViewById(R.id.borrower_layout);
         mDescription = (EditText) findViewById(R.id.bill_description);
         mMode = (Spinner) findViewById(R.id.bill_value);
-        mDate = (Button) findViewById(R.id.bill_date);
-        mSelGroup = (AutoCompleteTextView) findViewById(R.id.bill_select_group);
-        mRecyclerViewLender = (RecyclerView) findViewById(R.id.add_bill_recycler_lender);
-        mRecyclerViewBorrower = (RecyclerView) findViewById(R.id.add_bill_recycler_borrower);
-        mAddLenderButton = (Button) findViewById(R.id.add_member_button_add_lender);
-        mAddBorrowerButton = (Button) findViewById(R.id.add_member_button_add_borrower);
+        mDate = (EditText) findViewById(R.id.bill_date);
+        mSelGroup = (Spinner) findViewById(R.id.bill_select_group);
+//        mRecyclerViewLender = (RecyclerView) findViewById(R.id.add_bill_recycler_lender);
+//        mRecyclerViewBorrower = (RecyclerView) findViewById(R.id.add_bill_recycler_borrower);
+//        mAddLenderButton = (Button) findViewById(R.id.add_member_button_add_lender);
+//        mAddBorrowerButton = (Button) findViewById(R.id.add_member_button_add_borrower);
+//        mLenderSpinner = (MultiSpinner) findViewById(R.id.bill_spinner_lender);
+//        mBorrowerSpinner = (MultiSpinner) findViewById(R.id.bill_spinner_borrower);
         mValue = (EditText) findViewById(R.id.bill_single_value_amt);
+
+        mLenderText = (EditText) findViewById(R.id.lb_select_lenders);
+        mBorrowerText = (EditText) findViewById(R.id.lb_select_borrowers);
+
+        mLendersDialog = MultiSelectionDialog.newInstance(this);
+        mBorrowersDialog = MultiSelectionDialog.newInstance(this);
         //endregion
 
         //region Date Initialization
@@ -213,7 +244,6 @@ public class AddBill extends AppCompatActivity {
 
         //region Collections Initialization
         mSelGroupNames = new ArrayList<>();
-        mSelUserNames = new ArrayList<>();
         mUsers = new ArrayList<>();
         mUserLenders = new ArrayList<>();
         mUserBorrowers = new ArrayList<>();
@@ -221,7 +251,8 @@ public class AddBill extends AppCompatActivity {
         mItems = new ArrayList<>();
         lender = new ArrayList<>();
         borrower = new ArrayList<>();
-        mGroups = new ArrayList<>();
+//        mGroups = new ArrayList<>();
+        getGroupsByUserId();
         //endregion
 
         //region Fake Data Addition
@@ -239,31 +270,39 @@ public class AddBill extends AppCompatActivity {
 //
 //        mSelUserNames.add("INDIA");
 //        mSelUserNames.add("PAK");
-
-        mSelGroupNames.add("Non Group Expenses");
+//        mSelGroupNames.add("Non Group Expenses");
         //endregion
 
-        //region Recycler View Attributes
-        mLayoutManagerLender = new LinearLayoutManager(this);
-        mRecyclerViewLender.setHasFixedSize(true);
-        mRecyclerViewLender.setLayoutManager(mLayoutManagerLender);
-        mRecyclerViewLender.setItemAnimator(new DefaultItemAnimator());
 
-        mLayoutManagerBorrower = new LinearLayoutManager(this);
-        mRecyclerViewBorrower.setHasFixedSize(true);
-        mRecyclerViewBorrower.setLayoutManager(mLayoutManagerBorrower);
-        mRecyclerViewBorrower.setItemAnimator(new DefaultItemAnimator());
+        //region Recycler View Attributes
+//        mLayoutManagerLender = new LinearLayoutManager(this);
+//        mRecyclerViewLender.setHasFixedSize(true);
+//        mRecyclerViewLender.setLayoutManager(mLayoutManagerLender);
+//        mRecyclerViewLender.setItemAnimator(new DefaultItemAnimator());
+//
+//        mLayoutManagerBorrower = new LinearLayoutManager(this);
+//        mRecyclerViewBorrower.setHasFixedSize(true);
+//        mRecyclerViewBorrower.setLayoutManager(mLayoutManagerBorrower);
+//        mRecyclerViewBorrower.setItemAnimator(new DefaultItemAnimator());
         //endregion
 
         //region Attach Adapters
         groupArrayAdapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.card_autocomplete_item, mSelGroupNames);
         mSelGroup.setAdapter(groupArrayAdapter);
-        mSelGroup.setThreshold(0);
 
-        mSingleRecyclerViewAdapterLender = new SingleRecyclerViewAdapter(mUserLenders, this, mSelUserNames);
-        mRecyclerViewLender.setAdapter(mSingleRecyclerViewAdapterLender);
-        mSingleRecyclerViewAdapterBorrower = new SingleRecyclerViewAdapter(mUserBorrowers, this, mSelUserNames);
-        mRecyclerViewBorrower.setAdapter(mSingleRecyclerViewAdapterBorrower);
+        modes = getResources().getStringArray(R.array.bill_mop_list);
+        modeArrayAdapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.card_autocomplete_item, modes);
+        mMode.setAdapter(modeArrayAdapter);
+
+
+//        mLenderSpinner.setItems(mSelUserNames,"Lenders: ",lenderListener);
+//        mBorrowerSpinner.setItems(mSelUserNames,"Borrowers: ",borrowerListener);
+
+
+//        mSingleRecyclerViewAdapterLender = new SingleRecyclerViewAdapter(mUserLenders, mUsers, this, mSelUserNames);
+//        mRecyclerViewLender.setAdapter(mSingleRecyclerViewAdapterLender);
+//        mSingleRecyclerViewAdapterBorrower = new SingleRecyclerViewAdapter(mUserBorrowers, mUsers, this, mSelUserNames);
+//        mRecyclerViewBorrower.setAdapter(mSingleRecyclerViewAdapterBorrower);
 
 //        mAddBillRecyclerViewAdapter = new AddBillRecyclerViewAdapter(mItems, this);
 //        mRecyclerView.setAdapter(mAddBillRecyclerViewAdapter);
@@ -271,12 +310,11 @@ public class AddBill extends AppCompatActivity {
 
         //region Attach Listeners
         mDate.setOnClickListener(selectDateListener);
-        mAddLenderButton.setOnClickListener(addMemberLenderListener);
-        mAddBorrowerButton.setOnClickListener(addMemberBorrowerListener);
+//        mAddLenderButton.setOnClickListener(addMemberLenderListener);
+//        mAddBorrowerButton.setOnClickListener(addMemberBorrowerListener);
         mSelGroup.setOnItemSelectedListener(selectGroupListener);
         //endregion
     }
-    //endregion
 
     //region Menu Items
     @Override
@@ -285,6 +323,7 @@ public class AddBill extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_add_bill, menu);
         return true;
     }
+    //endregion
 
     //Action Bar menu items
     @Override
@@ -297,6 +336,7 @@ public class AddBill extends AppCompatActivity {
             case R.id.action_save:
                 Map<String, Object> newTrans = new HashMap<>();
 
+
                 getLendersAndBorrowers();
                 mDesc = String.valueOf(mDescription.getText());
                 Log.d(TAG, mDesc);
@@ -305,6 +345,7 @@ public class AddBill extends AppCompatActivity {
 //                for(TransactionHolder tH : mItems)
 //                    mAmt+=tH.getAmount();
                 mAmt = Double.parseDouble(String.valueOf(mValue.getText()));
+                mUrl = getResources().getString(R.string.image_url_trans);
                 Log.d(TAG, String.valueOf(mAmt));
                 newTrans.put("description", mDesc);
                 newTrans.put("groupId", mGroupId);
@@ -313,9 +354,10 @@ public class AddBill extends AppCompatActivity {
                 newTrans.put("lender", lender);
                 newTrans.put("borrower", borrower);
                 newTrans.put("dot", mDot);
+                newTrans.put("url", mUrl);
                 JSONObject transaction = new JSONObject(newTrans);
                 Log.d(TAG, String.valueOf(transaction));
-                VolleyRequests.getInstance(getApplicationContext()).save(transaction, 3);
+                save(transaction);
                 Toast.makeText(this, "Transactions Added", Toast.LENGTH_SHORT).show();
                 this.finish();
 
@@ -324,6 +366,7 @@ public class AddBill extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+    //Item Listener
 
     //region Date Lookup
     @Override
@@ -334,51 +377,78 @@ public class AddBill extends AppCompatActivity {
         }
         return null;
     }
-    //endregion
 
-    //region private Volley Requests
-    private void getUsersByGroupId() {
+    //region Volley Requests
+    public void save(JSONObject jsonObject) {
+        String mHostName = getResources().getString(R.string.url_address);
+        final String tag = getResources().getString(R.string.url_transaction_save);
+        final String mUrl = mHostName + tag;
+        Log.d(TAG, mUrl);
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, mUrl, jsonObject,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d(tag, String.valueOf(response));
+                        Realm realm = Realm.getDefaultInstance();
+                        realm.beginTransaction();
+                        Transaction transaction = new Transaction(response);
+                        realm.insertOrUpdate(transaction);
+                        realm.commitTransaction();
+                        realm.close();
+                        Transactions.getInstance().updateTransactionData();
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(tag, error.toString());
+                Toast.makeText(getApplicationContext(), "Data not saved", Toast.LENGTH_SHORT).show();
+            }
+        });
+        VolleyRequests.getInstance(getApplicationContext()).addToRequestQueue(request);
+    }
+
+    private void getUsersByGroupId(Long groupId) {
         String extension = getResources().getString(R.string.url_group_findAllUsersByGroupId);
         String param = getResources().getString(R.string.url_group_id);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String mUrl = preferences.getString("Hostname", "") + extension + "?"
-                + param + "=" + mGroupId;
+        final String mUrl = preferences.getString("Hostname", "") + extension + "?"
+                + param + "=" + groupId;
         Log.d(TAG, mUrl);
         Response.Listener<JSONArray> listener = new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
-                Realm realm = Realm.getDefaultInstance();
-                realm.beginTransaction();
+
+                mUsers.clear();
+//                Realm realm = Realm.getDefaultInstance();
+//                realm.beginTransaction();
                 for (int i = 0; i < response.length(); i++)
                     try {
                         JSONObject jsonObject = response.getJSONObject(i);
-                        User user = new User(jsonObject);
-                        String userName = user.getName();
-                        mUsers.add(user);
-                        mSelUserNames.add(userName);
-//                        TransactionHolder transactionHolder = new TransactionHolder(jsonObject);
-//                        mItems.add(transactionHolder);
-                        realm.insertOrUpdate(new User(jsonObject));
                         Log.d(TAG, String.valueOf(jsonObject));
+                        User user = new User(jsonObject);
+                        Log.d(TAG, user.toString());
+                        mUsers.add(user);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                realm.commitTransaction();
-                realm.close();
-                mSingleRecyclerViewAdapterLender.notifyDataSetChanged();
-                mSingleRecyclerViewAdapterBorrower.notifyDataSetChanged();
-//                mAddBillRecyclerViewAdapter.notifyDataSetChanged() ;
+
+                mLendersDialog.init(getResources().getString(R.string.lender_heading), mUsers, mUserLenders, false);
+                mBorrowersDialog.init(getResources().getString(R.string.borrower_heading), mUsers, mUserBorrowers, true);
+
+                mLenderText.setOnClickListener(mLenderListener);
+                mBorrowerText.setOnClickListener(mBorrowerListener);
             }
         };
         Response.ErrorListener errorListener = new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e(TAG, error.toString());
+//                Toast.makeText(getApplicationContext(),"No user for group #" + mGroupId,Toast.LENGTH_SHORT).show();
 
             }
         };
-        JsonArrayRequest transJsonObject = new JsonArrayRequest(mUrl, listener, errorListener);
-        VolleyRequests.getInstance(getApplicationContext()).addToRequestQueue(transJsonObject);
+        JsonArrayRequest usersFromGroupRequest = new JsonArrayRequest(mUrl, listener, errorListener);
+        VolleyRequests.getInstance(getApplicationContext()).addToRequestQueue(usersFromGroupRequest);
     }
 
     private void getGroupsByUserId() {
@@ -390,27 +460,27 @@ public class AddBill extends AppCompatActivity {
         Response.Listener<JSONArray> listener = new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
-                Realm realm = Realm.getDefaultInstance();
-                realm.beginTransaction();
+                mSelGroupNames.clear();
+                mSelGroupNames.add(getResources().getString(R.string.bill_select_group));
                 for (int i = 0; i < response.length(); i++)
                     try {
                         JSONObject jsonObject = response.getJSONObject(i);
                         Group group = new Group(jsonObject);
-                        mGroups.add(group);
-                        realm.insertOrUpdate(group);
+                        Log.d(TAG, String.valueOf(group));
+                        mSelGroupNames.add(group.getGroupName());
                         Log.d(TAG, String.valueOf(jsonObject));
 
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                realm.commitTransaction();
-                realm.close();
+                groupArrayAdapter.notifyDataSetChanged();
             }
         };
         Response.ErrorListener errorListener = new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e(TAG, error.toString());
+//                Toast.makeText(getApplicationContext(),"No groups available",Toast.LENGTH_SHORT).show();
 
             }
         };
@@ -421,32 +491,50 @@ public class AddBill extends AppCompatActivity {
 
     //region Private Methods
     private void getLendersAndBorrowers() {
-//        for (TransactionHolder transactionHolder : mItems) {
-//            Long userId = transactionHolder.getUserId();
-//            String name = transactionHolder.getName();
-//            Double amt = transactionHolder.getAmount();
-//            if (amt <= 0)
-//                borrower.add(userId);
-//            else
-//                lender.add(userId);
 //
-//        }
-
-
+        Log.d(TAG, "Lenders");
         for (User user : mUserLenders) {
-            try {
-                lender.add(user.getUserId());
-            } catch (Exception e) {
-                lender.add(-1L);
-            }
+            Long userId = user.getUserId();
+            Log.d(TAG, String.valueOf(userId));
+            lender.add(userId);
         }
+        Log.d(TAG, "Borrowers");
         for (User user : mUserBorrowers) {
-            try {
-                borrower.add(user.getUserId());
-            } catch (Exception e) {
-                borrower.add(-1L);
-            }
+            Long userId = user.getUserId();
+            Log.d(TAG, String.valueOf(userId));
+            borrower.add(userId);
         }
+
+    }
+
+    @Override
+    public void getSelectedData(List<User> mUserLBs, Boolean isBorrower) {
+        String heading = "";
+        if (mUserLBs.size() == 0)
+            if (isBorrower)
+                heading = getResources().getString(R.string.borrower_heading);
+            else
+                heading = getResources().getString(R.string.lender_heading);
+
+
+        for (User user : mUserLBs) {
+            String userName = user.getName();
+            heading += userName + ", ";
+        }
+        if (mUserLBs.size() != 0)
+            heading = heading.substring(0, heading.lastIndexOf(','));
+
+
+        if (isBorrower) {
+            mBorrowerText.setText(heading);
+            mBorrowersDialog.notifyDataSetChanged();
+        } else {
+            mLenderText.setText(heading);
+            mLendersDialog.notifyDataSetChanged();
+        }
+
     }
     //endregion
+
+
 }

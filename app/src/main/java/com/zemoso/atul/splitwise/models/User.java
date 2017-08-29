@@ -3,7 +3,6 @@ package com.zemoso.atul.splitwise.models;
 import org.json.JSONObject;
 
 import io.realm.RealmObject;
-import io.realm.annotations.Ignore;
 import io.realm.annotations.PrimaryKey;
 
 /**
@@ -19,7 +18,7 @@ public class User extends RealmObject {
     private String phoneNumber;
     private int age;
     private double debt;
-    @Ignore
+    //    @Ignore
     private String imageFilePath;
 
     public User() {
@@ -28,7 +27,7 @@ public class User extends RealmObject {
         this.emailId = "abc@def.com";
         this.phoneNumber = "0987654321";
         this.age = 21;
-        this.debt = 0.0;
+        this.debt = 0.00;
         this.imageFilePath = "";
     }
 
@@ -39,6 +38,7 @@ public class User extends RealmObject {
         this.phoneNumber = jsonObject.optString("phoneNumber");
         this.age = jsonObject.optInt("age");
         this.debt = jsonObject.optDouble("debt");
+        this.debt = Math.round(this.debt * 100.0) / 100.0;
         this.imageFilePath = jsonObject.optString("url");
     }
 
@@ -107,6 +107,7 @@ public class User extends RealmObject {
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", age=" + age +
                 ", debt=" + debt +
+                ", url='" + imageFilePath + '\'' +
                 '}';
     }
 }

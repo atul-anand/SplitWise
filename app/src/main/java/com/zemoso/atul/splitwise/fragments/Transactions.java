@@ -39,7 +39,6 @@ public class Transactions extends Fragment {
 
     //region Variable Declaration
     private static final String TAG = Transactions.class.getSimpleName();
-
     private Long mUserId;
     private List<RecyclerViewHolder> mItems;
     private List<Transaction> mTransactions;
@@ -55,7 +54,7 @@ public class Transactions extends Fragment {
         // Required empty public constructor
     }
 
-    public static Transactions newInstance() {
+    public static Transactions getInstance() {
         return new Transactions();
     }
     //endregion
@@ -110,6 +109,7 @@ public class Transactions extends Fragment {
         mTransactions = realm.where(Transaction.class).findAll();
         for (Transaction transaction : mTransactions) {
             long mId = transaction.getTransId();
+            Log.d(TAG, transaction.toString());
             String mImageUrl = transaction.getImageFilePath();
             String mHeading = transaction.getDescription();
             String mStatus = String.valueOf(transaction.getAmount());
@@ -122,7 +122,7 @@ public class Transactions extends Fragment {
         String extension = getResources().getString(R.string.url_transaction_findByUserId);
         String param = getResources().getString(R.string.url_user_id);
         String mUrl = PreferenceManager.getDefaultSharedPreferences(getContext()).getString("Hostname", "") + extension
-                + "?" + param + "=" + userId;
+                + "?" + "id" + "=" + userId;
 //        extension = getResources().getString(R.string.url_transaction_findAll);
 //        mUrl = PreferenceManager.getDefaultSharedPreferences(getContext()).getString("Hostname","") + extension;
         Log.d(TAG, mUrl);
@@ -135,6 +135,7 @@ public class Transactions extends Fragment {
                     try {
                         JSONObject jsonObject = response.getJSONObject(i);
                         Transaction transaction = new Transaction(jsonObject);
+                        Log.d(TAG, transaction.toString());
                         realm.insertOrUpdate(transaction);
                         Log.d(TAG, String.valueOf(jsonObject));
 
@@ -150,12 +151,16 @@ public class Transactions extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e(TAG, error.toString());
-
+//                Toast.makeText(getContext(),"No transactions",Toast.LENGTH_SHORT).show();
             }
         };
         JsonArrayRequest userJsonObject = new JsonArrayRequest(mUrl, listener, errorListener);
         VolleyRequests.getInstance(getContext()).addToRequestQueue(userJsonObject);
 
+    }
+
+    public void updateTransactionData() {
+        transactionFindByUserId(mUserId);
     }
     //endregion
 }

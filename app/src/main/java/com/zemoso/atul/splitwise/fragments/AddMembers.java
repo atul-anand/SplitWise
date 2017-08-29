@@ -22,7 +22,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.zemoso.atul.splitwise.R;
 import com.zemoso.atul.splitwise.adapters.MembersRecyclerViewAdapter;
 import com.zemoso.atul.splitwise.javaBeans.UserPresent;
@@ -79,7 +79,7 @@ public class AddMembers extends DialogFragment {
         public void onClick(View view) {
             int ctr = 0;
             for (UserPresent userPresent : mItems) {
-                if (userPresent.getVerified())
+                if (userPresent.isVerified())
                     ctr++;
             }
             if (ctr != mItems.size()) {
@@ -93,7 +93,6 @@ public class AddMembers extends DialogFragment {
                 }
                 Log.d(TAG, mUrl);
                 postJsonObject();
-
                 AddMembers.this.dismiss();
             }
         }
@@ -172,7 +171,7 @@ public class AddMembers extends DialogFragment {
     //region Data
     private void addUrl(String userId) {
         String param = getResources().getString(R.string.url_user_id);
-        mUrl = mUrl + "?" + param + "=" + userId;
+        mUrl = mUrl + "&" + param + "=" + userId;
     }
 
     private void getData() {
@@ -188,11 +187,11 @@ public class AddMembers extends DialogFragment {
     //region VolleyRequests
     private void postJsonObject() {
         Log.d(TAG, mUrl);
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, mUrl, null,
-                new Response.Listener<JSONObject>() {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, mUrl,
+                new Response.Listener<String>() {
                     @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d(TAG, String.valueOf(response));
+                    public void onResponse(String response) {
+                        Log.d(TAG, response);
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -200,7 +199,7 @@ public class AddMembers extends DialogFragment {
                 Log.e(TAG, error.toString());
             }
         });
-        VolleyRequests.getInstance(getContext()).addToRequestQueue(jsonObjectRequest);
+        VolleyRequests.getInstance(getContext()).addToRequestQueue(stringRequest);
     }
 
     private void getMembersByGroupId() {
@@ -235,6 +234,7 @@ public class AddMembers extends DialogFragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e(TAG, error.toString());
+//                Toast.makeText(getContext(),"No users in group #" + mGroupNam,Toast.LENGTH_SHORT).show();
             }
         };
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, listener, errorListener);

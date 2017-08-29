@@ -23,6 +23,7 @@ public class TransactionHolder {
         this.userId = userId;
         this.name = name;
         this.amount = amount;
+        this.amount = Math.round(this.amount * 100.0) / 100.0;
     }
 
     public TransactionHolder(JSONObject jsonObject) {

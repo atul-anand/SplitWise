@@ -3,8 +3,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:padding="10dp"
     tools:context="com.zemoso.atul.splitwise.fragments.AddGroup">
 
+    <TextView
+        android:id="@+id/add_group_heading"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/add_user_heading_height"
+        android:padding="10dp"
+        android:text="@string/add_group_heading"
+        android:textAlignment="center"
+        android:textSize="@dimen/list_item_1"
+        android:textStyle="bold" />
     <EditText
         android:id="@+id/add_group_name"
         android:layout_width="@dimen/user_edit_width"
@@ -14,9 +24,11 @@
         android:textAlignment="center" />
     <Button
         android:id="@+id/add_group_create"
-        android:layout_width="wrap_content"
+        android:layout_width="130dp"
         android:layout_height="@dimen/buttonHeight"
         android:layout_gravity="center_horizontal"
-        android:text="@string/add_group_create" />
+        android:background="@color/color_add_member_active"
+        android:text="@string/add_group_create"
+        android:textColor="@color/colorWhite" />
 
 </LinearLayout>

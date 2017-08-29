@@ -19,6 +19,7 @@ public class GroupSplit {
         debtorId = jsonObject.optLong("debtorId");
         debtorName = jsonObject.optString("debtorName");
         amount = jsonObject.optDouble("amount");
+        amount = Math.round(amount * 100.0) / 100.0;
     }
 
     public Long getCreditorId() {

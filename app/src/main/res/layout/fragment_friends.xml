@@ -2,7 +2,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     tools:context="com.zemoso.atul.splitwise.fragments.Friends">
 
     <LinearLayout
@@ -15,18 +15,17 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_friends"
             android:layout_width="match_parent"
-
             android:layout_height="wrap_content" />
 
-        <Button
-            android:id="@+id/addFriends"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/buttonHeight"
-            android:layout_marginLeft="@dimen/button_margin"
-            android:layout_marginRight="@dimen/button_margin"
-            android:layout_marginTop="@dimen/button_top_margin"
-            android:padding="@dimen/button_padding"
+        <!--<Button-->
+        <!--android:id="@+id/addFriends"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="@dimen/buttonHeight"-->
+        <!--android:layout_marginLeft="@dimen/button_margin"-->
+        <!--android:layout_marginRight="@dimen/button_margin"-->
+        <!--android:layout_marginTop="@dimen/button_top_margin"-->
+        <!--android:padding="@dimen/button_padding"-->
 
-            android:text="@string/addFriends"/>
+        <!--android:text="@string/addFriends"/>-->
     </LinearLayout>
 </ScrollView>

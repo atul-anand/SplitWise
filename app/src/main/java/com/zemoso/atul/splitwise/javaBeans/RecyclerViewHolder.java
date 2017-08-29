@@ -87,4 +87,16 @@ public class RecyclerViewHolder {
     public void setmDownloaded(Boolean mImageDownloaded) {
         this.mImageDownloaded = mImageDownloaded;
     }
+
+    @Override
+    public String toString() {
+        return "RecyclerViewHolder{" +
+                "id=" + id +
+                ", mAvatarUrl='" + mAvatarUrl + '\'' +
+                ", mAvatarFilePath='" + mAvatarFilePath + '\'' +
+                ", mHeading='" + mHeading + '\'' +
+                ", mStatus='" + mStatus + '\'' +
+                ", mImageDownloaded=" + mImageDownloaded +
+                '}';
+    }
 }

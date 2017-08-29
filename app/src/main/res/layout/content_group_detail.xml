@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.zemoso.atul.splitwise.activities.GroupDetail"
+    tools:showIn="@layout/activity_group_detail">
+
+    <!--<TextView-->
+    <!--android:id="@+id/group_detail_group_name"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="@dimen/group_detail_name_height"-->
+    <!--android:textAlignment="center"-->
+    <!--android:textSize="40sp" />-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/group_debts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:padding="10dp"
+            android:text="@string/detail_debts"
+            android:textSize="18sp" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/group_detail_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/group_detail_add_member"
+                android:layout_width="@dimen/group_detail_button_width"
+                android:layout_height="@dimen/group_detail_card_height"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginEnd="10dp"
+                android:background="@color/color_add_member_active"
+                android:onClick="addMemberDialog"
+                android:text="@string/add_members_button"
+
+                android:textColor="@color/colorWhite" />
+
+            <Button
+                android:id="@+id/group_detail_settle_up"
+                android:layout_width="@dimen/group_detail_button_width"
+                android:layout_height="@dimen/group_detail_card_height"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginStart="10dp"
+                android:background="@color/colorButtonSettleUp"
+                android:text="@string/settleUp"
+                android:textColor="@color/colorWhite" />
+        </LinearLayout>
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>

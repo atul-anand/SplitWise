@@ -2,7 +2,10 @@ package com.zemoso.atul.splitwise.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -14,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.zemoso.atul.splitwise.R;
 import com.zemoso.atul.splitwise.activities.GroupDetail;
 import com.zemoso.atul.splitwise.javaBeans.RecyclerViewHolder;
@@ -58,11 +62,31 @@ public class GroupRecyclerViewAdapter extends RecyclerView.Adapter<GroupRecycler
         if (mCardData.isImageDownloaded())
             Glide.with(mContext)
                     .load(mCardData.getmAvatarFilePath())
-                    .into(holder.mAvatar);
+                    .asBitmap()
+                    .centerCrop()
+                    .into(new BitmapImageViewTarget(holder.mAvatar) {
+                        @Override
+                        protected void setResource(Bitmap resource) {
+                            RoundedBitmapDrawable circularBitmapDrawable =
+                                    RoundedBitmapDrawableFactory.create(mContext.getResources(), resource);
+                            circularBitmapDrawable.setCircular(true);
+                            holder.mAvatar.setImageDrawable(circularBitmapDrawable);
+                        }
+                    });
         else {
             Glide.with(mContext)
                     .load(mCardData.getmAvatarUrl())
-                    .into(holder.mAvatar);
+                    .asBitmap()
+                    .centerCrop()
+                    .into(new BitmapImageViewTarget(holder.mAvatar) {
+                        @Override
+                        protected void setResource(Bitmap resource) {
+                            RoundedBitmapDrawable circularBitmapDrawable =
+                                    RoundedBitmapDrawableFactory.create(mContext.getResources(), resource);
+                            circularBitmapDrawable.setCircular(true);
+                            holder.mAvatar.setImageDrawable(circularBitmapDrawable);
+                        }
+                    });
 //            TODO: Set File Path
         }
 

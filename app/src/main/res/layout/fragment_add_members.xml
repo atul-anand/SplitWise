@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:padding="10dp"
     tools:context="com.zemoso.atul.splitwise.fragments.AddMembers">
 
     <TextView
@@ -52,6 +53,8 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/add_member_list_height"
         android:layout_gravity="center"
-        android:text="@string/add_member_button" />
+        android:background="@color/color_add_member_active"
+        android:text="@string/add_member_button"
+        android:textColor="@color/colorWhite" />
 
 </LinearLayout>

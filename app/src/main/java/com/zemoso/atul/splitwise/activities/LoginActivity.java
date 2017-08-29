@@ -129,6 +129,19 @@ public class LoginActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+
+    @Override
+    protected void onPostResume() {
+        mProgressBar.setVisibility(View.GONE);
+        mLoginLayout.setVisibility(View.VISIBLE);
+        super.onPostResume();
+    }
+
     //endregion
 
     //region Private Methods
@@ -138,6 +151,7 @@ public class LoginActivity extends AppCompatActivity {
         String extension = getResources().getString(R.string.url_user_string);
         String param = getResources().getString(R.string.url_user_name);
         mUrl = mUrl + extension + "?" + param + "=" + mUserName;
+        Log.d(TAG, mUrl);
         Response.Listener<JSONObject> listener = new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -198,6 +212,7 @@ public class LoginActivity extends AppCompatActivity {
         Response.Listener<JSONArray> listener = new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
+                Log.d(TAG, String.valueOf(response));
                 Realm realm = Realm.getDefaultInstance();
                 realm.beginTransaction();
                 for (int i = 0; i < response.length(); i++) {
@@ -221,6 +236,7 @@ public class LoginActivity extends AppCompatActivity {
                 Log.d(TAG, error.toString());
                 mTransactionsDownloaded = true;
                 checkDownloaded();
+//                Toast.makeText(getApplicationContext(),"No transaction for user #" + mUserId,Toast.LENGTH_SHORT).show();
             }
         };
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(mUrl, listener, errorListener);

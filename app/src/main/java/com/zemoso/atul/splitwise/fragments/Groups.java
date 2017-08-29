@@ -2,10 +2,13 @@ package com.zemoso.atul.splitwise.fragments;
 
 
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,6 +24,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.zemoso.atul.splitwise.R;
 import com.zemoso.atul.splitwise.adapters.GroupRecyclerViewAdapter;
 import com.zemoso.atul.splitwise.javaBeans.RecyclerViewHolder;
@@ -82,14 +86,14 @@ public class Groups extends Fragment {
 //            mPopupMenu.show();
 //        }
 //    };
-    private View.OnClickListener addGroupListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            getActivity().getSupportFragmentManager().beginTransaction().add(AddGroup.newInstance(), "Add Group").commit();
-            groupFindByUserId(mUserId);
-//                getActivity().getSupportFragmentManager().beginTransaction().add(new AddMembers(),"Add Member").commit();
-        }
-    };
+//    private View.OnClickListener addGroupListener = new View.OnClickListener() {
+//        @Override
+//        public void onClick(View view) {
+//            getActivity().getSupportFragmentManager().beginTransaction().add(AddGroup.getInstance(), "Add Group").commit();
+//            groupFindByUserId(mUserId);
+////                getActivity().getSupportFragmentManager().beginTransaction().add(new AddMembers(),"Add Member").commit();
+//        }
+//    };
     //endregion
 
     //region Constructor
@@ -97,8 +101,9 @@ public class Groups extends Fragment {
         // Required empty public constructor
     }
 
-    public static Groups newInstance(){
+    public static Groups getInstance() {
         return new Groups();
+
     }
     //endregion
 
@@ -137,7 +142,7 @@ public class Groups extends Fragment {
 //
 //        mButton = view.findViewById(R.id.total_menu);
 //        mPopupMenu = new PopupMenu(getContext(),mButton);
-        mAddButton = view.findViewById(R.id.addGroups);
+//        mAddButton = view.findViewById(R.id.addGroups);
         //endregion
 
         //region Recycler View
@@ -173,7 +178,17 @@ public class Groups extends Fragment {
         mTotalStatus.setText(mStatus);
         Glide.with(this)
                 .load(mUser.getImageFilePath())
-                .into(mProfilePic);
+                .asBitmap()
+                .centerCrop()
+                .into(new BitmapImageViewTarget(mProfilePic) {
+                    @Override
+                    protected void setResource(Bitmap resource) {
+                        RoundedBitmapDrawable circularBitmapDrawable =
+                                RoundedBitmapDrawableFactory.create(getContext().getResources(), resource);
+                        circularBitmapDrawable.setCircular(true);
+                        mProfilePic.setImageDrawable(circularBitmapDrawable);
+                    }
+                });
 
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -181,7 +196,7 @@ public class Groups extends Fragment {
         mRecyclerView.setAdapter(mGroupRecyclerViewAdapter);
 
 //        mButton.setOnClickListener(popUpListener);
-        mAddButton.setOnClickListener(addGroupListener);
+//        mAddButton.setOnClickListener(addGroupListener);
     }
     //endregion
 
@@ -205,8 +220,8 @@ public class Groups extends Fragment {
         String param = getResources().getString(R.string.url_user_id);
         String mUrl = PreferenceManager.getDefaultSharedPreferences(getContext()).getString("Hostname", "") + extension
                 + "?" + param + "=" + userId;
-        extension = getResources().getString(R.string.url_group_findAll);
-        mUrl = PreferenceManager.getDefaultSharedPreferences(getContext()).getString("Hostname", "") + extension;
+//        extension = getResources().getString(R.string.url_group_findAll);
+//        mUrl = PreferenceManager.getDefaultSharedPreferences(getContext()).getString("Hostname", "") + extension;
         Log.d(TAG, mUrl);
         Response.Listener<JSONArray> listener = new Response.Listener<JSONArray>() {
             @Override
@@ -232,12 +247,17 @@ public class Groups extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e(TAG, error.toString());
+//                Toast.makeText(getContext(),"No groups",Toast.LENGTH_SHORT).show();
 
             }
         };
         JsonArrayRequest userJsonObject = new JsonArrayRequest(mUrl, listener, errorListener);
         VolleyRequests.getInstance(getContext()).addToRequestQueue(userJsonObject);
 
+    }
+
+    public void updateGroupData() {
+        groupFindByUserId(mUserId);
     }
     //endregion
 

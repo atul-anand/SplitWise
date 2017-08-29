@@ -30,6 +30,7 @@ public class TransactionBalances {
         this.username = jsonObject.optString("name");
         this.debt = jsonObject.optDouble("debt");
         this.amount = jsonObject.optDouble("amount");
+        this.amount = Math.round(this.amount * 100.0) / 100.0;
     }
 
     public Long getUserId() {

@@ -5,26 +5,26 @@
     android:layout_height="wrap_content"
     tools:context="com.zemoso.atul.splitwise.fragments.Groups">
     <RelativeLayout
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
         <include layout="@layout/component_total_balance"/>
 
         <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_groups"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/totalBalanceCard"
-            android:id="@+id/recycler_groups" />
-        <Button
-            android:id="@+id/addGroups"
-            android:layout_marginLeft="50dp"
-            android:layout_marginRight="50dp"
-            android:layout_marginTop="@dimen/button_top_margin"
-            android:layout_width="match_parent"
-            android:padding="@dimen/button_padding"
-            android:layout_height="@dimen/buttonHeight"
-            android:layout_below="@id/recycler_groups"
-            android:text="@string/addGroup"/>
+            android:layout_below="@id/totalBalanceCard" />
+        <!--<Button-->
+        <!--android:id="@+id/addGroups"-->
+        <!--android:layout_marginLeft="50dp"-->
+        <!--android:layout_marginRight="50dp"-->
+        <!--android:layout_marginTop="@dimen/button_top_margin"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:padding="@dimen/button_padding"-->
+        <!--android:layout_height="@dimen/buttonHeight"-->
+        <!--android:layout_below="@id/recycler_groups"-->
+        <!--android:text="@string/addGroup"/>-->
 
     </RelativeLayout>
 </ScrollView>

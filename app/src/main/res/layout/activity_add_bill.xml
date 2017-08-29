@@ -1,190 +1,214 @@
 <?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp">
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="@dimen/bill_description_width"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
     android:orientation="vertical"
+    android:padding="10dp"
     tools:context="com.zemoso.atul.splitwise.activities.AddBill">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/bill_label_description"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:paddingStart="10dp"
+                android:text="@string/bill_label_description"
+                android:textColor="@color/colorPrimary"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/bill_description"
+                android:layout_width="@dimen/bill_description_width"
+                android:layout_height="@dimen/bill_description_height"
+                android:hint="@string/bill_description"
+
+
+                android:paddingStart="10dp"
+                android:textColor="@color/colorPrimary"
+                android:textSize="22sp" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/bill_label_group"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:paddingStart="10dp"
+                android:text="@string/bill_label_group"
+                android:textColor="@color/colorPrimary"
+                android:textSize="18sp" />
+
+            <Spinner
+                android:id="@+id/bill_select_group"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:textSize="22sp" />
+        </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lender_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/bill_label_lender"
+            android:layout_width="130dp"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:paddingStart="10dp"
+            android:text="@string/bill_label_lender"
+            android:textColor="@color/colorPrimary"
+            android:textSize="18sp" />
+
+
+        <EditText
+            android:id="@+id/lb_select_lenders"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/bill_description_height"
+            android:clickable="true"
+            android:gravity="center_vertical"
+            android:hint="@string/lender_heading"
+            android:inputType="text"
+            android:paddingStart="10dp"
+            android:textColor="@color/colorPrimary"
+            android:textSize="22sp" />
+    </LinearLayout>
+        <LinearLayout
+            android:id="@+id/borrower_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:orientation="vertical"
+            android:visibility="gone">
+            <TextView
+                android:id="@+id/bill_label_borrower"
+                android:layout_width="130dp"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:paddingStart="10dp"
+                android:text="@string/bill_label_borrower"
+                android:textColor="@color/colorPrimary"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/lb_select_borrowers"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/bill_description_height"
+                android:clickable="true"
+                android:gravity="center_vertical"
+                android:hint="@string/borrower_heading"
+                android:inputType="text"
+                android:paddingStart="10dp"
+                android:textColor="@color/colorPrimary"
+                android:textSize="22sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/bill_single_value_head"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:paddingStart="10dp"
+                android:text="@string/bill_amount"
+                android:textColor="@color/colorPrimary"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/bill_single_value_amt"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/bill_card_value"
+                android:inputType="numberDecimal"
+                android:paddingEnd="20dp"
+                android:paddingStart="10dp"
+                android:textColor="@color/colorPrimary"
+                android:textSize="22sp" />
+        </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:orientation="vertical">
-        <!--<ImageButton-->
-        <!--android:id="@+id/bill_category"-->
-        <!--android:layout_width="@dimen/bill_category_width"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:src="@drawable/category_loading_image"/>-->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/bill_category_height"
-            android:layout_marginEnd="30dp"
-            android:layout_marginStart="30dp"
-            android:orientation="vertical">
-            <EditText
-                android:id="@+id/bill_description"
-                android:layout_width="fill_parent"
-                android:layout_height="@dimen/bill_description_height"
-                android:hint="@string/bill_description"/>
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="@dimen/bill_currency_height"
-                android:orientation="horizontal">
-                <Button
-
-                    android:id="@+id/bill_date"
-                    android:layout_width="150dp"
-                    android:layout_height="@dimen/bill_currency_height"
-                    android:layout_marginEnd="10dp"
-                    android:background="@color/colorButtonDebt"
-                    android:hint="@string/bill_date"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="18sp" />
-
-
-                <Spinner
-                    android:id="@+id/bill_value"
-                    android:layout_width="fill_parent"
-                    android:layout_height="@dimen/bill_value_height"
-                    android:background="@color/colorButtonDebt"
-                    android:entries="@array/bill_mop_list"
-                    android:paddingEnd="20dp"
-                    android:paddingStart="20dp"
-                    android:textAlignment="center"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="18sp" />
-            </LinearLayout>
-            <!--<Spinner-->
-            <!--android:prompt="@string/bill_select_group"-->
-            <!--android:id="@+id/bill_select_group"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="@dimen/bill_description_height"-->
-            <!--android:textSize="@dimen/bill_value_font" />-->
-
-        </LinearLayout>
-
-        <AutoCompleteTextView
-            android:id="@+id/bill_select_group"
-            android:layout_width="300dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center_horizontal"
-            android:hint="@string/bill_select_group"
-            android:inputType="text"
-            android:paddingEnd="@dimen/add_member_horizontal_margin"
-            android:paddingStart="@dimen/add_member_horizontal_margin"
-            android:textSize="24sp" />
 
         <TextView
-            android:id="@+id/bill_text_lender"
-            android:layout_width="wrap_content"
+            android:id="@+id/bill_label_date"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginStart="50dp"
-            android:text="@string/bill_text_lender"
-            android:textColor="@color/color_add_member_active"
-            android:textSize="20sp" />
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/add_bill_recycler_lender"
+            android:gravity="center_vertical"
+            android:paddingStart="10dp"
+            android:text="@string/bill_label_date"
+            android:textColor="@color/colorPrimary"
+            android:textSize="18sp" />
+
+        <EditText
+
+            android:id="@+id/bill_date"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginEnd="30dp"
-            android:layout_marginStart="30dp" />
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="10dp"
-                android:gravity="center_vertical"
-                android:text="@string/bill_add_lender"
-                android:textSize="20sp" />
-
-            <Button
-                android:id="@+id/add_member_button_add_lender"
-                android:layout_width="@dimen/add_member_button_width"
-                android:layout_height="@dimen/add_member_button_width"
-                android:layout_gravity="center"
-                android:layout_marginEnd="5dp"
-                android:background="@color/color_add_member_active"
-                android:text="@string/add_member_item_plus"
-                android:textSize="@dimen/list_item_1" />
-
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/bill_text_borrower"
-            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginStart="50dp"
-            android:text="@string/bill_text_borrower"
-            android:textColor="@color/color_add_member_active"
-            android:textSize="20sp" />
+            android:clickable="true"
+            android:hint="@string/bill_date"
+            android:inputType="date"
+            android:paddingStart="10dp"
+            android:textColor="@color/colorPrimary"
+            android:textSize="22sp"
+            android:textStyle="normal">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/add_bill_recycler_borrower"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginEnd="30dp"
-            android:layout_marginStart="30dp" />
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="10dp"
-                android:gravity="center_vertical"
-                android:text="@string/bill_add_borrower"
-                android:textSize="20sp" />
-
-            <Button
-                android:id="@+id/add_member_button_add_borrower"
-                android:layout_width="@dimen/add_member_button_width"
-                android:layout_height="@dimen/add_member_button_width"
-                android:layout_gravity="center"
-                android:layout_marginEnd="5dp"
-                android:background="@color/color_add_member_active"
-                android:text="@string/add_member_item_plus"
-                android:textSize="@dimen/list_item_1" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/bill_single_value_head"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginStart="50dp"
-                android:text="@string/bill_amount"
-                android:textColor="@color/color_add_member_active"
-                android:textSize="30sp" />
-
-            <EditText
-                android:id="@+id/bill_single_value_amt"
-                android:layout_width="130dp"
-                android:layout_height="match_parent"
-                android:layout_marginStart="40dp"
-                android:hint="@string/bill_card_value"
-                android:inputType="numberDecimal"
-                android:paddingEnd="20dp"
-                android:paddingStart="20dp"
-                android:textAlignment="viewEnd" />
-        </LinearLayout>
-
-
+        </EditText>
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/bill_label_mop"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:paddingStart="10dp"
+            android:text="@string/bill_label_mop"
+            android:textColor="@color/colorPrimary"
+            android:textSize="18sp" />
+
+        <Spinner
+            android:id="@+id/bill_value"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:textSize="22sp" />
+    </LinearLayout>
 
 </LinearLayout>
+</android.support.v7.widget.CardView>
+
+
+

@@ -1,19 +1,17 @@
 package com.zemoso.atul.splitwise.activities;
 
-import android.content.res.ColorStateList;
-import android.graphics.Color;
+import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.zemoso.atul.splitwise.R;
 import com.zemoso.atul.splitwise.models.User;
 
@@ -55,33 +53,45 @@ public class FriendDetail extends AppCompatActivity {
         //endregion
 
         //region Action Bar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_friend);
         setSupportActionBar(toolbar);
 
 //        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_drawer);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
-
-        collapsingToolbarLayout.setExpandedTitleTextColor(ColorStateList.valueOf(Color.rgb(0, 0, 0)));
-        collapsingToolbarLayout.setCollapsedTitleTextColor(Color.rgb(0, 0, 0));
+//        CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
+//
+//        collapsingToolbarLayout.setExpandedTitleTextColor(ColorStateList.valueOf(Color.rgb(0, 0, 0)));
+//        collapsingToolbarLayout.setCollapsedTitleTextColor(Color.rgb(0, 0, 0));
+//        getSupportActionBar().setLogo(R.drawable.avatar);
         getSupportActionBar().setTitle("");
         //endregion
 
         //region Views
-        ImageView mImageView = (ImageView) findViewById(R.id.profile_image);
+        final ImageView mImageView = (ImageView) findViewById(R.id.profile_image);
         TextView mHeading = (TextView) findViewById(R.id.profile_heading);
         TextView mEmail = (TextView) findViewById(R.id.profile_email);
         TextView mStatus = (TextView) findViewById(R.id.profile_status);
 //        Button mButton = (Button) findViewById(R.id.profile_settleUp);
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         //endregion
 
         //region Set View Properties
         Glide.with(this)
                 .load(imageUrl)
-                .into(mImageView);
+                .asBitmap()
+                .centerCrop()
+                .into(new BitmapImageViewTarget(mImageView) {
+                    @Override
+                    protected void setResource(Bitmap resource) {
+                        RoundedBitmapDrawable circularBitmapDrawable =
+                                RoundedBitmapDrawableFactory.create(getApplicationContext().getResources(), resource);
+                        circularBitmapDrawable.setCircular(true);
+                        mImageView.setImageDrawable(circularBitmapDrawable);
+                    }
+                });
+
         mHeading.setText(name);
         mEmail.setText(email);
 
@@ -107,13 +117,13 @@ public class FriendDetail extends AppCompatActivity {
 //            }
 //        });
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+//            }
+//        });
         //endregion
     }
 

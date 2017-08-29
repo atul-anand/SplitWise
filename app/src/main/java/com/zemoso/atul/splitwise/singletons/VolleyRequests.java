@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -412,6 +413,7 @@ public class VolleyRequests {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e(tag, error.toString());
+                Toast.makeText(mContext, "Data not saved", Toast.LENGTH_SHORT).show();
             }
         });
     }

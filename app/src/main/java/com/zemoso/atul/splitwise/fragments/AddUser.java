@@ -14,7 +14,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.zemoso.atul.splitwise.R;
-import com.zemoso.atul.splitwise.singletons.VolleyRequests;
 
 import org.json.JSONObject;
 
@@ -39,6 +38,9 @@ public class AddUser extends DialogFragment {
     String mEmailId;
     String mPhoneNumber;
     int mAges;
+    String mUrl;
+
+    private FriendDataCallback friendDataCallback;
     //endregion
 
     //region Constructor
@@ -48,6 +50,12 @@ public class AddUser extends DialogFragment {
 
     public static AddUser newInstance() {
         return new AddUser();
+    }
+
+    public static AddUser newInstance(FriendDataCallback instance) {
+        AddUser addUser = new AddUser();
+        addUser.friendDataCallback = instance;
+        return addUser;
     }
     //endregion
 
@@ -79,6 +87,7 @@ public class AddUser extends DialogFragment {
                 mEmailId = String.valueOf(mEmail.getText());
                 mPhoneNumber = String.valueOf(mPhone.getText());
                 mAges = Integer.parseInt(String.valueOf(mAge.getText()));
+                mUrl = getResources().getString(R.string.image_url_user);
                 Log.d(TAG,mUserName);
                 Log.d(TAG,mEmailId);
                 Log.d(TAG,mPhoneNumber);
@@ -88,13 +97,17 @@ public class AddUser extends DialogFragment {
                 newUser.put("emailId",mEmailId);
                 newUser.put("phoneNumber",mPhoneNumber);
                 newUser.put("age",mAges);
+                newUser.put("url", mUrl);
                 JSONObject jsonObject = new JSONObject(newUser);
                 Log.d(TAG, String.valueOf(jsonObject));
-                VolleyRequests.getInstance(getContext()).save(jsonObject,1);
+                friendDataCallback.updateFriendData(jsonObject);
                 Toast.makeText(getContext(), "User " + mUserName + " registered\n Use this username for login", Toast.LENGTH_SHORT).show();
-
                 AddUser.this.dismiss();
             }
         });
+    }
+
+    public interface FriendDataCallback {
+        void updateFriendData(JSONObject jsonObject);
     }
 }

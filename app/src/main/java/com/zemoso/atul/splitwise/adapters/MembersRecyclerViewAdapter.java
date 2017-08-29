@@ -10,8 +10,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -58,15 +59,19 @@ public class MembersRecyclerViewAdapter extends RecyclerView.Adapter<MembersRecy
         final int pos = holder.getAdapterPosition();
         UserPresent userPresent = mItems.get(pos);
         String userName = userPresent.getUsername();
+
         Log.d(TAG, userPresent.getUsername());
         if (!Objects.equals(userName, "master"))
-            holder.mAutoCompleteTextView.setText(userName);
-        if (userPresent.getVerified())
-            holder.mAutoCompleteTextView.setBackgroundResource(R.drawable.text_border_green);
+            holder.mEditText.setText(userName);
+        if (userPresent.isVerified()) {
+            holder.mEditText.setBackgroundResource(R.drawable.text_border_green);
+            holder.mCheckButton.setVisibility(View.GONE);
+            holder.mEditText.setWidth(R.dimen.add_member_edit_width_checked);
+        }
         else
-            holder.mAutoCompleteTextView.setBackgroundResource(R.drawable.text_border_red);
+            holder.mEditText.setBackgroundResource(R.drawable.text_border_red);
 
-        holder.mAutoCompleteTextView.addTextChangedListener(new TextWatcher() {
+        holder.mEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -74,10 +79,8 @@ public class MembersRecyclerViewAdapter extends RecyclerView.Adapter<MembersRecy
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                holder.mAutoCompleteTextView.setBackgroundResource(R.drawable.text_border_red);
-//                mItems.get(pos).setUsername(String.valueOf(charSequence));
-                Log.d(TAG, String.valueOf(charSequence));
-//                notifyDataSetChanged();
+                holder.mEditText.setWidth(R.dimen.add_member_edit_width);
+                holder.mCheckButton.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -88,8 +91,11 @@ public class MembersRecyclerViewAdapter extends RecyclerView.Adapter<MembersRecy
         holder.mCheckButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String userName = String.valueOf(holder.mAutoCompleteTextView.getText());
-                checkUserPresent(userName, pos, holder);
+                Toast.makeText(mContext, "Checking user present in database", Toast.LENGTH_SHORT).show();
+                String userName = String.valueOf(holder.mEditText.getText());
+                Log.d(TAG, userName);
+                Log.d(TAG, String.valueOf(holder));
+                checkUserPresent(userName, holder);
             }
         });
         holder.mSubtractButton.setVisibility(View.GONE);
@@ -102,30 +108,39 @@ public class MembersRecyclerViewAdapter extends RecyclerView.Adapter<MembersRecy
         });
     }
 
-    //    TODO: Customize Listener
-    private void checkUserPresent(String userName, final int pos, final RecyclerViewViewHolder holder) {
+    private void checkUserPresent(String userName, final RecyclerViewViewHolder holder) {
+        Log.d(TAG, String.valueOf(holder));
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         String mUrl = preferences.getString("Hostname", "");
         String extension = mContext.getResources().getString(R.string.url_user_string);
-        mUrl = mUrl + extension + "?s=" + userName;
+        String param = mContext.getResources().getString(R.string.url_user_name);
+        final int pos = holder.getAdapterPosition();
+        mUrl = mUrl + extension + "?" + param + "=" + userName;
         Response.Listener<JSONObject> listener = new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+                Log.d(TAG, String.valueOf(response));
                 User user = new User(response);
                 UserPresent userPresent = mItems.get(pos);
                 Long userId = user.getUserId();
                 String userName = user.getName();
                 userPresent.setUserId(userId);
+                userPresent.setUsername(userName);
                 userPresent.setVerified(true);
-                holder.mAutoCompleteTextView.setText(userName);
-                holder.mAutoCompleteTextView.setBackgroundResource(R.drawable.text_border_green);
+
+                Toast.makeText(mContext, "User Present in Database", Toast.LENGTH_SHORT).show();
+                holder.mEditText.setText(userName);
+                holder.mEditText.setBackgroundResource(R.drawable.text_border_green);
+                holder.mCheckButton.setVisibility(View.GONE);
+                holder.mEditText.setWidth(R.dimen.add_member_edit_width_checked);
                 notifyDataSetChanged();
             }
         };
         Response.ErrorListener errorListener = new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                Toast.makeText(mContext, "User not present in Database", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, String.valueOf(error));
             }
         };
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(mUrl, null, listener, errorListener);
@@ -142,13 +157,13 @@ public class MembersRecyclerViewAdapter extends RecyclerView.Adapter<MembersRecy
 
     static class RecyclerViewViewHolder extends RecyclerView.ViewHolder {
 
-        AutoCompleteTextView mAutoCompleteTextView;
+        EditText mEditText;
         Button mCheckButton;
         Button mSubtractButton;
 
         RecyclerViewViewHolder(View itemView) {
             super(itemView);
-            mAutoCompleteTextView = itemView.findViewById(R.id.add_member_edit_text);
+            mEditText = itemView.findViewById(R.id.add_member_edit_text);
             mCheckButton = itemView.findViewById(R.id.add_member_button_check);
             mSubtractButton = itemView.findViewById(R.id.add_member_button_subtract);
         }

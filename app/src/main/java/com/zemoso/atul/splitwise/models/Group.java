@@ -8,7 +8,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import io.realm.RealmObject;
-import io.realm.annotations.Ignore;
 import io.realm.annotations.PrimaryKey;
 
 /**
@@ -22,7 +21,7 @@ public class Group extends RealmObject {
     private Date dateOfCreation;
     private int totalMembers;
     private String createdBy;
-    @Ignore
+    //    @Ignore
     private String imageFilePath;
 
     public Group() {
@@ -106,6 +105,7 @@ public class Group extends RealmObject {
                 ", dateOfCreation=" + dateOfCreation +
                 ", totalMembers=" + totalMembers +
                 ", createdBy='" + createdBy + '\'' +
+                ", url='" + imageFilePath + '\'' +
                 '}';
     }
 }

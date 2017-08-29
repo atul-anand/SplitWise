@@ -4,10 +4,6 @@
     android:layout_height="wrap_content"
     tools:context="com.zemoso.atul.splitwise.fragments.Transactions">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_transaction"
@@ -15,5 +11,5 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/totalBalanceCard" />
 
-    </RelativeLayout>
+
 </ScrollView>

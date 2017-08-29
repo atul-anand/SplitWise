@@ -49,7 +49,7 @@ public class GroupDetailRecyclerViewAdapter extends RecyclerView.Adapter<GroupDe
         Log.d(TAG, String.valueOf(amount));
         holder.creditorName.setText(creditorName);
         holder.debtorName.setText(debtorName);
-        holder.amount.setText(String.valueOf(amount));
+        holder.amount.setText("Rs " + String.valueOf(amount));
     }
 
     @Override

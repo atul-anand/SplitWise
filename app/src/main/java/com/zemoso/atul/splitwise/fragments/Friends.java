@@ -2,10 +2,13 @@ package com.zemoso.atul.splitwise.fragments;
 
 
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,6 +24,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.zemoso.atul.splitwise.R;
 import com.zemoso.atul.splitwise.adapters.FriendRecyclerViewAdapter;
 import com.zemoso.atul.splitwise.javaBeans.RecyclerViewHolder;
@@ -88,14 +92,14 @@ public class Friends extends Fragment {
 //            mPopupMenu.show();
 //        }
 //    };
-    private View.OnClickListener addUserListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            getActivity().getSupportFragmentManager().beginTransaction().add(AddUser.newInstance(), "Add User").commit();
-
-            userFindAll();
-        }
-    };
+//    private View.OnClickListener addUserListener = new View.OnClickListener() {
+//        @Override
+//        public void onClick(View view) {
+//            getActivity().getSupportFragmentManager().beginTransaction().add(AddUser.getInstance(), "Add User").commit();
+//
+//            userFindAll();
+//        }
+//    };
     //endregion
 
     //region Constructor
@@ -103,7 +107,7 @@ public class Friends extends Fragment {
         // Required empty public constructor
     }
 
-    public static Friends newInstance(){
+    public static Friends getInstance() {
         return new Friends();
     }
     //endregion
@@ -139,7 +143,7 @@ public class Friends extends Fragment {
         mTotalStatus = view.findViewById(R.id.totalStatus);
 //        mButton = view.findViewById(R.id.total_menu);
 //        mPopupMenu = new PopupMenu(getContext(),mButton);
-        mAddButton = view.findViewById(R.id.addFriends);
+//        mAddButton = view.findViewById(R.id.addFriends);
         //endregion
 
         //region Recycler View
@@ -155,7 +159,7 @@ public class Friends extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         //region Data
-        addUsers();
+        userFindAll();
         Log.d(TAG, String.valueOf(mItems.size()));
         //endregion
 
@@ -178,7 +182,17 @@ public class Friends extends Fragment {
         mTotalStatus.setText(mStatus);
         Glide.with(this)
                 .load(mUser.getImageFilePath())
-                .into(mProfilePic);
+                .asBitmap()
+                .centerCrop()
+                .into(new BitmapImageViewTarget(mProfilePic) {
+                    @Override
+                    protected void setResource(Bitmap resource) {
+                        RoundedBitmapDrawable circularBitmapDrawable =
+                                RoundedBitmapDrawableFactory.create(getContext().getResources(), resource);
+                        circularBitmapDrawable.setCircular(true);
+                        mProfilePic.setImageDrawable(circularBitmapDrawable);
+                    }
+                });
         //endregion
 
         //region Recycler View
@@ -190,7 +204,7 @@ public class Friends extends Fragment {
 
         //region Attach Listeners
 //        mButton.setOnClickListener(popUpListener);
-        mAddButton.setOnClickListener(addUserListener);
+//        mAddButton.setOnClickListener(addUserListener);
         //endregion
     }
 
@@ -242,11 +256,16 @@ public class Friends extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e(TAG, error.toString());
+//                Toast.makeText(getContext(),"Users not downloaded",Toast.LENGTH_SHORT).show();
 
             }
         };
         JsonArrayRequest userJsonObject = new JsonArrayRequest(mUrl, listener, errorListener);
         VolleyRequests.getInstance(getContext()).addToRequestQueue(userJsonObject);
+    }
+
+    public void updateFriendData() {
+        userFindAll();
     }
     //endregion
 }
